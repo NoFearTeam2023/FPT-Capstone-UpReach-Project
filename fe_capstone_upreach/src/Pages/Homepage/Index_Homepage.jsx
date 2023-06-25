@@ -1,6 +1,6 @@
 import React from "react";
 import "../../CSS/Theme.css";
-import { SUB_TITLE, CONTENT } from "./Constant";
+import { SUB_TITLE, CONTENT, ITEMSEARCHBTN, ITEMCATEGORYBTN, PLATFORM, DESCRIBE_PLAFORM, CATEGORY, DESCRIBE_CATEGORY } from "./Constant";
 import { Button, Dropdown, Space } from "antd";
 import { ReactComponent as IconSearch } from "../../../src/Assets/Icon/Search_icon.svg";
 import { ReactComponent as IconApplication } from "../../../src/Assets/Icon/IconApplication.svg";
@@ -14,108 +14,23 @@ import RecommendCard from "./RecommendCard/RecommendCard";
 import TotalUserCard from "./TotalUserCard/TotalUserCard";
 import CardHotList from "./HotListCard/CardHotList";
 
-const Index_Homepage = () => {
-  const itemSearchBtn = [
-    {
-      key: "1",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Any
-        </a>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          Facebook
-        </a>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          Instagram
-        </a>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Youtube
-        </a>
-      ),
-    },
-    {
-      key: "5",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Tiktok
-        </a>
-      ),
-    },
-  ];
+//render about dropdown
+function RenderDropdown({ listItems, title, description }) {
+  return (
+    <Dropdown
+      menu={{ items: listItems }}
+      placement="bottomLeft"
+      trigger={["click"]}
+    >
+      <Button type="text" className="searchPlatformBtn">
+        <p className="searchTitle">{title}</p>
+        <p className="searchDescription">{description}</p>
+      </Button>
+    </Dropdown>
+  )
+}
 
-  const itemCategoryBtn = [
-    {
-      key: "1",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          All
-        </a>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          Sport/Fitness
-        </a>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          Beauty
-        </a>
-      ),
-    },
-  ];
+const Index_Homepage = ({ handleClickLogin }) => {
 
   return (
     <div className="contentHomePage backgroundPage">
@@ -134,36 +49,17 @@ const Index_Homepage = () => {
                 </div>
                 <div className="col-9 contentSubTitle my-4">{SUB_TITLE}</div>
                 <div className="searchBtns">
-                  <Dropdown
-                    menu={{ items: itemSearchBtn }}
-                    placement="bottomLeft"
-                    trigger={["click"]}
-                  >
-                    <Button type="text" className="searchPlatformBtn">
-                      <p className="searchTitle">Platform</p>
-                      <p className="searchDescription">Choose a platform</p>
-                    </Button>
-                  </Dropdown>
-                  <Dropdown
-                    menu={{ items: itemCategoryBtn }}
-                    placement="bottomLeft"
-                    trigger={["click"]}
-                  >
-                    <Button type="text" className="searchCategoryBtn">
-                      <p className="searchTitle">Category</p>
-                      <p className="searchDescription">
-                        Search for categories, keywords, hashtags or influencers
-                      </p>
-                    </Button>
-                  </Dropdown>
+                  <RenderDropdown listItems={ITEMSEARCHBTN} title={PLATFORM} description={DESCRIBE_PLAFORM} />
+                  <RenderDropdown listItems={ITEMCATEGORYBTN} title={CATEGORY} description={DESCRIBE_CATEGORY} />
                   <div className="iconSearchBtn">
-                    <Button
+                    <Buttons
                       className="backgroundDark iconSearch"
                       shape="circle"
                       icon={<IconSearch />}
-                    ></Button>
+                      onClick={handleClickLogin}
+                    />
                   </div>
-                </div>{" "}
+                </div>
               </div>
             </div>
             <div className="col-5 pb-5">
@@ -187,6 +83,7 @@ const Index_Homepage = () => {
                 className="discoverBtn"
                 text="Discover Now"
                 icon={<IconArrow />}
+                onClick={handleClickLogin}
               />
             </div>
             <div className="col-4"></div>
@@ -198,7 +95,7 @@ const Index_Homepage = () => {
         <div className="col-12 pt-5">
           <div className="row pt-5">
             <div style={{ position: "relative" }} className="col-5 pt-4">
-              <CardFilter />
+              <CardFilter onClick={handleClickLogin} />
               <div className="recommendCard">
                 <RecommendCard />
               </div>
@@ -230,7 +127,7 @@ const Index_Homepage = () => {
       </div>
       <div className="pt-5">
         <div>
-          <CardHotList />
+          <CardHotList onClick={handleClickLogin} />
         </div>
       </div>
     </div>

@@ -1,47 +1,28 @@
 import "./TotalUserCard.css";
 import { Col, Row } from "antd";
 import StatusCardComponents from "../../../Components/Layouts/StatusCardComponent/StatusCardComponents";
-import { ReactComponent as Influencers } from "../../../Assets/Icon/Influencers.svg";
-import { ReactComponent as Lists } from "../../../Assets/Icon/Lists.svg";
-import { ReactComponent as Channels } from "../../../Assets/Icon/Channels.svg";
-import { ReactComponent as ActivatedUsers } from "../../../Assets/Icon/ActivatedUsers.svg";
+import { LIST_TOTAL_USER } from "./ConstTotalUserCard";
+
+function RenderTotalUser({ title, value, icon }) {
+  return (
+    <Col span={6}>
+      <StatusCardComponents
+        title={title}
+        value={value}
+        className="totalUserCard"
+        icon={icon}
+      />
+    </Col>
+  )
+}
 
 const TotalUserCard = () => {
   return (
     <div className="totalUserCards">
       <Row gutter={150}>
-        <Col span={6}>
-          <StatusCardComponents
-            title={"Influencers"}
-            value={12.001}
-            className="totalUserCard"
-            icon={<Influencers />}
-          />
-        </Col>
-        <Col span={6}>
-          <StatusCardComponents
-            title={"Lists"}
-            value={2.074}
-            className="totalUserCard"
-            icon={<Lists />}
-          />
-        </Col>
-        <Col span={6}>
-          <StatusCardComponents
-            title={"Channels"}
-            value={16.701}
-            className="totalUserCard"
-            icon={<Channels />}
-          />
-        </Col>
-        <Col span={6}>
-          <StatusCardComponents
-            title={"Activated Users"}
-            value={10.121}
-            className="totalUserCard"
-            icon={<ActivatedUsers />}
-          />
-        </Col>
+        {LIST_TOTAL_USER.map((item) => (
+          <RenderTotalUser title={item.title} value={item.value} icon={item.icon} />
+        ))}
       </Row>
     </div>
   );

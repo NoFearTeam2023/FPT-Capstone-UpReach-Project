@@ -5,10 +5,10 @@ import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 import { ReactComponent as IconGoogle } from "../../../src/Assets/Icon/google-icon.svg";
 import { Link } from "react-router-dom";
 
-function Login() {
+function Login({ navigateHome }) {
   return (
     <div>
-      <HeaderHomepage />
+      <HeaderHomepage handleClickHomePage={navigateHome} />
 
       <div className="logInLayout">
         <p className="logInTitle">UpReach</p>
@@ -67,7 +67,7 @@ function Login() {
           </div>
         </Form>
       </div>
-    </div>
+    </div >
   );
 }
 

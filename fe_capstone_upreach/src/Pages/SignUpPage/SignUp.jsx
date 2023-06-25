@@ -4,10 +4,10 @@ import { ReactComponent as IconGoogle } from "../../../src/Assets/Icon/google-ic
 import "./SignUp.css";
 import { Link } from "react-router-dom";
 
-const SingUp = () => {
+const SingUp = ({ navigateHome }) => {
   return (
     <div>
-      <HeaderHomepage />
+      <HeaderHomepage handleClickHomePage={navigateHome} />
       <div className="signUpLayout">
         <p className="signUpTitle">Create your account</p>
         <Form
