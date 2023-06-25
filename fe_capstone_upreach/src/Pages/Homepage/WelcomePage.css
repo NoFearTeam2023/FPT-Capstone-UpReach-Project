@@ -45,10 +45,11 @@
 .searchCategoryBtn,
 .searchPlatformBtn {
 	height: 65px;
-	width: 375px;
+	--width: 375px;
 	line-height: 10px;
 	background-color: #fff;
 	border-radius: 0;
+	min-width: 350px;
 }
 
 .searchPlatformBtn:first-child {
@@ -72,7 +73,8 @@
 .iconSearchBtn {
 	background-color: white;
 	align-items: center;
-	width: 65px;
+	--width: 65px;
+	min-width: 65px;
 	border-top-right-radius: 80px 80px;
 	border-bottom-right-radius: 80px 80px;
 }
@@ -82,7 +84,7 @@
 	margin-left: 12px;
 }
 
-.bntDiscover {
+.discoverBtn {
 	height: 50px;
 	margin-left: 120px;
 	color: #cd41b5;
@@ -116,6 +118,7 @@
 	position: absolute;
 	top: 59%;
 	left: 20px;
+	width: 100%;
 }
 
 .ant-dropdown-menu-title-content a {

@@ -27,14 +27,16 @@ const HeaderHomepage = () => {
             <p style={{ fontWeight: "700", marginTop: "-2px" }}>Login</p>
           </Button>
         </Link>
-        <Button
-          style={{ height: "35px" }}
-          className="joinBtn"
-          shape="round"
-          type="primary"
-        >
-          Join as brand
-        </Button>
+        <Link to="/join-as-brand">
+          <Button
+            style={{ height: "35px" }}
+            className="joinBtn"
+            shape="round"
+            type="primary"
+          >
+            Join as brand
+          </Button>
+        </Link>
       </div>
     </div>
   );

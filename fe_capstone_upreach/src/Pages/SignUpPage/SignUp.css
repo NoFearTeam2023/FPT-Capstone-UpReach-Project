@@ -1,0 +1,85 @@
+.heightSignUpBtn {
+    height: 40px;
+}
+
+.signUpLayout p {
+    margin-bottom: 0 !important;
+}
+
+.signUpLayout {
+    margin-top: 150px;
+    width: 100%;
+    display: grid;
+    justify-items: center;  
+}
+
+.signUpTitle{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.signUpSubTitle {
+    display: flex;
+}
+
+.signUpSubTitleContent {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.signUpSubChar {
+    color: red;
+}
+
+.signUpForm {
+    width: 35%;
+    margin-top: 25px;
+}
+
+.signUpGoogle {
+    width: 80%;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: #000 1px solid;
+    color: #000;
+    margin-left: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 45px;
+}
+.GoogleIcon{
+    padding: 5px;
+}
+
+.signUpBorders{
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.signUpBorder{
+    border: #000 1px solid;
+    width: 100%;
+}
+
+.signUpTypeBtn{
+
+}
+
+.signUpBtn {
+    margin-top: 25px;
+    background-color: #000;
+    height: 45px;
+}
+.signUpBtnText{
+    font-weight: 600;
+    font-size: 18px;
+    font-family: 'Volkhov';
+}
+
+.signUpToLogin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

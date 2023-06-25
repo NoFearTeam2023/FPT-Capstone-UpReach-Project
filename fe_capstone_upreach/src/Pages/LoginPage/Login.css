@@ -1,0 +1,75 @@
+.heightLogInBtn {
+    height: 40px;
+}
+
+.logInLayout p {
+    margin-bottom: 0 !important;
+}
+
+.logInLayout {
+    margin-top: 150px;
+    width: 100%;
+    display: grid;
+    justify-items: center;  
+}
+
+.logInTitle {
+    font-family: 'Volkhov', serif;
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #2196F3, #F44336);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logInSubTitle {
+    display: flex;
+}
+
+.logInSubTitleContent {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logInSubChar {
+    color: red;
+}
+
+.logInForm {
+    width: 30%;
+    margin-top: 25px;
+}
+
+.logInBtn {
+    margin-top: 25px;
+    background-color: #000;
+    height: 45px;
+}
+.logInBtnText{
+    font-weight: 600;
+    font-size: 18px;
+    font-family: 'Volkhov';
+}
+
+.logInWithGoogle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+}
+
+.GoogleIcon{
+    padding: 5px;
+}
+
+.logInToSignUp{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logInToSignUpLink {
+    margin: -3px 0 0 -10px;
+    color: #000;
+}
