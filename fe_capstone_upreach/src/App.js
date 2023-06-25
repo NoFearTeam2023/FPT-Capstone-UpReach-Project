@@ -5,7 +5,8 @@ import "./App.css";
 import "./CSS/Theme.css";
 import "./bootstrap-5.3.0-dist/css/bootstrap.css";
 import Login from "./Pages/Login/Login";
-import HomePage from "./Pages/Homepage/HomePage";
+import WelcomePage from "./Pages/Homepage/WelcomePage";
+import HomePage from "./Pages/MainPage/HomePage";
 
 function App() {
 	return (
@@ -16,7 +17,7 @@ function App() {
 						path="/"
 						element={
 							<>
-								<HomePage/>
+								<WelcomePage/>
 							</>
 						}
 					/>
@@ -28,7 +29,16 @@ function App() {
 							</>
 						}
 					/>
+					<Route
+						path="/HomePage"
+						element={
+							<>
+								<HomePage />
+							</>
+						}
+					/>
 				</Routes>
+				
 			</div>
 		</BrowserRouter>
 	);

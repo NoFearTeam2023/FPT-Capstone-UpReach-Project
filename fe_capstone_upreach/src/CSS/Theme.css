@@ -29,12 +29,20 @@
 	font-family: "Volkhov", serif;
 }
 
+.width-100-percent{
+	width: 100% !important;
+}
+
 .backgroundPage {
 	background: linear-gradient(
 		0.25turn,
 		rgba(151, 150, 240, 0.5),
 		rgba(251, 199, 212, 0.5)
 	);
+}
+
+.backgroundMainPage {
+	background: #E5E5E5;
 }
 
 .contentHomePage {

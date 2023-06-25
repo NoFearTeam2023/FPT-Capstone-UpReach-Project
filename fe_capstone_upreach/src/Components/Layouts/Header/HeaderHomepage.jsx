@@ -11,8 +11,12 @@ const HeaderHomepage = () => {
       <div className="headerContent">
         <div className="logoText">UpReach</div>
         <div className="navBar">
-          <div className="nav">Home</div>
-          <div className="nav">Explore</div>
+          <Link className="nav" to="/HomePage">
+            Home
+          </Link>
+          <div className="nav" href="#####">
+            Explore
+          </div>
           <div className="nav">How it work</div>
           <div className="nav">Blogs</div>
         </div>
