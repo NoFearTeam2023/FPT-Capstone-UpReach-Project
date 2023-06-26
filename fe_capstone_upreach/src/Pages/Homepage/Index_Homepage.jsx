@@ -1,7 +1,7 @@
 import React from "react";
 import "../../CSS/Theme.css";
 import { SUB_TITLE, CONTENT } from "./Constant";
-import { Button, Dropdown, Space } from "antd";
+import { Button, Dropdown } from "antd";
 import { ReactComponent as IconSearch } from "../../../src/Assets/Icon/Search_icon.svg";
 import { ReactComponent as IconApplication } from "../../../src/Assets/Icon/IconApplication.svg";
 import { ReactComponent as SonTungBackground } from "../../../src/Assets/Icon/SonTungBackground.svg";
@@ -13,8 +13,11 @@ import CardFilter from "./CardFilter/CardFilter";
 import RecommendCard from "./RecommendCard/RecommendCard";
 import TotalUserCard from "./TotalUserCard/TotalUserCard";
 import CardHotList from "./HotListCard/CardHotList";
+import { Modal } from "antd";
+import InfluProfile from "../../Components/InfluProfile/InfluProfile";
 
 const Index_Homepage = () => {
+  const [open, setOpen] = React.useState(false);
   const itemSearchBtn = [
     {
       key: "1",
@@ -119,77 +122,86 @@ const Index_Homepage = () => {
 
   return (
     <div className="contentHomePage backgroundPage">
-      <div className="row pt-5">
-        <div className="col-1"></div>
-        <div className="col-10 container">
-          <div className="row">
-            <div className="col-7 mt-4">
-              <div className="row mt-5">
-                <div className="col-12 ">
-                  <p className="homePageTextTitle">Find and Hire</p>
-                  <div>
-                    <p className="homePageTextTitleHighlight">Influencer</p>
-                    <p className="homePageTextTitle">in Seconds.</p>
+      <Modal
+        style={{ backgroundColor: "#ccc", borderRadius: "30px" }}
+        centered
+        open={open}
+        footer={NaN}
+        onCancel={() => setOpen(false)}
+        width={1400}
+        bodyStyle={{ borderRadius: "30px" }}
+      >
+        <InfluProfile />
+      </Modal>
+      <div className="row card-bg">
+        <div className="card-custom">
+          <div className="col-10 ">
+            <div className="row">
+              <div className="col-7  mb-3">
+                <div className="row">
+                  <div className="col-12">
+                    <p className="homePageTextTitle">Find and Hire</p>
+                    <div>
+                      <p className="homePageTextTitleHighlight">Influencer</p>
+                      <p className="homePageTextTitle">in Seconds.</p>
+                    </div>
+                  </div>
+                  <div className="col-9 contentSubTitle my-4">{SUB_TITLE}</div>
+                  <div className="searchBtns">
+                    <Dropdown
+                      menu={{ items: itemSearchBtn }}
+                      placement="bottomLeft"
+                      trigger={["click"]}
+                    >
+                      <Button type="text" className="searchPlatformBtn">
+                        <p className="searchTitle">Platform</p>
+                        <p className="searchDescription">Choose a platform</p>
+                      </Button>
+                    </Dropdown>
+                    <Dropdown
+                      menu={{ items: itemCategoryBtn }}
+                      placement="bottomLeft"
+                      trigger={["click"]}
+                    >
+                      <Button type="text" className="searchCategoryBtn">
+                        <p className="searchTitle">Category</p>
+                        <p className="searchDescription">
+                          Search for categories, keywords, hashtags or
+                          influencers
+                        </p>
+                      </Button>
+                    </Dropdown>
+                    <div className="iconSearchBtn">
+                      <Button
+                        className="backgroundDark iconSearch"
+                        shape="circle"
+                        icon={<IconSearch />}
+                      ></Button>
+                    </div>
                   </div>
                 </div>
-                <div className="col-9 contentSubTitle my-4">{SUB_TITLE}</div>
-                <div className="searchBtns">
-                  <Dropdown
-                    menu={{ items: itemSearchBtn }}
-                    placement="bottomLeft"
-                    trigger={["click"]}
-                  >
-                    <Button type="text" className="searchPlatformBtn">
-                      <p className="searchTitle">Platform</p>
-                      <p className="searchDescription">Choose a platform</p>
-                    </Button>
-                  </Dropdown>
-                  <Dropdown
-                    menu={{ items: itemCategoryBtn }}
-                    placement="bottomLeft"
-                    trigger={["click"]}
-                  >
-                    <Button type="text" className="searchCategoryBtn">
-                      <p className="searchTitle">Category</p>
-                      <p className="searchDescription">
-                        Search for categories, keywords, hashtags or influencers
-                      </p>
-                    </Button>
-                  </Dropdown>
-                  <div className="iconSearchBtn">
-                    <Button
-                      className="backgroundDark iconSearch"
-                      shape="circle"
-                      icon={<IconSearch />}
-                    ></Button>
+              </div>
+              <div className="col-5 pb-5">
+                <div className="imageSVG ms-5 p-0">
+                  <div className="imageIconApplication">
+                    <IconApplication />
                   </div>
-                </div>{" "}
-              </div>
-            </div>
-            <div className="col-5 pb-5">
-              <div className="imageSVG ms-5 p-0">
-                <div className="imageIconApplication">
-                  <IconApplication />
-                </div>
-                <div className="imageSonTungBackground">
-                  <SonTungBackground />
+                  <div className="imageSonTungBackground">
+                    <SonTungBackground />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="col-12 mt-5">
-          <div className="row">
-            <div className="col-4"></div>
-            <div className="col-4 ms-5 text-center">
-              <Buttons
-                className="discoverBtn"
-                text="Discover Now"
-                icon={<IconArrow />}
-              />
+            <div className="col-12 mt-3">
+              <div className="button-block mt-5">
+                <Buttons
+                  onClick={() => setOpen(true)}
+                  className="discoverBtn"
+                  text="Discover Now"
+                  icon={<IconArrow />}
+                />
+              </div>
             </div>
-            <div className="col-4"></div>
           </div>
         </div>
       </div>
@@ -216,22 +228,20 @@ const Index_Homepage = () => {
               <div className="font-size-16 font-Poppins margin-left-110 my-4">
                 {<IconDoubleCheck />} {CONTENT[3]}
               </div>
+              <div className="pt-2">
+                <div>
+                  <TotalUserCard />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-1"></div>
       </div>
 
       {/*================================================================ TAB 3 =========================================================*/}
-      <div className="pt-5">
-        <div>
-          <TotalUserCard />
-        </div>
-      </div>
-      <div className="pt-5">
-        <div>
-          <CardHotList />
-        </div>
+
+      <div style={{ marginTop: "150px" }}>
+        <CardHotList />
       </div>
     </div>
   );

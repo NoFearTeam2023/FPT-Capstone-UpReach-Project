@@ -20,6 +20,11 @@
 	padding: 25px;
 	padding-bottom: 0;
 }
+
+.checkAll {
+margin-bottom: 0 !important;
+}
+
 .filterOption {
 	font-size: 12px;
 }

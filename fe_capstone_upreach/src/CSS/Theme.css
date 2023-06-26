@@ -30,11 +30,7 @@
 }
 
 .backgroundPage {
-	background: linear-gradient(
-		0.25turn,
-		rgba(151, 150, 240, 0.5),
-		rgba(251, 199, 212, 0.5)
-	);
+	background: linear-gradient(90deg, #96cbf0, #fbc7d4);
 }
 
 .text-lineHeight-30 {
@@ -42,12 +38,12 @@
 }
 
 .contentHomePage {
-	height: 275vh;
+	height: fit-content;
 	width: 100%;
 	font-size: 24px;
 	font-weight: bold;
 	margin-top: 60px;
-	padding: 0 50px 0 50px;
+	padding: 50px 50px 100px 50px;
 }
 
 .container {

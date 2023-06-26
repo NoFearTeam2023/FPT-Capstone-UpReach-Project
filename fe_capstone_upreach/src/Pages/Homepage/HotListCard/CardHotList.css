@@ -1,4 +1,9 @@
 .hotListLayout {
+	background-color: #fff;
+	border-radius: 30px;
+	padding: 50px;
+	padding-top: 30px;
+	box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .hotListContent {
@@ -7,13 +12,39 @@
 }
 
 .hotListTitle {
-	padding-left: 0;
-	font-weight: 700;
-	font-size: 35px;
-	line-height: 54px;
-	color: rgba(34, 34, 34, 0.3);
-	text-shadow: 2px 3px rgba(34, 34, 34, 0.15);
+	font-size: 24px;
+}
+.viewMoreBlock {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
 }
 
-.hotListCards {
+.viewMoreBlock:hover {
+	
+	cursor: pointer;
+
+
 }
+
+.viewMoreBlock:hover p {
+	color: black;
+}
+
+
+.viewMoreIcon{
+	color: #929292;
+
+}
+.viewMoreBlock:hover svg {
+	color: black;
+}
+.hotListViewMore{ 
+	font-size: 18px;
+	margin-bottom: 0 !important;
+	margin-right: 8px;
+	color: #929292;
+}
+
+
+

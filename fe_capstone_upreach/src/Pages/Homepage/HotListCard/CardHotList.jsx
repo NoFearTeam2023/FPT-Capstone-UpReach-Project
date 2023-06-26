@@ -6,13 +6,16 @@ import HotListCard2 from "../../../Assets/Image/Hot_list/HotListCard2.jpg";
 import HotListCard3 from "../../../Assets/Image/Hot_list/HotListCard3.jpg";
 import HotListCard4 from "../../../Assets/Image/Hot_list/HotListCard4.jpg";
 import "./CardHotList.css";
-
+import { RightOutlined } from "@ant-design/icons";
 const CardHotList = () => {
   return (
     <div className="hotListLayout">
       <div className="hotListContent">
-        <p className="hotListTitle font-Volkhov">Hot Influencer Lists</p>
-        <p className="hotListTitle">View more</p>
+        <p className="hotListTitle">Hot Influencer Lists</p>
+        <div className="viewMoreBlock">
+          <p className="hotListViewMore">View more</p>
+          <RightOutlined className="viewMoreIcon" />
+        </div>
       </div>
 
       <div className="hotListCards">

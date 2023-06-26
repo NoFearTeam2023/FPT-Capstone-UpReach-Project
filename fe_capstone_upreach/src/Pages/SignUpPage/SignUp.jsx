@@ -1,20 +1,20 @@
 import { Button, Checkbox, Form, Input } from "antd";
-import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 import { ReactComponent as IconGoogle } from "../../../src/Assets/Icon/google-icon.svg";
 import "./SignUp.css";
 import { Link } from "react-router-dom";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import AuthBackground from "../../Components/Layouts/AuthBackground/AuthBackground";
 
-const SingUp = () => {
+const SignUp = () => {
   return (
-    <div>
-      <HeaderHomepage />
+    <AuthBackground>
       <div className="signUpLayout">
-        <p className="signUpTitle">Create your account</p>
         <Form
           name="signUp"
           className="signUpForm"
           initialValues={{ remember: true }}
         >
+          <p className="signUpTitle">Create your account</p>
           <Button type="primary" htmlType="submit" className="signUpGoogle">
             <div className="GoogleIcon">{<IconGoogle />}</div>
             <p style={{ fontWeight: "600" }}>Sign up with Google</p>
@@ -29,7 +29,7 @@ const SingUp = () => {
             <p className="signUpSubChar">*</p>
           </div>
           <Form.Item
-            name="enterName"
+            name="name"
             rules={[
               { required: true, message: "Please input your Full Name!" },
             ]}
@@ -44,8 +44,14 @@ const SingUp = () => {
             <p className="signUpSubChar">*</p>
           </div>
           <Form.Item
-            name="enterEmail"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+              { type: "email", message: "Invalid email" },
+            ]}
           >
             <Input
               className="signUpTypeBtn heightSignUpBtn"
@@ -57,13 +63,19 @@ const SingUp = () => {
             <p className="signUpSubChar">*</p>
           </div>
           <Form.Item
-            name="enterPassword"
-            rules={[{ required: true, message: "Please input your Password!" }]}
+            name="password"
+            rules={[
+              { required: true, message: "Please input your password!" },
+              { min: 8, message: "Enter as least 8 characters" },
+            ]}
           >
-            <Input
+            <Input.Password
               type="password"
               className="signUpTypeBtn heightSignUpBtn"
               placeholder="Enter your password at least 8 characters"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </Form.Item>
           <div className="signUpSubTitle">
@@ -73,13 +85,30 @@ const SingUp = () => {
           <Form.Item
             name="confirmPassword"
             rules={[
-              { required: true, message: "Please input confirm Password!" },
+              {
+                required: true,
+                message: "Please input your confirm password!",
+              },
+              { min: 8, message: "Enter as least 8 characters" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The re-password that you entered do not match!")
+                  );
+                },
+              }),
             ]}
           >
-            <Input
+            <Input.Password
               type="password"
               className="signUpTypeBtn heightSignUpBtn"
               placeholder="Enter confirm password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </Form.Item>
 
@@ -87,16 +116,14 @@ const SingUp = () => {
             <span className="signUpBtnText">Sign Up</span>
           </Button>
           <div className="signUpToLogin">
-            <p>Already have an account?</p>
-            <Link to="/login">
-              <Button className="signUpToLoginLink" type="link">
-                <p style={{ margin: "-1px 0 0 -10px", color: "#000" }}>Login</p>
-              </Button>
-            </Link>
+            <p>Already have an account? </p>
+            <div className="loginLink">
+              <Link to="/login">Login</Link>
+            </div>
           </div>
         </Form>
       </div>
-    </div>
+    </AuthBackground>
   );
 };
-export default SingUp;
+export default SignUp;

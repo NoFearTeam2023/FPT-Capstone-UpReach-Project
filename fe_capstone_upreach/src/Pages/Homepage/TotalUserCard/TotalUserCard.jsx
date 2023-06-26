@@ -9,8 +9,8 @@ import { ReactComponent as ActivatedUsers } from "../../../Assets/Icon/Activated
 const TotalUserCard = () => {
   return (
     <div className="totalUserCards">
-      <Row gutter={150}>
-        <Col span={6}>
+      <Row gutter={[128, 32]}>
+        <Col span={12}>
           <StatusCardComponents
             title={"Influencers"}
             value={12.001}
@@ -18,7 +18,7 @@ const TotalUserCard = () => {
             icon={<Influencers />}
           />
         </Col>
-        <Col span={6}>
+        <Col span={12}>
           <StatusCardComponents
             title={"Lists"}
             value={2.074}
@@ -26,7 +26,7 @@ const TotalUserCard = () => {
             icon={<Lists />}
           />
         </Col>
-        <Col span={6}>
+        <Col span={12}>
           <StatusCardComponents
             title={"Channels"}
             value={16.701}
@@ -34,7 +34,7 @@ const TotalUserCard = () => {
             icon={<Channels />}
           />
         </Col>
-        <Col span={6}>
+        <Col span={12}>
           <StatusCardComponents
             title={"Activated Users"}
             value={10.121}

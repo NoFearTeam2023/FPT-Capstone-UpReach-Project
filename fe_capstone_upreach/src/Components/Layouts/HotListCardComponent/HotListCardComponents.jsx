@@ -10,7 +10,6 @@ const HotListCardComponents = ({ image, name, topics }) => {
               "https://img.favpng.com/17/1/20/user-interface-design-computer-icons-default-png-favpng-A0tt8aVzdqP30RjwFGhjNABpm.jpg")
           }
           src={image}
-          className={"hotListImage"}
           alt="hotListCard"
         />
       </div>

@@ -1,0 +1,188 @@
+.influ-side-bar-container{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    justify-content: space-between;
+    align-content: space-between;
+}
+
+.influ-side-bar-container p{
+    margin-bottom: 0 !important;
+}
+.influ-side-bar-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 300px;
+    flex-direction: column;
+    border-bottom: #ccc 1px solid;
+    padding: 10px;
+}
+.profile-avatar{
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+}
+
+.profile-name {
+    font-weight: 600;
+}
+
+.badge-block {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.badge-text {
+    cursor: pointer;
+    font-size: 14px;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.profile-btn{
+    background-color: #2195f382;
+    margin-bottom: 5px;
+}
+
+.profile-socials {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.profile-social {
+    display: flex;
+    justify-content: space-evenly;
+    width: 20%;
+}
+
+.influ-side-bar-body {
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+}
+
+
+.profile-description {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.profile-contents {
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-contents p {
+    font-size: 14px;
+}
+
+.profile-content {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.profile-topics {
+    display: flex;
+    flex-wrap: wrap; 
+    width: 100%;
+}
+
+
+.profile-topic {
+    margin-bottom: 8px;
+    margin-right: 10px;
+    background-color: #ccc;
+    width: fit-content;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 2px;
+}
+
+.profile-location {
+    display: flex;
+    align-items: center;
+}
+
+.profile-gender {
+    display: flex;
+}
+
+.profile-age {
+    display: flex;
+}
+
+.profile-marriage-status {
+    display: flex;
+    align-items: center;
+}
+
+.profile-biography {
+    margin-top: 10px;
+}
+
+.profile-biography-title {
+    font-weight: 600;
+}
+
+.influ-side-bar-footer{
+    height: fit-content;
+    padding-bottom: 10px;
+}
+
+.footer-content {
+    padding: 15px 30px 15px 30px;
+
+}
+
+.profile-contact {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.contact-info {
+    padding: 15px;
+    width: fit-content;
+    position: relative;
+}
+
+.contact-email, .contact-phone {
+    display: flex;
+    align-items: center;
+}
+
+.upgrade-btn {
+    position: absolute;
+    top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.lock-info {
+    opacity: 0.2;
+}
+
+.feedback-btn {
+    width: 100%;
+    text-align: center;
+}
+
+
