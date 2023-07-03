@@ -1,0 +1,53 @@
+.hotListLayout {
+	background-color: #fff;
+	border-radius: 30px;
+	padding: 50px 50px 20px;
+	padding-top: 30px;
+	box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.hotListContent {
+	display: flex;
+	justify-content: space-between;
+}
+
+.hotListTitle {
+	font-size: 24px;
+}
+.viewMoreBlock {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.viewMoreBlock:hover {
+	cursor: pointer;
+}
+
+.viewMoreBlock:hover p {
+	color: black;
+}
+
+.viewMoreIcon {
+	color: #929292;
+}
+.viewMoreBlock:hover svg {
+	color: black;
+}
+.hotListViewMore {
+	font-size: 18px;
+	margin-bottom: 0 !important;
+	margin-right: 8px;
+	color: #929292;
+}
+.hotCard {
+	padding: 20px;
+}
+.scroll-button {
+	border: 0px;
+	background: none;
+	color: black !important;
+}
+.scroll-button svg {
+	font-size: 30px !important;
+}

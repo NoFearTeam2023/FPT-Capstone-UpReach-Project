@@ -29,10 +29,18 @@
 	width: 100%;
 	height: 200px;
 	background: linear-gradient(to top, #f1e1c1 0%, #fcbc97 100%);
-	
 	border-radius: 16px;
 	transition: transform 0.2s ease;
 	margin-bottom: 1rem;
+}
+
+.card1-avatarImg {
+	width: 100%;
+	height: 200px;
+	border-radius: 16px;
+	transition: transform 0.2s ease;
+	margin-bottom: 1rem;
+	object-fit: cover;
 }
 
 /*Card1 footer*/
@@ -126,6 +134,14 @@
 	margin-bottom: 0.5rem;
 }
 
+.card2-avatarImg{
+	width: 165px;
+	height: 120px;
+	border-radius: 16px;
+	transition: transform 0.2s ease;
+	margin-bottom: 0.5rem;
+	object-fit: cover;
+}
 /*Card1 footer*/
 .card2-social {
 	padding: 0 !important;
@@ -214,6 +230,15 @@
 	border-radius: 16px;
 	transition: transform 0.2s ease;
 	margin-bottom: 1rem;
+}
+
+.card3-avatarImg {
+	width: 100%;
+	height: 160px;
+	border-radius: 16px;
+	transition: transform 0.2s ease;
+	margin-bottom: 1rem;
+	object-fit: cover;
 }
 
 /*Card1 footer*/

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { ReactComponent as IconGoogle } from "../../../src/Assets/Icon/google-icon.svg";
 import "./SignUp.css";
 import { Link } from "react-router-dom";

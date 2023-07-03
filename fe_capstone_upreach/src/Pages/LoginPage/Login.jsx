@@ -7,7 +7,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import AuthBackground from "../../Components/Layouts/AuthBackground/AuthBackground";
 
 const Login = () => {
-  const [message, setMessage] = React.useState("");
+  // const [message, setMessage] = React.useState("");
   const handleSubmit = (data) => {
     console.log(data);
   };

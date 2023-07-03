@@ -103,7 +103,7 @@ label {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	background-color: #fff;
+	background-color: #ececec;
 }
 
 .col-2 > .col-2-body {

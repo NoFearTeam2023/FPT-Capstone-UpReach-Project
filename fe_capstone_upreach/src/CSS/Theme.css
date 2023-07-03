@@ -42,13 +42,21 @@
 }
 
 .contentHomePage {
-	height: 275vh;
+	--height: 275vh;
 	width: 100%;
 	font-size: 24px;
 	font-weight: bold;
 	margin-top: 60px;
 	padding: 0 50px 0 50px;
 	background-color: #ececec;
+}
+
+.contentLadingPage {
+	height: 275vh;
+	width: 100%;
+	font-size: 24px;
+	font-weight: bold;
+	padding: 100px 50px;
 }
 
 .container {

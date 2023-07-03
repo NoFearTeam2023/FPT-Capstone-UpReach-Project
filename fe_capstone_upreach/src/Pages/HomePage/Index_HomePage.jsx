@@ -1,9 +1,9 @@
 import React from "react";
 import "../../CSS/Theme.css";
-import { SUB_TITLE } from "../IntroducePage/Constant";
 import "./HomePage.css";
 import FilterSearch from "./FilterSearch/FilterSearch";
 import ProfileCardLayout from "./ProfileCardLayout/ProfileCardLayout";
+import { SUB_TITLE } from "../LandingPage/Constant";
 
 const Index_HomePage = () => {
   return (
