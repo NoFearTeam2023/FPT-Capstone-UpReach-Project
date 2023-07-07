@@ -1,18 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "antd/dist/reset.css";
-import "./App.css";
+import logo from './logo.svg';
+import './App.css';
+import ClientProfilePage from './ClientProfilePage';
+import UpdateEmail from './UpdateEmail';
+import ForgotPasswordPage from './ForgotPassword/ForgotPasswordPage';
+import ResetPasswordPage from './ForgotPassword/ResetPasswordPage';
+import VerifyRegisterPage from './VerifyRegister/VerifyRegisterPage';
 
-import "./CSS/Theme.css";
-import "./bootstrap-5.3.0-dist/css/bootstrap.css";
-import Pages_Index from "./Pages/Pages_Index";
+
+
 function App() {
-	return (
-		<>
-			<BrowserRouter>
-				<Pages_Index />
-			</BrowserRouter>
-		</>
-	);
+  return (
+    // <ClientProfilePage/>
+    // <UpdateEmail/>
+    <ForgotPasswordPage/>
+    // <ResetPasswordPage/>
+    // <VerifyRegisterPage/>
+  );
 }
 
 export default App;

@@ -1,116 +1,38 @@
-* {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	font-family: Poppins;
-	font-size: 16px;
-	font-weight: 500;
+.App {
+  text-align: center;
 }
 
-form {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-label {
-	font-size: 16px !important;
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
-.Button {
-	margin: 5px 0;
-	background-color: #2cbeb7;
-	border: #2cbeb7;
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
-.Input {
-	margin: 5px 0;
+.App-link {
+  color: #61dafb;
 }
 
-.Span {
-	text-decoration: underline;
-}
-
-.Header {
-	background-color: #000;
-	color: #fff;
-	font-size: 24px;
-	font-weight: bold;
-}
-
-.Footer {
-	background-color: #000;
-	color: #fff;
-	text-align: center;
-	font-size: 24px;
-	font-weight: bold;
-}
-
-.Content {
-	height: 1060px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 4px;
-	font-size: 24px;
-	font-weight: bold;
-}
-
-.ant-typography {
-	font-size: 20px;
-	font-weight: bold;
-}
-
-.ant-layout-sider-children {
-	font-size: 24px;
-	font-weight: bold;
-}
-
-.Sidebar {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: #000;
-	color: #fff;
-}
-
-.Container {
-	height: 100vh;
-}
-
-.Image {
-	height: 600px;
-}
-
-.Grid {
-	display: flex;
-	justify-content: center;
-	height: 100%;
-}
-
-.col-1 {
-	background-color: #f2f4f7;
-	color: #fff;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100%;
-}
-
-.col-2 {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	background-color: #ececec;
-}
-
-.col-2 > .col-2-body {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	text-align: center;
-	margin: 0 auto;
-	width: 70%;
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
