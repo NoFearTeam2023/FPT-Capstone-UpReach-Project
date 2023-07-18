@@ -1,0 +1,28 @@
+const influencer = {
+    influencerId,
+    dateEdit,
+    userId,
+    influencerFullName,
+    influencerNickName,
+    role,
+    influencerAge,
+    influencerPhone,
+    influencerGender,
+    bio,
+    influencerAddress,
+    influencerRelationship,
+    influencerCostEstimateName,
+    influencerLinkFb,
+    influencerFollowFb,
+    influencerInteractionFb,
+    influencerLinkIns,
+    influencerFollowIns,
+    influencerInteractionIns,
+    influencerLinkTiktok,
+    influencerFollowTiktok,
+    influencerInteractionTiktok,
+    influencerEngagement,
+    postPerWeek,
+}
+
+module.exports = influencer;
