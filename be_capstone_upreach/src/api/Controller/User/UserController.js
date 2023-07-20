@@ -58,7 +58,7 @@ async function confirm(req, res, next){
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge); 
         const otp = req.body.otp;
-        const infoUser = await userService.getDataForUser(userModels.userEmail);
+        // const infoUser = await userService.getDataForUser(userModels.userEmail);
         if(otp === sendMail.otp){
             result = userService.insertInfoUser(userModels.userId,userModels.userRole,userModels.userEmail,userModels.userPassword);
             if(result){
@@ -168,5 +168,7 @@ async function logout(req,res,next){
         return res.json({message : ' ' + err});
     }
 }
+
+
 
 module.exports = router;
