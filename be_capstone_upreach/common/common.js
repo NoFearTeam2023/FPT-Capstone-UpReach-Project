@@ -1,17 +1,27 @@
-export const formatResponse = (payload) =>{
-    const formValue = payload.reduce(
-        (currentValue, array ) =>{
-            return{
-                ...currentValue,
-                Type_Id : [...new Set(array.map((e) => e.Type_Id))],
-                Form_ID : [...new Set(array.map((e)=> e.Form_ID))],
-                Topics_Id : [...new Set(array.map((e) => e.Topics_Id))],
-                Location : [...new Set(array.map((e) => e.Location))]
-            }
-        },
-        {}
-    );
-    return formValue;
+const formatResponse = (payload) => {
+    const formatValue = payload.reduce(
+    ( _accumulator, currentValue) => {
+        return {
+            ...currentValue,
+            Type_Id: [...new Set(payload.map((e) => e.Type_Id))] ,
+            Format_ID: [...new Set(payload.map((e) => e.Format_ID))],
+            Topics_Id: [...new Set(payload.map((e) => e.Topics_Id))] ,
+            Location: [...new Set(payload.map((e) => e.Location))],
+        }
+    },
+    {}
+);
+
+return formatValue;
 }
 
+function convertArray(payload){
+    if (!Array.isArray(payload)) {
+        payload = [payload];
+        return payload
+    }
+    return payload;
+} 
+
+module.exports = {formatResponse,convertArray}
 

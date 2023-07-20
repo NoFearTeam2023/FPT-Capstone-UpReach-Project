@@ -11,7 +11,7 @@ const session = require('express-session');
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
-
+const influService = require('./src/api/Service/Influencer/InfluencerService')
 // const config = require('./Config/dbConfig')
 // const userLogin = require('./Router/userLogin');
 // const auth = require('./Authen/auth');
@@ -38,6 +38,8 @@ app.use(session({
     }
 }))
 
+app.get("/",influService.getAllInfluencer)
+
 app.use(
 	fileUpload(
 		{
@@ -57,4 +59,3 @@ app.use('', controllerInflu);
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-

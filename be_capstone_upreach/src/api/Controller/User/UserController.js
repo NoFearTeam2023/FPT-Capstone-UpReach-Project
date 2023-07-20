@@ -32,18 +32,14 @@ async function register(req, res, next){
             return res.json({ message: "Email đã được sử dụng" });
         }else {
             const mailOptions = {
-                from: 'thienndde150182@gmail.com', // Địa chỉ email người gửi
-                to: userModels.userEmail, // Địa chỉ email người nhận
-                subject: 'OTP for Registration', // Tiêu đề email
-                text: `Your OTP for registration is: ${sendMail.otp}` // Nội dung email
+                from: 'thienndde150182@gmail.com', 
+                to: userModels.userEmail, 
+                subject: 'OTP for Registration', 
+                text: `Your OTP for registration is: ${sendMail.otp}` 
             };
-            sendMail.sendMailToUser(mailOptions)
-            .then(() => {
-                // Xử lý khi gửi email thành công
+            sendMail.sendMailToUser(mailOptions).then(() => {
                 res.json({ message: sendMail.otp });
-            })
-            .catch((error) => {
-                // Xử lý khi gửi email gặp lỗi
+            }).catch((error) => {
                 res.json({ message: error });
             });
         }

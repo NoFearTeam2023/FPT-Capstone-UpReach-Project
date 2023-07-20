@@ -33,9 +33,7 @@ function initialize(passport, getUserById, getUserByEmail){
     };
 
     passport.use( new LocalStrategy({usernameField: 'email'}, authenticateUser) )
-    // passport.use(new LocalStrategy((username, password, done) => {})
-    // );
-    // save infor user into session
+
     passport.serializeUser((user, done) => {
         done(null, user.User_ID);
     });
