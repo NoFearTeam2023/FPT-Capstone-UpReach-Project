@@ -6,7 +6,9 @@ const {v4 : uuidv4} = require("uuid")
 const auth = require('../../Authen/auth');
 const sendMail = require('../../sendMail/sendMail')
 const userService = require('../../Service/User/UserService')
+const influService = require("../../Service/Influencer/InfluencerService")
 const userModels = require('../User/UserController')
+
 const router = express.Router();
 
 router.post('/api/login', login);
@@ -104,7 +106,8 @@ async function login(req,res,next){
         const existedUserId = await userService.getSessionUserById(userId);
 
         const infoUser = await userService.getDataForUser(email);
-        
+        const infoInfluence = await influService.getAllInfluencer();
+
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error" });
@@ -116,7 +119,10 @@ async function login(req,res,next){
             if(existedUserId.length > 0){
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
-                    data: infoUser
+                    data: {
+                        "User" : infoUser,
+                        "Influencer" : infoInfluence
+                    }
                 });
             }
             req.logIn(user,async (err) => {
@@ -130,9 +136,13 @@ async function login(req,res,next){
                     return res.json({message :'Fails Add Session'});
                 }
                 const infoUser = await userService.getDataForUser(email);
+                const infoInfluence = await influService.getAllInfluencer();
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
-                    data : infoUser 
+                    data : {
+                        "User" : infoUser,
+                        "Influencer" : infoInfluence
+                    }
                 });
             });
 

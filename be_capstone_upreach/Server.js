@@ -38,8 +38,6 @@ app.use(session({
     }
 }))
 
-app.get("/",influService.getAllInfluencer)
-
 app.use(
 	fileUpload(
 		{

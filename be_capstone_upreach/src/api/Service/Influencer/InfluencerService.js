@@ -12,11 +12,28 @@ async function getAllInfluencer(){
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
-        const data = common.formatResponse(result.recordset)
+        const data = common.formatResponseInfluencer(result.recordset)
         connection.close();
         return data;
     } catch (err) {
-        console.log('Lỗi thực thi getDataForUser:', err);
+        console.log('Lỗi thực thi getAllInfluencer:', err);
+        throw err;
+    }
+}
+
+async function getAllInfluencerByEmail(email){
+    
+    try {
+        const getAllInfluencerByEmail = "getAllInfluencerByEmail";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('email', sql.NVarChar, email );
+        const result = await request.execute(getAllInfluencerByEmail);
+        const data = common.formatResponseInfluencer(result.recordset)
+        connection.close();
+        return data;
+    } catch (err) {
+        console.log('Lỗi thực thi getAllInfluencerByEmail:', err);
         throw err;
     }
 }
@@ -55,4 +72,4 @@ async function searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo 
     }
 }
 
-module.exports = {getAllInfluencer,searchInfluecer}
+module.exports = {getAllInfluencer,searchInfluecer,getAllInfluencerByEmail}

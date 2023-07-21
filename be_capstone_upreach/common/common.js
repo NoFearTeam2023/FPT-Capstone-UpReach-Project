@@ -1,4 +1,4 @@
-const formatResponse = (payload) => {
+const formatResponseInfluencer = (payload) => {
     const formatValue = payload.reduce(
     ( _accumulator, currentValue) => {
         return {
@@ -15,13 +15,26 @@ const formatResponse = (payload) => {
 return formatValue;
 }
 
+const formatResponseUser = (payload) => {
+    const formatValue = payload.reduce(
+    ( _accumulator, currentValue) => {
+        return {
+            ...currentValue
+        }
+    },
+    {}
+);
+
+return formatValue;
+}
+
 function convertArray(payload){
     if (!Array.isArray(payload)) {
         payload = [payload];
         return payload
     }
     return payload;
-} 
+}
 
-module.exports = {formatResponse,convertArray}
+module.exports = {formatResponseInfluencer,convertArray,formatResponseUser}
 

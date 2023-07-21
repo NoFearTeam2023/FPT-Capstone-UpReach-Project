@@ -1,7 +1,7 @@
 const sql = require('mssql');
 
 const config = require('../../Config/dbConfig');
-
+const common = require('../../../../common/common')
 const pool = new sql.ConnectionPool(config);
 
 async function getAll(){
@@ -57,8 +57,9 @@ async function getDataForUser(email){
         const request = connection.request();
         request.input('emailUser', sql.NVarChar, email);
         const result = await request.execute(getDataForUser);
+        const data = common.formatResponseUser(result.recordset)
         connection.close();
-        return result.recordset;
+        return data;
     } catch (err) {
         console.log('Lỗi thực thi getDataForUser:', err);
         throw err;
