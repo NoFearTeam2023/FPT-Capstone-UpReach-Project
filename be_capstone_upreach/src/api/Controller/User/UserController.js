@@ -30,7 +30,7 @@ async function register(req, res, next){
         userModels.userPassword = hashedPassword;
         userModels.userRole = req.body.role;
         existingEmail = await  userService.getUserByEmail(userModels.userEmail);
-        if (existingEmail.length > 0){
+        if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
         }else {
             const mailOptions = {
@@ -54,20 +54,24 @@ async function confirm(req, res, next){
     try{
         const sessionId = req.sessionID;
         const maxAge = req.session.cookie.maxAge; 
-        const expiry = new Date(Date.now() + maxAge); 
-        const otp = req.body.otp;
+        const expiry = new Date(Date.now() + maxAge);
+        const {otp, email, password} = req.body
         // const infoUser = await userService.getDataForUser(userModels.userEmail);
-        if(otp === sendMail.otp){
-            result = userService.insertInfoUser(userModels.userId,userModels.userRole,userModels.userEmail,userModels.userPassword);
-            if(result){
+        const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
+        const existingEmail = await  userService.getUserByEmail(email);
+        if (Object.keys(existingEmail).length > 0){
+            return res.json({ message: "Email đã được sử dụng" });
+        }
+        if(otp === sendMail.otp && email === userModels.userEmail && passwordMatch){
+            result = await userService.insertInfoUser(userModels.userId,userModels.userRole,userModels.userEmail,userModels.userPassword);
+            if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
                     if (err) {
-                        return res.status(500).json({ message: "Internal server error" });
+                        return res.status(500).json({ message: "Internal server error at confirm" });
                     }
                     if (!user) {
                         return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
                     }
-
                     req.logIn(user,async (err) => {
                         if (err){
                             return res.status(500).json({ message: "Internal server error" });
@@ -85,9 +89,10 @@ async function confirm(req, res, next){
         
                 })(req, res, next);
             }else{
-                console.log('Dữ liệu đã được thêm Fails');
-                return res.json({ message: "Dữ liệu add Fails" });
+                return res.json({ message: "Dữ liệu Add Fail" });
             }
+        }else{
+            return res.json({message : "Sai Dữ liệu truyền vào để confirm"})
         }
     }catch(err){
         console.log(err);
@@ -102,9 +107,8 @@ async function login(req,res,next){
         const expiry = new Date(Date.now() + maxAge); // Thời gian hết hạn của session
         const email = req.body.email;
         const user = await userService.getUserByEmail(email);
-        const userId = user[0].User_ID;
+        const userId = user.User_ID;
         const existedUserId = await userService.getSessionUserById(userId);
-
         const infoUser = await userService.getDataForUser(email);
         const infoInfluence = await influService.getAllInfluencer();
 
@@ -125,14 +129,13 @@ async function login(req,res,next){
                     }
                 });
             }
+            
             req.logIn(user,async (err) => {
-                console.log('Giá trị ' + err);
                 if (err){
                     return res.status(500).json({ message: "Internal server error" });
                 }
                 const result = await userService.insertSessionUser(sessionId,userId,maxAge.toString(),expiry.toString());
                 if(!result){
-                    console.log('fails add session');
                     return res.json({message :'Fails Add Session'});
                 }
                 const infoUser = await userService.getDataForUser(email);
@@ -152,22 +155,21 @@ async function login(req,res,next){
     }
 }
 
-
 async function logout(req,res,next){
     try{
         const email = req.body.email;
         const user = await userService.getUserByEmail(email);
-        const userId = user[0].User_ID;
+        const userId = user.User_ID;
         const result = await userService.deleteSessionUserById(userId);
-        if (result.rowsAffected[0] === 1) {
+        console.log(result)
+        if (result.rowsAffected > 0) {
             req.logout(() =>{
                 return res.json({ message: "Xóa session khỏi db thành công" });
             })
-        }else if (result.rowsAffected[0] === 0) {
+        }else if (result.rowsAffected === 0) {
             console.log('User đang không đăng nhập');
             return res.json({ message: 'User đang không đăng nhập' });
         }else{
-            console.log('Fails Delete Session');
             return res.json({ message: 'Fails Delete Session' });
         }
     }catch(err){

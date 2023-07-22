@@ -14,7 +14,7 @@ const cloudinary = require("cloudinary").v2;
 const influService = require('./src/api/Service/Influencer/InfluencerService')
 // const config = require('./Config/dbConfig')
 // const userLogin = require('./Router/userLogin');
-// const auth = require('./Authen/auth');
+const auth = require('./src/api/Authen/auth');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const controllerUser = require('./src/api/Controller/User/UserController')
 const app = express();
@@ -49,7 +49,7 @@ app.use(
 );
 cloudinary.config(cloudconfig)
 
-app.use(passport.initialize()) 
+app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('', controllerUser);

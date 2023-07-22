@@ -20,19 +20,19 @@ async function getAll(){
 }
 
 async function getUserById(id){
-    const searchUserById = "getInfoUserById";
-    pool.connect().then(() => {
-        const request = pool.request();
+    try {
+        const searchUserById = "getInfoUserById";
+        const connection = await pool.connect();
+        const request = connection.request();
         request.input('EmailId', sql.NVarChar, id);
-        request.execute(searchUserById).then((result) => {
-            return result.recordset;
-        }).catch((err) => {
-            console.log('Lỗi thực thi getInfoUserById:', err);
-            pool.close();
-        })
-    }).catch((err) => {
-        console.log('Lỗi kết nối:', err);
-    });
+        const result = await request.execute(searchUserById);
+        const data = common.formatResponseUser(result.recordset)
+        connection.close();
+        return data;
+    } catch (err) {
+        console.log('Lỗi thực thi getInfoUserByEmail:', err);
+        throw err;
+    }
 }
 
 async function getUserByEmail(email){
@@ -42,8 +42,9 @@ async function getUserByEmail(email){
         const request = connection.request();
         request.input('EmailUser', sql.NVarChar, email);
         const result = await request.execute(searchUserByEmail);
+        const data = common.formatResponseUser(result.recordset)
         connection.close();
-        return result.recordset;
+        return data;
     } catch (err) {
         console.log('Lỗi thực thi getInfoUserByEmail:', err);
         throw err;
@@ -67,30 +68,23 @@ async function getDataForUser(email){
 }
 
 async function insertInfoUser(id, role, email, password){
+    
     try {
-        const insertQuery = "InsertInfoUser";
         const connection = await pool.connect();
+        const insertQuery = "InsertInfoUser";
         const request = connection.request();
         request.input('UserId', sql.NVarChar, id);
         request.input('UserRole', sql.NVarChar, role);
         request.input('UserEmail', sql.NVarChar, email);
         request.input('UserPassword', sql.NVarChar, password);
-    
-        request.execute(insertQuery).then((result) => {
-            console.log('Đã thêm thành công user')
-            connection.close();
-            return true;
-        }).catch((err) => {
-            console.log('Lỗi thực thi InsertInfoUser:', err);
-            pool.close();
-            return false;
-        });
-        
+        const result = await request.execute(insertQuery);
+        connection.close();
+        return result;
     } catch (err) {
         console.log('Lỗi thực thi InsertInfoUser:', err);
         throw err;
     }
-
+    
 }
 
 async function insertSessionUser(sessionId, userID, maxAge, expired) {
@@ -120,14 +114,9 @@ async function deleteSessionUser(sessionId){
         const request = connection.request();
         request.input('sessionId', sql.NVarChar, sessionId);
     
-        request.execute(deleteSessionUser).then((result) => {
-            connection.close();
-            return true;
-        }).catch((err) => {
-            console.log('Lỗi thực thi deleteSessionUserBySessionId:', err);
-            pool.close();
-            return false;
-        });
+        const result = await request.execute(deleteSessionUser);
+        connection.close();
+        return result;
         
     } catch (err) {
         console.log('Lỗi thực thi deleteSessionUserBySessionId:', err);
@@ -159,9 +148,9 @@ async function getSessionUserById(userId){
         request.input('userID', sql.NVarChar, userId);
 
         const result = await request.execute(getSessionUser);
-        const userStore = result.recordset;
+        const data = result.recordset;
         connection.close();
-        return userStore;
+        return data;
     } catch (err) {
         console.log('Lỗi thực thi getSessionUserId:', err);
         throw err;
