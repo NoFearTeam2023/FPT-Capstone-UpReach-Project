@@ -17,20 +17,23 @@ auth.initialize(
 
 async function updateInfo(req, res, next) {
 	try {
-        const images = JSON.parse(req.body.image);
+        const influ = JSON.parse(req.body.influ);
 		const uploadedImages = [];
-		for (const image of images) {
+		for (const image of influ.image) {
             if (image.thumbUrl) {
 				const img = await cloudinary.uploader.upload(image.thumbUrl, {
 					public_id: image.uid,
 					resource_type: "auto",
 				});
-                uploadedImages.push(img.url);
-			}else uploadedImages.push(img.url); 
+                uploadedImages.push({id:image.uid,url: img.url});
+			}else uploadedImages.push({id:image.uid,url: image.url}); 
 		}
-		console.log(uploadedImages);
-		return res.status(200).json({
-			message: "Ok",
+		influ.image = uploadedImages
+
+
+		return res.status(201).json({
+			message: "Update Successfully",
+			data: influ,
 		});
 	} catch (err) {
 		return res.json({ message: " " + err });
