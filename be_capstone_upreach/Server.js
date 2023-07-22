@@ -2,9 +2,7 @@ if(process.env.NODE_ENV !== "production") require("dotenv").config()
 
 // Declare param was install from npm
 const express = require('express');
-// const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-// const {v4 : uuidv4} = require("uuid")
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
@@ -13,13 +11,12 @@ const session = require('express-session');
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
-
+const influService = require('./src/api/Service/Influencer/InfluencerService')
 // const config = require('./Config/dbConfig')
 // const userLogin = require('./Router/userLogin');
-// const auth = require('./Authen/auth');
+const auth = require('./src/api/Authen/auth');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const controllerUser = require('./src/api/Controller/User/UserController')
-const userService = require('./src/api/Service/User/UserService')
 const app = express();
 const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
@@ -52,7 +49,7 @@ app.use(
 );
 cloudinary.config(cloudconfig)
 
-app.use(passport.initialize()) 
+app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('', controllerUser);
@@ -60,4 +57,3 @@ app.use('', controllerInflu);
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
