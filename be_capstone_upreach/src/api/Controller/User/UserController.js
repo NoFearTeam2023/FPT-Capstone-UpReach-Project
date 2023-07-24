@@ -177,6 +177,8 @@ async function logout(req,res,next){
     }
 }
 
-
+async function forgotPassword(){
+    
+}
 
 module.exports = router;
