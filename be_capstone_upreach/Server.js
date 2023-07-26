@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
-// const sql = require('mssql');
+const sql = require('mssql');
+const config = require("./src/api/Config/dbConfig");
 
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
@@ -17,9 +18,16 @@ const influService = require('./src/api/Service/Influencer/InfluencerService')
 const auth = require('./src/api/Authen/auth');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const controllerUser = require('./src/api/Controller/User/UserController')
+const ListInfluencer = require('./src/api/Controller/ListInfluencer/ListInfluencerController')
+
+const userService = require('./src/api/Service/User/UserService');
+const { func } = require("joi");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
+app.use(cors());
+
+
 app.use(cors());
 
 app.use(bodyParser.json()); 
@@ -54,6 +62,7 @@ app.use(passport.session())
 
 app.use('', controllerUser);
 app.use('', controllerInflu);
+app.use('', ListInfluencer);
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
