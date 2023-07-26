@@ -114,7 +114,7 @@ async function login(req,res,next){
 
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
-                return res.status(500).json({ message: "Internal server error" });
+                return res.status(500).json({ message: "Internal server error 1111" });
             }
             if (!user) {
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
@@ -161,7 +161,6 @@ async function logout(req,res,next){
         const user = await userService.getUserByEmail(email);
         const userId = user.User_ID;
         const result = await userService.deleteSessionUserById(userId);
-        console.log(result)
         if (result.rowsAffected > 0) {
             req.logout(() =>{
                 return res.json({ message: "Xóa session khỏi db thành công" });

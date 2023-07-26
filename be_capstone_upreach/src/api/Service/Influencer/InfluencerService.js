@@ -2,17 +2,16 @@ const sql = require('mssql');
 
 const config = require('../../Config/dbConfig');
 const common = require('../../../../common/common')
-
 const pool = new sql.ConnectionPool(config);
 
 async function getAllInfluencer(){
-    
     try {
         const getAllInfluencer = "getAllInfluence";
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
-        const data = common.formatResponseInfluencer(result.recordset)
+        console.log(result)
+        const data = common.convertData(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -22,14 +21,13 @@ async function getAllInfluencer(){
 }
 
 async function getAllInfluencerByEmail(email){
-    
     try {
         const getAllInfluencerByEmail = "getAllInfluencerByEmail";
         const connection = await pool.connect();
         const request = connection.request();
         request.input('email', sql.NVarChar, email );
         const result = await request.execute(getAllInfluencerByEmail);
-        const data = common.formatResponseInfluencer(result.recordset)
+        const data = common.convertData(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -50,7 +48,6 @@ async function searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo 
         const audienceGenderStr = Array.isArray(audienceGender) ? audienceGender.join(',') : audienceGender;
         const audienceLocationStr = Array.isArray(audienceLocation) ? audienceLocation.join(',') : audienceLocation;
 
-
         request.input('costEstimateFrom', sql.Int, costEstimateFrom );
         request.input('costEstimateTo', sql.Int, costEstimateTo );
         request.input('ageFrom', sql.Int, ageFrom );
@@ -64,7 +61,7 @@ async function searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo 
         const result = await request.execute(searchInfluecer);
         console.log(result)
         connection.close();
-        const data = common.formatResponse(result.recordset)
+        const data = common.convertData(result.recordset)
         return data;
     } catch (err) {
         console.log('Lỗi thực thi searchInfluecer:', err);

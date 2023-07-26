@@ -41,7 +41,6 @@ async function updateInfo(req, res, next) {
 async function getAllInfluencer(req,res,next) {
 	try{
 		const result = await influService.getAllInfluencer()
-		console.log(result)
 		if(!result){
 			console.log('FAILS');
 			return res.json({message :'Fails '});

@@ -4,14 +4,16 @@ const sql = require('mssql');
 
 const config = require('../Config/dbConfig');
 const userService = require('../Service/User/UserService')
-const pool = new sql.ConnectionPool(config);
 
 function initialize(passport, getUserById, getUserByEmail){
 
     const authenticateUser = async (userEmail, userPassword, done) => {
         try {
+            
             const result = await userService.getUserByEmail(userEmail)
-            if (!result) {
+            const data= Object.keys(result).length === 0
+            console.log(data)
+            if (Object.keys(result).length === 0) {
                 return done(null, false, { message: "No user found with that email" });
             }
             
