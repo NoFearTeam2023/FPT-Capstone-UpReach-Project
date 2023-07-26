@@ -11,7 +11,7 @@ const clientService = require("../../Service/Client/clientService")
 const userModels = require('../User/UserController')
 
 const router = express.Router();
-
+router.get('/api/', homePage);
 router.post('/api/login', login);
 router.post('/api/register', register);
 router.post('/api/confirm', confirm);
@@ -106,11 +106,14 @@ async function login(req,res,next){
         const maxAge = req.session.cookie.maxAge; // Thời gian tồn tại của session (đơn vị tính bằng mili giây)
         const expiry = new Date(Date.now() + maxAge); // Thời gian hết hạn của session
         const email = req.body.email;
-        const user = await userService.getUserByEmail(email);
-        const userId = user.User_ID;
+        const userSearch = await userService.getUserByEmail(email);
+        const userId = userSearch.User_ID;
         const existedUserId = await userService.getSessionUserById(userId);
-        const infoInfluencer = await influService.getAllInfluencer();
+        const infoInfluencer = await influService.getAllInfluencerByEmail(email);
         const infoClient = await clientService.getClientByEmail(email);
+        
+        const roleUser = userSearch.Role_ID
+        console.log(roleUser)
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error 1111" });
@@ -118,18 +121,20 @@ async function login(req,res,next){
             if (!user) {
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
             }
-            
             if(existedUserId.length > 0){
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
                     data: {
-                        "Client" : infoClient,
-                        "Influencer" : infoInfluencer
+                        "User" : roleUser === '3' ? infoInfluencer: infoClient
                     }
                 });
             }
             
             req.logIn(user,async (err) => {
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencer();
+                const userSearch = await userService.getUserByEmail(email);
+                const roleUser = userSearch.Role_ID
                 if (err){
                     return res.status(500).json({ message: "Internal server error" });
                 }
@@ -137,14 +142,10 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
-                const infoClient = await clientService.getClientByEmail(email);
-                const infoInfluencer = await influService.getAllInfluencer();
-                
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data : {
-                        "User" : infoClient,
-                        "Influencer" : infoInfluencer
+                        "User" :  roleUser === '3' ? infoInfluencer: infoClient
                     }
                 });
             });
@@ -153,6 +154,9 @@ async function login(req,res,next){
     }catch(err){
         res.json({message : err});
     }
+}
+async function homePage(req,res, next){
+
 }
 
 async function logout(req,res,next){
