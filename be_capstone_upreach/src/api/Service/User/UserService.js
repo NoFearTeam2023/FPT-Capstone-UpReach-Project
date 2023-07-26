@@ -58,7 +58,7 @@ async function getDataForUser(email){
         const request = connection.request();
         request.input('emailUser', sql.NVarChar, email);
         const result = await request.execute(getDataForUser);
-        const data = common.formatResponseUser(result.recordset)
+        const data = common.convertDataClient(result.recordset)
         connection.close();
         return data;
     } catch (err) {

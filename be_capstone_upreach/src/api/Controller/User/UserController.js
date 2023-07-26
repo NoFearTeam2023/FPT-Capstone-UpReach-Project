@@ -7,6 +7,7 @@ const auth = require('../../Authen/auth');
 const sendMail = require('../../sendMail/sendMail')
 const userService = require('../../Service/User/UserService')
 const influService = require("../../Service/Influencer/InfluencerService")
+const clientService = require("../../Service/Client/clientService")
 const userModels = require('../User/UserController')
 
 const router = express.Router();
@@ -56,7 +57,6 @@ async function confirm(req, res, next){
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge);
         const {otp, email, password} = req.body
-        // const infoUser = await userService.getDataForUser(userModels.userEmail);
         const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
         const existingEmail = await  userService.getUserByEmail(email);
         if (Object.keys(existingEmail).length > 0){
@@ -109,9 +109,8 @@ async function login(req,res,next){
         const user = await userService.getUserByEmail(email);
         const userId = user.User_ID;
         const existedUserId = await userService.getSessionUserById(userId);
-        const infoUser = await userService.getDataForUser(email);
-        const infoInfluence = await influService.getAllInfluencer();
-
+        const infoInfluencer = await influService.getAllInfluencer();
+        const infoClient = await clientService.getClientByEmail(email);
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error 1111" });
@@ -124,8 +123,8 @@ async function login(req,res,next){
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
                     data: {
-                        "User" : infoUser,
-                        "Influencer" : infoInfluence
+                        "Client" : infoClient,
+                        "Influencer" : infoInfluencer
                     }
                 });
             }
@@ -138,13 +137,14 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
-                const infoUser = await userService.getDataForUser(email);
-                const infoInfluence = await influService.getAllInfluencer();
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencer();
+                
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data : {
-                        "User" : infoUser,
-                        "Influencer" : infoInfluence
+                        "User" : infoClient,
+                        "Influencer" : infoInfluencer
                     }
                 });
             });

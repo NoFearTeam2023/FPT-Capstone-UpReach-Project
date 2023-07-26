@@ -11,7 +11,7 @@ async function getAllInfluencer(){
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
         console.log(result)
-        const data = common.convertData(result.recordset)
+        const data = common.convertDataInfluencer(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -27,7 +27,7 @@ async function getAllInfluencerByEmail(email){
         const request = connection.request();
         request.input('email', sql.NVarChar, email );
         const result = await request.execute(getAllInfluencerByEmail);
-        const data = common.convertData(result.recordset)
+        const data = common.convertDataInfluencer(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -36,9 +36,9 @@ async function getAllInfluencerByEmail(email){
     }
 }
 
-async function searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation){
+async function searchInfluencer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation){
     try {
-        const searchInfluecer = "searchInfluencer";
+        const searchInfluencer = "searchInfluencer";
         const connection = await pool.connect();
         const request = connection.request();
         
@@ -58,15 +58,35 @@ async function searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo 
         request.input('audienceGender', sql.NVarChar, audienceGenderStr);
         request.input('audienceLocation', sql.NVarChar, audienceLocationStr);
         
-        const result = await request.execute(searchInfluecer);
+        const result = await request.execute(searchInfluencer);
         console.log(result)
         connection.close();
-        const data = common.convertData(result.recordset)
+        const data = common.convertDataInfluencer(result.recordset)
         return data;
     } catch (err) {
-        console.log('Lỗi thực thi searchInfluecer:', err);
+        console.log('Lỗi thực thi searchInfluencer:', err);
         throw err;
     }
 }
 
-module.exports = {getAllInfluencer,searchInfluecer,getAllInfluencerByEmail}
+async function updatePoint(clientId, pointSearch, pointReport){
+    try {
+    const updatePoint = "updatePoint";
+    const connection = await pool.connect();
+    const request = connection.request();
+
+    request.input('clientId', sql.Int, clientId );
+    request.input('pointSearch', sql.Int, pointSearch );
+    request.input('pointReport', sql.Int, pointReport );
+
+    const result = await request.execute(updatePoint);
+    console.log(result)
+    connection.close();
+    }
+    catch (err) {
+        console.log('Lỗi thực thi searchInfluencer:', err);
+        throw err;
+    }
+}
+
+module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePoint}

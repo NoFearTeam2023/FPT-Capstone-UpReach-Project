@@ -57,9 +57,11 @@ async function getAllInfluencer(req,res,next) {
 
 async function searchInfluencer(req,res,next) {
 	try{
-		const {costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation} = req.body;
-		const result = await influService.searchInfluecer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation)
-		// console.log("DATA "+  result)
+		const { costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender ,audienceLocation} = req.body;
+
+		
+		const result = await influService.searchInfluencer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation)
+
 		return res.status(200).json({ 
 			message: "Search thành công",
 			data: result
