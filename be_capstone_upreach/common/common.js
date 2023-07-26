@@ -1,31 +1,42 @@
 const formatResponseInfluencer = (payload) => {
     const formatValue = payload.reduce(
-    ( _accumulator, currentValue) => {
-        return {
-            ...currentValue,
-            influencerTypeName: [...new Set(payload.map((e) => e.influencerTypeName))] ,
-            influencerContentTopicName: [...new Set(payload.map((e) => e.influencerContentTopicName))],
-            influencerContentFormatName: [...new Set(payload.map((e) => e.influencerContentFormatName))] ,
-            audienceLocation: [...new Set(payload.map((e) => e.audienceLocation))],
-        }
-    },
-    {}
-);
-
+        ( _accumulator, currentValue) => {
+            return {
+                ...currentValue,
+                influencerTypeName: [...new Set(payload.map((e) => e.influencerTypeName))] ,
+                influencerContentTopicName: [...new Set(payload.map((e) => e.influencerContentTopicName))],
+                influencerContentFormatName: [...new Set(payload.map((e) => e.influencerContentFormatName))] ,
+                audienceLocation: [...new Set(payload.map((e) => e.audienceLocation))],
+            }
+        },
+        {}
+    );
+    return formatValue;
+}
+const formatResponseUser = (payload) => {
+    const formatValue = payload.reduce(
+        ( _accumulator, currentValue) => {
+            return {
+                ...currentValue
+            }
+        },
+        {}
+    );
 return formatValue;
 }
 
-const formatResponseUser = (payload) => {
-    const formatValue = payload.reduce(
-    ( _accumulator, currentValue) => {
-        return {
-            ...currentValue
-        }
-    },
-    {}
-);
 
-return formatValue;
+const formatResponseClient = (payload) => {
+    const formatValue = payload.reduce(
+        ( _accumulator, currentValue) => {
+            return {
+                ...currentValue,
+                nameListOfClients: [...new Set(payload.map((e) => e.nameListOfClients))] 
+            }
+        },
+        {}
+    );
+    return formatValue;
 }
 
 function convertDataInfluencer(data) {
@@ -87,5 +98,4 @@ function convertDataClient(data) {
 }
 
 
-module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient}
-
+module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient,formatResponseClient}

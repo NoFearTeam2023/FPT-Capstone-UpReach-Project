@@ -28,7 +28,7 @@ async function getClientByEmail(email){
         const request = connection.request();
         request.input('email', sql.NVarChar, email);
         const result = await request.execute(getClientByEmail);
-        const data = common.convertDataClient(result.recordset)
+        const data = common.formatResponseClient(result.recordset)
         connection.close();
         return data;
     } catch (err) {

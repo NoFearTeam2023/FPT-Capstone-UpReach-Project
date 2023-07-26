@@ -27,7 +27,7 @@ async function getAllInfluencerByEmail(email){
         const request = connection.request();
         request.input('email', sql.NVarChar, email );
         const result = await request.execute(getAllInfluencerByEmail);
-        const data = common.convertDataInfluencer(result.recordset)
+        const data = common.formatResponseInfluencer(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -36,7 +36,7 @@ async function getAllInfluencerByEmail(email){
     }
 }
 
-async function searchInfluencer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo ,contentTopic ,nameType ,contentFormats ,audienceGender	,audienceLocation){
+async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation){
     try {
         const searchInfluencer = "searchInfluencer";
         const connection = await pool.connect();
@@ -69,24 +69,42 @@ async function searchInfluencer(costEstimateFrom ,costEstimateTo ,ageFrom ,ageTo
     }
 }
 
-async function updatePoint(clientId, pointSearch, pointReport){
+async function updatePointSearch(clientId, pointSearch){
     try {
-    const updatePoint = "updatePoint";
-    const connection = await pool.connect();
-    const request = connection.request();
+        const updatePointSearch = "updatePointSearch";
+        const connection = await pool.connect();
+        const request = connection.request();
 
-    request.input('clientId', sql.Int, clientId );
-    request.input('pointSearch', sql.Int, pointSearch );
-    request.input('pointReport', sql.Int, pointReport );
+        request.input('clientId', sql.NVarChar, clientId );
+        request.input('pointSearch', sql.Int, pointSearch );
 
-    const result = await request.execute(updatePoint);
-    console.log(result)
-    connection.close();
+        const result = await request.execute(updatePointSearch);
+        connection.close();
+        return result;
     }
     catch (err) {
-        console.log('Lỗi thực thi searchInfluencer:', err);
+        console.log('Lỗi thực thi updatePointSearch:', err);
         throw err;
     }
 }
 
-module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePoint}
+async function updatePointReport(clientId, pointReport){
+    try {
+    const updatePointReport = "updatePointReport";
+    const connection = await pool.connect();
+    const request = connection.request();
+
+    request.input('clientId', sql.NVarChar, clientId );
+    request.input('pointReport', sql.Int, pointReport );
+
+    const result = await request.execute(updatePointReport);
+    connection.close();
+    return result;
+    }
+    catch (err) {
+        console.log('Lỗi thực thi updatePointReport:', err);
+        throw err;
+    }
+}
+
+module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePointSearch,updatePointReport}

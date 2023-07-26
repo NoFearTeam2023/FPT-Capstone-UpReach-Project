@@ -131,8 +131,8 @@ async function login(req,res,next){
             }
             
             req.logIn(user,async (err) => {
+                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 const infoClient = await clientService.getClientByEmail(email);
-                const infoInfluencer = await influService.getAllInfluencer();
                 const userSearch = await userService.getUserByEmail(email);
                 const roleUser = userSearch.Role_ID
                 if (err){
