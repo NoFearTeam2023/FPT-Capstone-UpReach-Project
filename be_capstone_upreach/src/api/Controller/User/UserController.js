@@ -6,9 +6,11 @@ const {v4 : uuidv4} = require("uuid")
 const auth = require('../../Authen/auth');
 const sendMail = require('../../sendMail/sendMail')
 const userService = require('../../Service/User/UserService')
+const influService = require("../../Service/Influencer/InfluencerService")
+const clientService = require("../../Service/Client/clientService")
 const userModels = require('../User/UserController')
-const router = express.Router();
 
+const router = express.Router();
 router.post('/api/login', login);
 router.post('/api/register', register);
 router.post('/api/confirm', confirm);
@@ -28,22 +30,18 @@ async function register(req, res, next){
         userModels.userPassword = hashedPassword;
         userModels.userRole = req.body.role;
         existingEmail = await  userService.getUserByEmail(userModels.userEmail);
-        if (existingEmail.length > 0){
+        if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
         }else {
             const mailOptions = {
-                from: 'thienndde150182@gmail.com', // Địa chỉ email người gửi
-                to: userModels.userEmail, // Địa chỉ email người nhận
-                subject: 'OTP for Registration', // Tiêu đề email
-                text: `Your OTP for registration is: ${sendMail.otp}` // Nội dung email
+                from: 'thienndde150182@gmail.com', 
+                to: userModels.userEmail, 
+                subject: 'OTP for Registration', 
+                text: `Your OTP for registration is: ${sendMail.otp}` 
             };
-            sendMail.sendMailToUser(mailOptions)
-            .then(() => {
-                // Xử lý khi gửi email thành công
+            sendMail.sendMailToUser(mailOptions).then(() => {
                 res.json({ message: sendMail.otp });
-            })
-            .catch((error) => {
-                // Xử lý khi gửi email gặp lỗi
+            }).catch((error) => {
                 res.json({ message: error });
             });
         }
@@ -56,20 +54,23 @@ async function confirm(req, res, next){
     try{
         const sessionId = req.sessionID;
         const maxAge = req.session.cookie.maxAge; 
-        const expiry = new Date(Date.now() + maxAge); 
-        const otp = req.body.otp;
-        const infoUser = await userService.getDataForUser(userModels.userEmail);
-        if(otp === sendMail.otp){
-            result = userService.insertInfoUser(userModels.userId,userModels.userRole,userModels.userEmail,userModels.userPassword);
-            if(result){
+        const expiry = new Date(Date.now() + maxAge);
+        const {otp, email, password, userRole} = req.body
+        const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
+        const existingEmail = await  userService.getUserByEmail(email);
+        if (Object.keys(existingEmail).length > 0){
+            return res.json({ message: "Email đã được sử dụng" });
+        }
+        if(otp === sendMail.otp && email === userModels.userEmail && passwordMatch){
+            result = await userService.insertInfoUser(userModels.userId,userRole,userModels.userEmail,userModels.userPassword);
+            if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
                     if (err) {
-                        return res.status(500).json({ message: "Internal server error" });
+                        return res.status(500).json({ message: "Internal server error at confirm" });
                     }
                     if (!user) {
                         return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
                     }
-
                     req.logIn(user,async (err) => {
                         if (err){
                             return res.status(500).json({ message: "Internal server error" });
@@ -81,15 +82,16 @@ async function confirm(req, res, next){
                         }
                         return res.status(200).json({
                             message: "Them session vao db thanh cong",
-                            data : user 
+                            data : user
                         });
                     });
         
                 })(req, res, next);
             }else{
-                console.log('Dữ liệu đã được thêm Fails');
-                return res.json({ message: "Dữ liệu add Fails" });
+                return res.json({ message: "Dữ liệu Add Fail" });
             }
+        }else{
+            return res.json({message : "Sai Dữ liệu truyền vào để confirm"})
         }
     }catch(err){
         console.log(err);
@@ -100,43 +102,50 @@ async function confirm(req, res, next){
 async function login(req,res,next){
     try{
         const sessionId = req.sessionID;
-        const maxAge = req.session.cookie.maxAge; // Thời gian tồn tại của session (đơn vị tính bằng mili giây)
-        const expiry = new Date(Date.now() + maxAge); // Thời gian hết hạn của session
+        const maxAge = req.session.cookie.maxAge; 
+        const expiry = new Date(Date.now() + maxAge); 
         const email = req.body.email;
-        const user = await userService.getUserByEmail(email);
-        const userId = user[0].User_ID;
-        const existedUserId = await userService.getSessionUserById(userId);
 
-        const infoUser = await userService.getDataForUser(email);
+        const userSearch = await userService.getUserByEmail(email);
+        const userId = userSearch.userId;
+        const roleUser = userSearch.userRole
+        const existedUserId = await userService.getSessionUserById(userId);
+        
         
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
-                return res.status(500).json({ message: "Internal server error" });
+                return res.status(500).json({ message: "Error Authenticate User" });
             }
             if (!user) {
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
             }
-            
             if(existedUserId.length > 0){
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
-                    data: infoUser
+                    data: {
+                        "User" : roleUser === '3' ? infoInfluencer: infoClient
+                    }
                 });
             }
+            
             req.logIn(user,async (err) => {
-                console.log('Giá trị ' + err);
+               
                 if (err){
-                    return res.status(500).json({ message: "Internal server error" });
+                    return res.status(500).json({ message: "Internal server error at Login" });
                 }
                 const result = await userService.insertSessionUser(sessionId,userId,maxAge.toString(),expiry.toString());
                 if(!result){
-                    console.log('fails add session');
                     return res.json({message :'Fails Add Session'});
                 }
-                const infoUser = await userService.getDataForUser(email);
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
-                    data : infoUser 
+                    data: {
+                        "User" : roleUser === '3' ? infoInfluencer : infoClient
+                    }
                 });
             });
 
@@ -146,27 +155,29 @@ async function login(req,res,next){
     }
 }
 
-
 async function logout(req,res,next){
     try{
         const email = req.body.email;
         const user = await userService.getUserByEmail(email);
-        const userId = user[0].User_ID;
+        const userId = user.userId;
         const result = await userService.deleteSessionUserById(userId);
-        if (result.rowsAffected[0] === 1) {
+        if (result.rowsAffected > 0) {
             req.logout(() =>{
                 return res.json({ message: "Xóa session khỏi db thành công" });
             })
-        }else if (result.rowsAffected[0] === 0) {
+        }else if (result.rowsAffected === 0) {
             console.log('User đang không đăng nhập');
             return res.json({ message: 'User đang không đăng nhập' });
         }else{
-            console.log('Fails Delete Session');
             return res.json({ message: 'Fails Delete Session' });
         }
     }catch(err){
         return res.json({message : ' ' + err});
     }
+}
+
+async function forgotPassword(){
+    
 }
 
 module.exports = router;
