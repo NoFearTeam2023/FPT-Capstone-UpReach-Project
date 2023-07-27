@@ -10,13 +10,11 @@ function initialize(passport, getUserById, getUserByEmail){
     const authenticateUser = async (userEmail, userPassword, done) => {
         try {
             const result = await userService.getUserByEmail(userEmail)
-            console.log('do sql')
             if (Object.keys(result).length === 0) {
                 return done(null, false, { message: "No user found with that email" });
             }
             
             const passwordMatch = await bcrypt.compare(userPassword, result.userPassword);
-            console.log('do passwordMatch')
             if (passwordMatch) {
                 return done(null, result);
             } else {
@@ -25,7 +23,6 @@ function initialize(passport, getUserById, getUserByEmail){
             }
             
         } catch (err) {
-            
             return done(err);
         }
     };
@@ -33,7 +30,6 @@ function initialize(passport, getUserById, getUserByEmail){
     passport.use( new LocalStrategy({usernameField: 'email'}, authenticateUser) )
 
     passport.serializeUser((user, done) => {
-        console.log('serializeUser ' + user)
         done(null, user.userId);
     });
     

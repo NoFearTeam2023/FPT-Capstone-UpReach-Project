@@ -11,7 +11,6 @@ const clientService = require("../../Service/Client/clientService")
 const userModels = require('../User/UserController')
 
 const router = express.Router();
-router.get('/api/', homePage);
 router.post('/api/login', login);
 router.post('/api/register', register);
 router.post('/api/confirm', confirm);
@@ -83,7 +82,7 @@ async function confirm(req, res, next){
                         }
                         return res.status(200).json({
                             message: "Them session vao db thanh cong",
-                            data : user 
+                            data : user
                         });
                     });
         
@@ -106,14 +105,15 @@ async function login(req,res,next){
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge); 
         const email = req.body.email;
+
         const userSearch = await userService.getUserByEmail(email);
-        const userId = userSearch.User_ID;
+        const userId = userSearch.userId;
+        const roleUser = userSearch.userRole
         const existedUserId = await userService.getSessionUserById(userId);
+
         const infoInfluencer = await influService.getAllInfluencerByEmail(email);
         const infoClient = await clientService.getClientByEmail(email);
-        
-        const roleUser = userSearch.Role_ID
-        console.log(roleUser)
+
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
                 return res.status(500).json({ message: "Internal server error 1111" });
@@ -131,21 +131,19 @@ async function login(req,res,next){
             }
             
             req.logIn(user,async (err) => {
-                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-                const infoClient = await clientService.getClientByEmail(email);
-                const userSearch = await userService.getUserByEmail(email);
-                const roleUser = userSearch.Role_ID
+               
                 if (err){
-                    return res.status(500).json({ message: "Internal server error" });
+                    return res.status(500).json({ message: "Internal server error at Login" });
                 }
                 const result = await userService.insertSessionUser(sessionId,userId,maxAge.toString(),expiry.toString());
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
+
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
-                    data : {
-                        "User" :  roleUser === '3' ? infoInfluencer: infoClient
+                    data: {
+                        "User" : roleUser === '3' ? infoInfluencer : infoClient
                     }
                 });
             });
@@ -155,15 +153,12 @@ async function login(req,res,next){
         res.json({message : err});
     }
 }
-async function homePage(req,res, next){
-
-}
 
 async function logout(req,res,next){
     try{
         const email = req.body.email;
         const user = await userService.getUserByEmail(email);
-        const userId = user.User_ID;
+        const userId = user.userId;
         const result = await userService.deleteSessionUserById(userId);
         if (result.rowsAffected > 0) {
             req.logout(() =>{
