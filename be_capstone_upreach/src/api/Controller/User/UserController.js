@@ -56,14 +56,14 @@ async function confirm(req, res, next){
         const sessionId = req.sessionID;
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge);
-        const {otp, email, password} = req.body
+        const {otp, email, password, userRole} = req.body
         const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
         const existingEmail = await  userService.getUserByEmail(email);
         if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
         }
         if(otp === sendMail.otp && email === userModels.userEmail && passwordMatch){
-            result = await userService.insertInfoUser(userModels.userId,userModels.userRole,userModels.userEmail,userModels.userPassword);
+            result = await userService.insertInfoUser(userModels.userId,userRole,userModels.userEmail,userModels.userPassword);
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
                     if (err) {
@@ -103,8 +103,8 @@ async function confirm(req, res, next){
 async function login(req,res,next){
     try{
         const sessionId = req.sessionID;
-        const maxAge = req.session.cookie.maxAge; // Thời gian tồn tại của session (đơn vị tính bằng mili giây)
-        const expiry = new Date(Date.now() + maxAge); // Thời gian hết hạn của session
+        const maxAge = req.session.cookie.maxAge; 
+        const expiry = new Date(Date.now() + maxAge); 
         const email = req.body.email;
         const userSearch = await userService.getUserByEmail(email);
         const userId = userSearch.User_ID;
