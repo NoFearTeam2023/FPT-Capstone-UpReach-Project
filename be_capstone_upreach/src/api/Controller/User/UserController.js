@@ -110,18 +110,18 @@ async function login(req,res,next){
         const userId = userSearch.userId;
         const roleUser = userSearch.userRole
         const existedUserId = await userService.getSessionUserById(userId);
-
-        const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-        const infoClient = await clientService.getClientByEmail(email);
-
+        
+        
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
-                return res.status(500).json({ message: "Internal server error 1111" });
+                return res.status(500).json({ message: "Error Authenticate User" });
             }
             if (!user) {
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
             }
             if(existedUserId.length > 0){
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
                     data: {
@@ -139,7 +139,8 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
-
+                const infoClient = await clientService.getClientByEmail(email);
+                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data: {
