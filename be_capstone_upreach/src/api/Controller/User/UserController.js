@@ -110,8 +110,7 @@ async function login(req,res,next){
         const userId = userSearch.userId;
         const roleUser = userSearch.userRole
         const existedUserId = await userService.getSessionUserById(userId);
-        
-        
+
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
                 return res.status(500).json({ message: "Error Authenticate User" });
@@ -131,7 +130,6 @@ async function login(req,res,next){
             }
             
             req.logIn(user,async (err) => {
-               
                 if (err){
                     return res.status(500).json({ message: "Internal server error at Login" });
                 }
@@ -139,6 +137,7 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
+
                 const infoClient = await clientService.getClientByEmail(email);
                 const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({
@@ -148,7 +147,6 @@ async function login(req,res,next){
                     }
                 });
             });
-
         })(req, res, next);
     }catch(err){
         res.json({message : err});
