@@ -40,7 +40,7 @@ async function register(req, res, next){
                 text: `Your OTP for registration is: ${sendMail.otp}` 
             };
             sendMail.sendMailToUser(mailOptions).then(() => {
-                res.json({ message: sendMail.otp });
+                res.json({ otpData: sendMail.otp });
             }).catch((error) => {
                 res.json({ message: error });
             });
@@ -61,7 +61,10 @@ async function confirm(req, res, next){
         if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
         }
-        if(otp === sendMail.otp && email === userModels.userEmail && passwordMatch){
+        if(!sendMail.isOTPValid(sendMail.otp.otp,otp,sendMail.otp.otpTimeCreated)){
+            return res.status(401).json({ message: "Quá hạn thời gian otp tồn tại" }); 
+        }
+        if(otp === sendMail.otp.otp && email === userModels.userEmail && passwordMatch){
             result = await userService.insertInfoUser(userModels.userId,userRole,userModels.userEmail,userModels.userPassword);
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {

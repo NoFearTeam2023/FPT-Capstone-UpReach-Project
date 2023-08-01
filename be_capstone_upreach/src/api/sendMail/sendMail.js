@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-
 // Tạo một transporter để gửi email
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -12,19 +11,30 @@ const transporter = nodemailer.createTransport({
 // Hàm tạo mã OTP
 function generateOTP() {
     const digits = '0123456789';
+    const timeCreatedOtp = new Date().getTime();
     let OTP = '';
     for (let i = 0; i < 6; i++) {
         OTP += digits[Math.floor(Math.random() * 10)];
     }
-    return OTP;
+    return {
+        otp : OTP,
+        otpTimeCreated : timeCreatedOtp
+    };
+}
+function timeCreatedOtp()  {
+    const timeCreatedOtp = new Date().getTime();
+    return timeCreatedOtp
 }
 
-// Tạo một mã OTP
+function isOTPValid(otp,otpUser, createdTime, validityPeriodInSeconds = 30) {
+    const currentTime = new Date().getTime();
+    const createdTimeInMillis = new Date(createdTime).getTime();
+    const elapsedTimeInSeconds = (currentTime - createdTimeInMillis) / 1000;
+    return otp === otpUser && elapsedTimeInSeconds <= validityPeriodInSeconds;
+}
+
+// Tạo một mã OTP và thời gian otp được tạo
 const otp = generateOTP();
-
-// Định nghĩa thông tin về email
-
-
 
 // Gửi email
 function sendMailToUser(mailOptions) {
@@ -41,4 +51,4 @@ function sendMailToUser(mailOptions) {
     });
 }
 
-module.exports = {sendMailToUser,otp}
+module.exports = {sendMailToUser,otp,isOTPValid}
