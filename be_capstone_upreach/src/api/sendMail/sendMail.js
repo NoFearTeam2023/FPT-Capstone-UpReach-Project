@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { authenticator } = require('otplib');
 // Tạo một transporter để gửi email
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -7,31 +8,6 @@ const transporter = nodemailer.createTransport({
     pass: 'jxjjsbmdqksfgcuk' // Mật khẩu email của bạn
     }
 });
-
-// Hàm tạo mã OTP
-function generateOTP() {
-    const digits = '0123456789';
-    const timeCreatedOtp = new Date().getTime();
-    let OTP = '';
-    for (let i = 0; i < 6; i++) {
-        OTP += digits[Math.floor(Math.random() * 10)];
-    }
-    return {
-        otp : OTP,
-        otpTimeCreated : timeCreatedOtp
-    };
-}
-
-function isOTPValid(otp,otpUser, createdTime, validityPeriodInSeconds = 100) {
-    const currentTime = new Date().getTime();
-    const createdTimeInMillis = new Date(createdTime).getTime();
-    const elapsedTimeInSeconds = (currentTime - createdTimeInMillis) / 1000;
-    return otp === otpUser && elapsedTimeInSeconds <= validityPeriodInSeconds;
-}
-
-// Tạo một mã OTP và thời gian otp được tạo
-const otp = generateOTP();
-
 // Gửi email
 function sendMailToUser(mailOptions) {
     return new Promise((resolve, reject) => {
@@ -47,4 +23,29 @@ function sendMailToUser(mailOptions) {
     });
 }
 
-module.exports = {sendMailToUser,otp,isOTPValid}
+function generateOTP() {
+    // Tạo mã OTP
+    const secret = authenticator.generateSecret();
+    const otp = authenticator.generate(secret);
+    var checkExist = true;
+    // In ra mã OTP
+    console.log('Mã OTP:', otp);
+  
+    const startTime = Date.now();
+    // Tạo interval để in ra thời gian còn lại của mã OTP sau mỗi giây
+    const interval = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsedTime = (currentTime - startTime) / 1000;
+        const remainingTime = 600 - elapsedTime;
+        
+        if (remainingTime > 0) {
+        //   console.log(`Còn lại ${Math.floor(remainingTime)} giây để mã OTP hết hạn`);
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+    return {otp,checkExist}
+}
+
+module.exports = {sendMailToUser,generateOTP}

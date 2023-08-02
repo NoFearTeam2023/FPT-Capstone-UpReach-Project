@@ -18,7 +18,6 @@ function initialize(passport, getUserById, getUserByEmail){
             if (passwordMatch) {
                 return done(null, result);
             } else {
-                
                 return done(null, false, { message: "Incorrect password" });
             }
             

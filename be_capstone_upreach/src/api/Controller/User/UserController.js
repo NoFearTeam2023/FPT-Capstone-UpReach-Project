@@ -23,15 +23,22 @@ auth.initialize(
     password => userModels.find(user => user.userPassword === password),
 )
 
+function changeCheckExist() {
+    userModels.checkExist = false;
+    console.log('Giá trị của checkExist đã thay đổi thành:', userModels.checkExist);
+}
 
 async function register(req, res, next){
     try {
+        const otpData = sendMail.generateOTP()
         const {email, password, role,name} = req.body.Data
         const hashedPassword = await bcrypt.hash(password, 10);
         userModels.userId = uuidv4();
         userModels.userEmail = email;
         userModels.userPassword = hashedPassword;
         userModels.userRole = role;
+        userModels.otpData = otpData.otp;
+        userModels.checkExist = otpData.checkExist;
         existingEmail = await  userService.getUserByEmail(userModels.userEmail);
         if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
@@ -40,10 +47,12 @@ async function register(req, res, next){
                 from: 'thienndde150182@gmail.com', 
                 to: userModels.userEmail, 
                 subject: 'OTP for Registration', 
-                text: `Your OTP for registration is: ${sendMail.otp}` 
+                text: `Your OTP for registration is: ${userModels.otpData}` 
             };
+            // Set tồn tại của OTP sau 30s
+            setTimeout(changeCheckExist, 600 * 1000);
             sendMail.sendMailToUser(mailOptions).then(() => {
-                res.json({ otpData: sendMail.otp.otp });
+                res.json({ otpData: userModels.otpData });
             }).catch((error) => {
                 res.json({ message: error });
             });
@@ -59,16 +68,17 @@ async function confirm(req, res, next){
         const sessionId = req.sessionID;
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge);
-        const {otp, email, password, role} = req.body.Email
+        const {otp, email, password, role} = req.body.Data
         const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
         const existingEmail = await  userService.getUserByEmail(email);
         if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
         }
-        if(!sendMail.isOTPValid(sendMail.otp.otp,otp,sendMail.otp.otpTimeCreated)){
-            return res.status(401).json({ message: "Quá hạn thời gian otp tồn tại" }); 
+        if(!userModels.checkExist){
+            return res.json({ message: "OTP hết hạn" });
         }
-        if(otp === sendMail.otp.otp && email === userModels.userEmail && passwordMatch){
+        
+        if(otp === userModels.otpData && email === userModels.userEmail && passwordMatch){
             result = await userService.insertInfoUser(userModels.userId,role,email,userModels.userPassword);
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
