@@ -19,16 +19,19 @@ router.post('/api/logout', logout);
 auth.initialize(
     passport,
     id => userModels.find(user => user.userId === id),
-    email => userModels.find(user => user.userEmail === email)
+    email => userModels.find(user => user.userEmail === email),
+    password => userModels.find(user => user.userPassword === password),
 )
+
 
 async function register(req, res, next){
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const {email, password, role,name} = req.body.Data
+        const hashedPassword = await bcrypt.hash(password, 10);
         userModels.userId = uuidv4();
-        userModels.userEmail = req.body.email;
+        userModels.userEmail = email;
         userModels.userPassword = hashedPassword;
-        userModels.userRole = req.body.role;
+        userModels.userRole = role;
         existingEmail = await  userService.getUserByEmail(userModels.userEmail);
         if (Object.keys(existingEmail).length > 0){
             return res.json({ message: "Email đã được sử dụng" });
@@ -40,7 +43,7 @@ async function register(req, res, next){
                 text: `Your OTP for registration is: ${sendMail.otp}` 
             };
             sendMail.sendMailToUser(mailOptions).then(() => {
-                res.json({ otpData: sendMail.otp });
+                res.json({ otpData: sendMail.otp.otp });
             }).catch((error) => {
                 res.json({ message: error });
             });
@@ -52,10 +55,11 @@ async function register(req, res, next){
 
 async function confirm(req, res, next){
     try{
+        // return res.json({ message: req.body });
         const sessionId = req.sessionID;
         const maxAge = req.session.cookie.maxAge; 
         const expiry = new Date(Date.now() + maxAge);
-        const {otp, email, password, userRole} = req.body
+        const {otp, email, password, role} = req.body.Email
         const passwordMatch = await bcrypt.compare(password, userModels.userPassword);
         const existingEmail = await  userService.getUserByEmail(email);
         if (Object.keys(existingEmail).length > 0){
@@ -65,7 +69,7 @@ async function confirm(req, res, next){
             return res.status(401).json({ message: "Quá hạn thời gian otp tồn tại" }); 
         }
         if(otp === sendMail.otp.otp && email === userModels.userEmail && passwordMatch){
-            result = await userService.insertInfoUser(userModels.userId,userRole,userModels.userEmail,userModels.userPassword);
+            result = await userService.insertInfoUser(userModels.userId,role,email,userModels.userPassword);
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
                     if (err) {

@@ -21,12 +21,8 @@ function generateOTP() {
         otpTimeCreated : timeCreatedOtp
     };
 }
-function timeCreatedOtp()  {
-    const timeCreatedOtp = new Date().getTime();
-    return timeCreatedOtp
-}
 
-function isOTPValid(otp,otpUser, createdTime, validityPeriodInSeconds = 30) {
+function isOTPValid(otp,otpUser, createdTime, validityPeriodInSeconds = 100) {
     const currentTime = new Date().getTime();
     const createdTimeInMillis = new Date(createdTime).getTime();
     const elapsedTimeInSeconds = (currentTime - createdTimeInMillis) / 1000;
