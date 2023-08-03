@@ -13,7 +13,7 @@ const userModels = require('../User/UserController')
 const router = express.Router();
 router.post('/api/login', login);
 router.post('/api/register', register);
-router.post('/api/confirm', confirm);
+router.post('/api/confirm', confirmRegister);
 router.post('/api/logout', logout);
 
 auth.initialize(
@@ -41,7 +41,7 @@ async function register(req, res, next){
         userModels.checkExist = otpData.checkExist;
         existingEmail = await  userService.getUserByEmail(userModels.userEmail);
         if (Object.keys(existingEmail).length > 0){
-            return res.json({ message: "Email đã được sử dụng" });
+            return res.json({status : 'False', message: "Email đã được sử dụng" });
         }else {
             const mailOptions = {
                 from: 'thienndde150182@gmail.com', 
@@ -58,11 +58,11 @@ async function register(req, res, next){
             });
         }
     }catch (err){
-        res.json({ message: "Lỗi ", err });
+        res.json({status : 'False', message: "Lỗi ", err });
     }
 }
 
-async function confirm(req, res, next){
+async function confirmRegister(req, res, next){
     try{
         // return res.json({ message: req.body });
         const sessionId = req.sessionID;
@@ -76,35 +76,32 @@ async function confirm(req, res, next){
         
         const existingEmail = await  userService.getUserByEmail(email);
         if (Object.keys(existingEmail).length > 0){
-            return res.json({ message: "Email đã được sử dụng" });
+            return res.json({ status : 'False',message: "Email đã được sử dụng" });
         }
         if(!userModels.checkExist){
-            return res.json({ message: "OTP hết hạn" });
+            return res.json({ status : 'False',message: "OTP hết hạn" });
         }
         if(otp === userModels.otpData && email === userModels.userEmail && passwordMatch){
-           
             result = await userService.insertInfoUser(userModels.userId,role,email,userModels.userPassword);
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
-                    console.log(user)
                     if (err) {
-                        return res.status(500).json({ message: "Internal server error at confirm" });
+                        return res.status(500).json({ status : 'False',message: "Internal server error at confirm" });
                     }
                     if (!user) {
-                        return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
+                        return res.status(401).json({ status : 'False',message: "Sai email hoặc sai mật khẩu" });
                     }
                     req.logIn(user,async (err) => {
-                        console.log('-------')
-                        console.log(user)
                         if (err){
-                            return res.status(500).json({ message: "Internal server error" });
+                            return res.status(500).json({ status : 'False',message: "Internal server error" });
                         }
                         const result = await userService.insertSessionUser(sessionId,userModels.userId,maxAge.toString(),expiry.toString());
                         if(!result){
                             console.log('fails add session');
-                            return res.json({message :'Fails Add Session'});
+                            return res.json({status : 'False',message :'Fails Add Session'});
                         }
                         return res.status(200).json({
+                            status : 'True',
                             message: "Them session vao db thanh cong",
                             data : user
                         });
@@ -112,10 +109,13 @@ async function confirm(req, res, next){
         
                 })(req, res, next);
             }else{
-                return res.json({ message: "Dữ liệu Add Fail" });
+                return res.json({ status : 'False',message: "Dữ liệu Add Fail" });
             }
         }else{
-            return res.json({message : "Sai Dữ liệu truyền vào để confirm"})
+            return res.json({
+                status : 'False',
+                message : "Sai Dữ liệu truyền vào để confirm"
+            })
         }
     }catch(err){
         console.log(err);
@@ -188,7 +188,6 @@ async function logout(req,res,next){
                 return res.json({ message: "Xóa session khỏi db thành công" });
             })
         }else if (result.rowsAffected === 0) {
-            console.log('User đang không đăng nhập');
             return res.json({ message: 'User đang không đăng nhập' });
         }else{
             return res.json({ message: 'Fails Delete Session' });
@@ -198,8 +197,23 @@ async function logout(req,res,next){
     }
 }
 
-async function forgotPassword(){
-    
+async function forgotPassword(req,res,next){
+    try{
+
+    }
+    catch(err){
+        return res.json({message : ' ' + err});
+    }
 }
+
+async function confirmForgotPassword(req,res,next){
+    try{
+
+    }
+    catch(err){
+        return res.json({message : ' ' + err});
+    }
+}
+
 
 module.exports = router;
