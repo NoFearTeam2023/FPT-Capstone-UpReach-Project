@@ -35,7 +35,7 @@ async function getAllInfluencerByEmail(email){
         throw err;
     }
 }
-
+// contentTopic name is category
 async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation){
     try {
         const searchInfluencer = "searchInfluencer";
