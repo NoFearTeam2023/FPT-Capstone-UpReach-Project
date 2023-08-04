@@ -12,16 +12,14 @@ const config = require("./src/api/Config/dbConfig");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+
 const influService = require('./src/api/Service/Influencer/InfluencerService')
-// const config = require('./Config/dbConfig')
-// const userLogin = require('./Router/userLogin');
 const auth = require('./src/api/Authen/auth');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const controllerUser = require('./src/api/Controller/User/UserController')
 const ListInfluencer = require('./src/api/Controller/ListInfluencer/ListInfluencerController')
-
 const userService = require('./src/api/Service/User/UserService');
-const { func } = require("joi");
+const clientController = require('./src/api/Controller/Client/clientController')
 const app = express();
 const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
@@ -46,8 +44,6 @@ app.use(session({
     }
 }))
 
- 
-
 app.use(
 	fileUpload(
 		{
@@ -65,6 +61,7 @@ app.use(passport.session())
 app.use('', controllerUser);
 app.use('', controllerInflu);
 app.use('', ListInfluencer);
+app.use('',clientController);
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
