@@ -5,12 +5,15 @@ const cloudinary = require("cloudinary").v2;
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService")
+const common = require("../../../../common/common")
 const router = express.Router();
 
 router.put("/api/influ/update", updateInfo);
 router.post("/api/influ/search",searchInfluencer)
 router.get("/api/influ/get",getAllInfluencer)
 router.post("/api/influ/reportInfluencer",reportInfluencer)
+router.post("/api/influ/dataReportInfluencer",dataReportInfluencer) // get data for Report Page for user is influencer
+
 auth.initialize(
 	passport,
 	(id) => userModels.find((user) => user.userId === id),
@@ -85,9 +88,10 @@ async function reportInfluencer(req, res, next) {
 		const updatePointReport = await influService.updatePointReport(clientId, pointReport);
 		if (updatePointReport.rowsAffected) {
 			const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+			const data = common.formatResponseInfluencerToObject(infoInfluencer)
 				return res.status(200).json({
 				message: "Search thành công",
-				data: infoInfluencer
+				data: data
 			});
 		} else {
 			return res.json({ message: "Update Thất bại" });
@@ -98,6 +102,19 @@ async function reportInfluencer(req, res, next) {
 	}
 }
 
+async function dataReportInfluencer(req,res, next){
+	try {
+        const {userId, email,role} = req.body
+        const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+		const data = common.formatResponseInfluencerToArray(infoInfluencer)
+        return res.json({ 
+            Influencer : data
+            })
+    } catch (error) {
+        return res.json({message : 'Lỗi ' + error});
+    }
+}
 
 
-module.exports = router;
+// module.exports = router;
+module.exports ={updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer}

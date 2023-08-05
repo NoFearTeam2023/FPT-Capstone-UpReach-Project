@@ -11,7 +11,7 @@ async function getAllInfluencer(){
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
         console.log(result)
-        const data = common.convertDataInfluencer(result.recordset)
+        const data = common.formatResponseInfluencerToArray(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -27,9 +27,8 @@ async function getAllInfluencerByEmail(email){
         const request = connection.request();
         request.input('email', sql.NVarChar, email );
         const result = await request.execute(getAllInfluencerByEmail);
-        const data = common.formatResponseInfluencer(result.recordset)
         connection.close();
-        return data;
+        return result.recordset;
     } catch (err) {
         console.log('Lỗi thực thi getAllInfluencerByEmail:', err);
         throw err;
@@ -61,7 +60,7 @@ async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo,
         const result = await request.execute(searchInfluencer);
         console.log(result)
         connection.close();
-        const data = common.convertDataInfluencer(result.recordset)
+        const data = common.formatResponseInfluencerToArray(result.recordset)
         return data;
     } catch (err) {
         console.log('Lỗi thực thi searchInfluencer:', err);

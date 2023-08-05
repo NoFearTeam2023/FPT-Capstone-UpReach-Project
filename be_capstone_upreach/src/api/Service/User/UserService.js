@@ -26,7 +26,7 @@ async function getUserById(id){
         const request = connection.request();
         request.input('EmailId', sql.NVarChar, id);
         const result = await request.execute(searchUserById);
-        const data = common.formatResponseUser(result.recordset)
+        const data = common.formatResponseUserToObject(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -42,7 +42,7 @@ async function getUserByEmail(email){
         const request = connection.request();
         request.input('EmailUser', sql.NVarChar, email);
         const result = await request.execute(searchUserByEmail);
-        const data = common.formatResponseUser(result.recordset)
+        const data = common.formatResponseUserToObject(result.recordset)
         connection.close();
         return data;
     } catch (err) {
@@ -58,7 +58,7 @@ async function getDataForUser(email){
         const request = connection.request();
         request.input('emailUser', sql.NVarChar, email);
         const result = await request.execute(getDataForUser);
-        const data = common.convertDataClient(result.recordset)
+        const data = common.formatResponseClientToArray(result.recordset)
         connection.close();
         return data;
     } catch (err) {

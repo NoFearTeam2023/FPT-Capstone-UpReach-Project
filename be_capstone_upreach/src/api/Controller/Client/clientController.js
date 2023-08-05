@@ -5,10 +5,9 @@ const {v4 : uuidv4} = require("uuid")
 
 const router = express.Router();
 
+const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const common = require('../../../../common/common')
-
-router.post('/api/updateClientProfile', updateProfileClient);
 
 async function updateProfileClient(req, res, next) {
     try {
@@ -96,4 +95,19 @@ async function InsertClient(userId,address,fullName,emailClient,imageClient, pho
     }
 }
 
-module.exports = router;
+async function dataHomePageClient(req,res,next){
+    try {
+        const {userId, email, role} = req.body
+        if(role === '2'){
+            const infoClient = await clientService.getClientByEmail(email);
+            const infoInfluencer = await influService.getAllInfluencer();
+            return res.json({ Client : infoClient, Influencer : infoInfluencer})
+        }
+        return res.json({ message : "Bạn không có quyền truy cập vào"})
+    } catch (error) {
+        return res.json({message : ' ' + error});
+    }
+}
+
+// module.exports = router;
+module.exports = {updateProfileClient, dataHomePageClient};
