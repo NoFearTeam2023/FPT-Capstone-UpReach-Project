@@ -10,23 +10,20 @@ const sql = require('mssql');
 const config = require("./src/api/Config/dbConfig");
 const cloudconfig = require('./src/api/Config/cloudConfig')
 
-// const paymentConfig = require('./src/api/Config/paymentConfig');
-// const logger = require('morgan');
-// const cookieParser = require('cookie-parser');
-// const path = require('path');
-// const favicon = require('serve-favicon');
-
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const influService = require('./src/api/Service/Influencer/InfluencerService')
+
 // const config = require('./Config/dbConfig')
 // const userLogin = require('./Router/userLogin');
+
 const auth = require('./src/api/Authen/auth');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const controllerUser = require('./src/api/Controller/User/UserController')
 const ListInfluencer = require('./src/api/Controller/ListInfluencer/ListInfluencerController')
-const paymentController = require('./src/api/Controller/Payment/PaymentController')
+const controllerAdmin = require("./src/api/Controller/Admin/AdminController")
+
 
 const userService = require('./src/api/Service/User/UserService');
 const { func } = require("joi");
@@ -35,9 +32,9 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 
 
-app.use(cors());
+// app.use(cors());
 
-// app.use(logger('dev'));
+
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(express.urlencoded({ extended: false }));
@@ -63,6 +60,7 @@ app.use(
 		controllerInflu
 	)
 );
+
 cloudinary.config(cloudconfig)
 
 app.use(passport.initialize())
@@ -71,8 +69,7 @@ app.use(passport.session())
 app.use('', controllerUser);
 app.use('', controllerInflu);
 app.use('', ListInfluencer);
-
-// app.use('',paymentController);
+app.use('', controllerAdmin);
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

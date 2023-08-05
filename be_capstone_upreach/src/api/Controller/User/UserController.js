@@ -107,6 +107,7 @@ async function login(req,res,next){
         const email = req.body.email;
 
         const userSearch = await userService.getUserByEmail(email);
+        console.log(userSearch);
         const userId = userSearch.userId;
         const roleUser = userSearch.userRole
         const existedUserId = await userService.getSessionUserById(userId);
