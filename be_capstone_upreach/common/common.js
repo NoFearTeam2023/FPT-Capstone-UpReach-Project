@@ -1,3 +1,5 @@
+
+// Get Array Dataa Influencer to Object
 const formatResponseInfluencer = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
@@ -13,6 +15,7 @@ const formatResponseInfluencer = (payload) => {
     );
     return formatValue;
 }
+
 const formatResponseUser = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
@@ -25,7 +28,7 @@ const formatResponseUser = (payload) => {
 return formatValue;
 }
 
-
+// Get Array Dataa Client to Object
 const formatResponseClient = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
@@ -39,6 +42,7 @@ const formatResponseClient = (payload) => {
     return formatValue;
 }
 
+// Get Array Data Influencer with not duplicate
 function convertDataInfluencer(data) {
     const result = [];
     const kolGroups = {};
@@ -73,7 +77,7 @@ function convertDataInfluencer(data) {
     
     return result;
 }
-
+// Get Array Data Client with not duplicate
 function convertDataClient(data) {
     const result = [];
     const clientGroup = {};
@@ -97,5 +101,24 @@ function convertDataClient(data) {
     return result;
 }
 
+function increaseID(lastId) {
+    try{
+        const wordChar= lastId.match(/[A-Za-z]+/)[0]; // Tách phần chữ ra khỏi mã
+        const numChar = parseInt(lastId.match(/\d+/)[0]); // Tách phần số và chuyển sang số nguyên
+    
+        const newNum = numChar + 1; // Tăng phần số lên 1
+    
+        // Định dạng lại phần số để có độ dài tương tự
+        const newString = newNum.toString().padStart(lastId.length - wordChar.length, '0');
+    
+        const newId = wordChar + newString; // Kết hợp phần chữ và phần số mới
+    
+        return newId;
+    }catch(e){
+        console.log(e)
+    }
+    
+}
 
-module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient,formatResponseClient}
+
+module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient,formatResponseClient,increaseID}

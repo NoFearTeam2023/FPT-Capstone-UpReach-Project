@@ -13,6 +13,7 @@ const cloudconfig = require('./src/api/Config/cloudConfig')
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
+
 const influService = require('./src/api/Service/Influencer/InfluencerService')
 
 // const config = require('./Config/dbConfig')
@@ -26,7 +27,7 @@ const controllerAdmin = require("./src/api/Controller/Admin/AdminController")
 
 
 const userService = require('./src/api/Service/User/UserService');
-const { func } = require("joi");
+const clientController = require('./src/api/Controller/Client/clientController')
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.use(cors());
@@ -69,6 +70,7 @@ app.use(passport.session())
 app.use('', controllerUser);
 app.use('', controllerInflu);
 app.use('', ListInfluencer);
+app.use('',clientController);
 app.use('', controllerAdmin);
 
 

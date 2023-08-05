@@ -18,7 +18,6 @@ router.get("/api/influ/get-jobs-influencer", getJobsInfluencer);
 router.get("/api/influ/get-images-influencer", getImagesInfluencer);
 router.get("/api/influ/get-audience-influencer", getAudienceInfluencer);
 router.get("/api/influ/get-profile-update", getProfileInfluencer);
-router.get("/api/influ/get-profile-update", getProfileInfluencer);
 
 
 auth.initialize(
@@ -36,7 +35,7 @@ async function updateInfo(req, res, next) {
     // console.log(chart);
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
-    console.log(editDate);
+    // console.log(editDate);
     const uploadedImages = [];
     if (influ.Image) {
       for (const image of influ.Image) {
@@ -661,10 +660,80 @@ async function getSelectedFollowers(request, filteredData) {
   });
 }
 
+// async function getProfileInfluencer(req, res, next) {
+//   try {
+//     const user = await getUserByEmail(req.query.email);
+//     sql.connect(config, (err) => {
+//       if (err) {
+//         console.log(err);
+//         return res.json({ message: " " + err });
+//       }
+
+//       const request = new sql.Request();
+
+//       request.query(
+//         `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}'`,
+//         async (error, response) => {
+//           if (error) {
+//             console.log(error);
+//             return res.json({ message: " " + err });
+//           }
+//           const influs = [...response.recordset];
+//           const publishedObject = influs.find(item => item.isPublish === true);
+//           let dataReturn = []
+//           if(publishedObject){
+//             const  selectedTypes = await request.query(
+//               `BEGIN
+//               SELECT InfluencerTypeList.TypeList_ID, InfluencerTypeList.Type_Id, InfluencerType.Name, InfluencerTypeList.Profile_ID
+//       FROM [UpReachDB].[dbo].[InfluencerTypeList]
+//       INNER JOIN [UpReachDB].[dbo].[InfluencerType] ON InfluencerTypeList.Type_Id = InfluencerType.Type_ID
+//       WHERE InfluencerTypeList.Profile_ID = '${publishedObject.Profile_ID}'
+//             END`
+//             );
+//             const selectedTopics = await request.query(
+//               `BEGIN
+//               SELECT InfluencerContentTopicsLists.ContentTopicsId, InfluencerContentTopicsLists.Topics_Id, InfluencerContentTopic.Name, InfluencerContentTopicsLists.Profile_ID
+//       FROM [UpReachDB].[dbo].[InfluencerContentTopicsLists]
+//       INNER JOIN [UpReachDB].[dbo].[InfluencerContentTopic] ON InfluencerContentTopicsLists.Topics_Id = InfluencerContentTopic.Topics_ID
+//       WHERE InfluencerContentTopicsLists.Profile_ID = '${publishedObject.Profile_ID}'
+//             END`
+//             );
+//             // console.log(selectedTypes.recordsets[0], selectedTopics.recordsets[0]);
+//             dataReturn = [...dataReturn,  {id: influs.User_ID , ...selectedTypes.recordsets[0], ...selectedTopics.recordsets[0]}];
+
+//           }
+//           for (let influ of influs) {
+//             const  selectedPlatforms = await request.query(
+//               `BEGIN
+//               SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${influ.Platform_ID}'
+//             END`
+//             );
+//             const selectedProfiles = await request.query(
+//               `BEGIN
+//               SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influ.Profile_ID}'
+//             END`
+//             );
+//             // console.log(selectedProfiles.recordsets[0][0], selectedPlatforms.recordsets[0][0]);
+//             dataReturn = [...dataReturn,  {id: influ.User_ID , ...selectedProfiles.recordsets[0][0], ...selectedPlatforms.recordsets[0][0]}];
+
+//           }
+//           return res.status(200).json({
+//             message: "Get Successfully",
+//             data: dataReturn,
+//           });
+//         }
+//       );
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.json({ message: " " + err });
+//   }
+// }
+
 async function getProfileInfluencer(req, res, next) {
   try {
     const user = await getUserByEmail(req.query.email);
-    sql.connect(config, (err) => {
+    sql.connect(config, async (err) => {
       if (err) {
         console.log(err);
         return res.json({ message: " " + err });
@@ -680,22 +749,43 @@ async function getProfileInfluencer(req, res, next) {
             return res.json({ message: " " + err });
           }
           const influs = [...response.recordset];
-          let dataReturn = []
-          for (let influ of influs) {
-            const  selectedPlatforms = await request.query(
-              `BEGIN
-              SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${influ.Platform_ID}'
-            END`
-            );
-            const selectedProfiles = await request.query(
-              `BEGIN
-              SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influ.Profile_ID}'
-            END`
-            );
-            // console.log(selectedProfiles.recordsets[0][0], selectedPlatforms.recordsets[0][0]);
-            dataReturn = [...dataReturn,  {id: influ.User_ID , ...selectedProfiles.recordsets[0][0], ...selectedPlatforms.recordsets[0][0]}];
+          const publishedObject = influs.find((item) => item.isPublish === true);
+          let dataReturn = [];
 
+          if (publishedObject) {
+            const selectedTypes = await request.query(
+              `SELECT InfluencerTypeList.TypeList_ID, InfluencerTypeList.Type_Id, InfluencerType.Name, InfluencerContentTopicsLists.Profile_ID
+              FROM [UpReachDB].[dbo].[InfluencerTypeList]
+              INNER JOIN [UpReachDB].[dbo].[InfluencerType] ON InfluencerTypeList.Type_Id = InfluencerType.Type_ID
+              WHERE InfluencerTypeList.Profile_ID = '${publishedObject.Profile_ID}'`
+            );
+              console.log('1', selectedTypes.recordsets);
+            const selectedTopics = await request.query(
+              `SELECT InfluencerContentTopicsLists.ContentTopicsId, InfluencerContentTopicsLists.Topics_Id, InfluencerContentTopic.Name, InfluencerContentTopicsLists.Profile_ID
+              FROM [UpReachDB].[dbo].[InfluencerContentTopicsLists]
+              INNER JOIN [UpReachDB].[dbo].[InfluencerContentTopic] ON InfluencerContentTopicsLists.Topics_Id = InfluencerContentTopic.Topics_ID
+              WHERE InfluencerContentTopicsLists.Profile_ID = '${publishedObject.Profile_ID}'`
+            );
+            console.log('2', selectedTopics.recordsets);
+            for (let influ of influs) {
+              const selectedPlatforms = await request.query(
+                `SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${influ.Platform_ID}'`
+              );
+
+              const selectedProfiles = await request.query(
+                `SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influ.Profile_ID}'`
+              );
+
+              dataReturn.push({
+                id: influ.User_ID,
+                // ...selectedTypes.recordsets[0],
+                // ...selectedTopics.recordsets[0],
+                ...selectedProfiles.recordsets[0][0],
+                ...selectedPlatforms.recordsets[0][0],
+              });
+            }
           }
+
           return res.status(200).json({
             message: "Get Successfully",
             data: dataReturn,
