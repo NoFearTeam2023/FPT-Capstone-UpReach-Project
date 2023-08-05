@@ -167,6 +167,7 @@ async function login(req,res,next){
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data: {
+                        
                         "User" : roleUser === '3' ? infoInfluencer : infoClient
                     }
                 });
