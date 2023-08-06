@@ -5,12 +5,109 @@ const {v4 : uuidv4} = require("uuid")
 
 const router = express.Router();
 
-async function insertProfilesClient(req,res,next){
-    try{
-        const{} = req.body
-        
-    }catch (err){
-        res.json({status : 'False', message: "Lỗi ", err });
-    }
+const influService = require("../../Service/Influencer/InfluencerService")
+const clientService = require('../../Service/Client/clientService')
+const common = require('../../../../common/common')
 
+async function updateProfileClient(req, res, next) {
+    try {
+        const { location, fullname, email, phonenumber, brandname } = req.body;
+
+        if (!await InsertPointRemained()) {
+            return res.json({ status: 'False', message: 'Insert PointRemained Fails' });
+        }
+        
+        if (!await InsertClient('0f276419-2912-4e70-91a9-f5838c0680eb', location, fullname, email, 'hình thiện', phonenumber, brandname)) {
+            return res.json({ status: 'False', message: 'Insert Client Fails' });
+        }
+
+        if (!await InsertInvoice()) {
+            return res.json({ status: 'False', message: 'Insert Invoice Fails' });
+        }
+        
+        // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+        return res.json({ status: 'True', message: 'Insert Success' });
+
+    } catch (err) {
+        // Xử lý lỗi
+        console.error(err);
+        res.json({ status: 'False', message: 'Lỗi' });
+    }
 }
+
+async function InsertPointRemained(){
+    try{
+        
+        const lastIdPointRemained = await clientService.getLastIdPointRemained()
+        var newIdPointRemained =common.increaseID(lastIdPointRemained.Remaining_ID)// Lấy last Id của Remaining_ID cuối trong db
+        
+        // Thực hiện insert
+        const checkInsertPointRemained = await clientService.insertPointRemained(newIdPointRemained ,'P04' ,10, 100)
+        if(checkInsertPointRemained.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+    }
+}
+
+async function InsertInvoice(){
+    try{
+        const now = ''+ Date.now();
+        const lastIdClient = await clientService.getLastIdClients()
+        const lastIdInvoices = await clientService.getLastIdInvoices()
+        var newIdInvoices = common.increaseID(lastIdInvoices.Invoice_ID) // Lấy last Id của Invoice_ID cuối trong db
+        var newIdClient = lastIdClient.Client_ID // Lấy last Id của Client_ID cuối trong db
+
+        // Thực hiện insert
+        const checkInsertInvoice = await clientService.insertInvoice(newIdInvoices,newIdClient,'P04',1,now) 
+        if(checkInsertInvoice.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertInvoice ", err });
+    }
+}
+
+async function InsertClient(userId,address,fullName,emailClient,imageClient, phoneClient,brandClient){
+    try{
+        
+        const lastIdClient = await clientService.getLastIdClients()
+        var newIdClient = common.increaseID(lastIdClient.Client_ID) // Lấy last Id của Client_ID cuối trong db
+        const lastIdPointRemained = await clientService.getLastIdPointRemained()
+        var newIdPointRemained =lastIdPointRemained.Remaining_ID // Lấy last Id của Remaining_ID cuối trong db
+        
+        // Thực hiện insert
+        const checkInsertClient = await clientService.insertClient(newIdClient,newIdPointRemained,userId,address,fullName,emailClient,imageClient, phoneClient,brandClient);
+        if(checkInsertClient.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertClient ", err });
+    }
+}
+
+async function dataHomePageClient(req,res,next){
+    try {
+        const {userId, email, role} = req.body
+        if(role === '2'){
+            const infoClient = await clientService.getClientByEmail(email);
+            const infoInfluencer = await influService.getAllInfluencer();
+            return res.json({ Client : infoClient, Influencer : infoInfluencer})
+        }
+        return res.json({ message : "Bạn không có quyền truy cập vào"})
+    } catch (error) {
+        return res.json({message : ' ' + error});
+    }
+}
+
+// module.exports = router;
+module.exports = {updateProfileClient, dataHomePageClient};

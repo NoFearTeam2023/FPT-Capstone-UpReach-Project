@@ -11,10 +11,7 @@ const clientService = require("../../Service/Client/clientService")
 const userModels = require('../User/UserController')
 
 const router = express.Router();
-router.post('/api/login', login);
-router.post('/api/register', register);
-router.post('/api/confirm', confirmRegister);
-router.post('/api/logout', logout);
+
 
 auth.initialize(
     passport,
@@ -143,12 +140,11 @@ async function login(req,res,next){
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
             }
             if(existedUserId.length > 0){
-                const infoClient = await clientService.getClientByEmail(email);
-                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({ 
                     message: "User Id tồn tại",
                     data: {
-                        "User" : roleUser === '3' ? infoInfluencer: infoClient
+                        // "User" : roleUser === '3' ? infoInfluencer: infoClient
+                        "User" : user
                     }
                 });
             }
@@ -161,13 +157,10 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
-
-                const infoClient = await clientService.getClientByEmail(email);
-                const infoInfluencer = await influService.getAllInfluencerByEmail(email);
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data: {
-                        "User" : roleUser === '3' ? infoInfluencer : infoClient
+                        "User" : user
                     }
                 });
             });
@@ -216,4 +209,6 @@ async function confirmForgotPassword(req,res,next){
 }
 
 
-module.exports = router;
+// module.exports = router;
+module.exports = {login, register, confirmRegister, logout}
+

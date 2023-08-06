@@ -1,4 +1,6 @@
-const formatResponseInfluencer = (payload) => {
+
+// Get Array Dataa Influencer to Object
+const formatResponseInfluencerToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -13,7 +15,8 @@ const formatResponseInfluencer = (payload) => {
     );
     return formatValue;
 }
-const formatResponseUser = (payload) => {
+
+const formatResponseUserToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -25,8 +28,8 @@ const formatResponseUser = (payload) => {
 return formatValue;
 }
 
-
-const formatResponseClient = (payload) => {
+// Get Array Dataa Client to Object
+const formatResponseClientToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -39,7 +42,8 @@ const formatResponseClient = (payload) => {
     return formatValue;
 }
 
-function convertDataInfluencer(data) {
+// Get Array Data Influencer with not duplicate
+function formatResponseInfluencerToArray(data) {
     const result = [];
     const kolGroups = {};
 
@@ -73,8 +77,8 @@ function convertDataInfluencer(data) {
     
     return result;
 }
-
-function convertDataClient(data) {
+// Get Array Data Client with not duplicate
+function formatResponseClientToArray(data) {
     const result = [];
     const clientGroup = {};
 
@@ -97,5 +101,24 @@ function convertDataClient(data) {
     return result;
 }
 
+function increaseID(lastId) {
+    try{
+        const wordChar= lastId.match(/[A-Za-z]+/)[0]; // Tách phần chữ ra khỏi mã
+        const numChar = parseInt(lastId.match(/\d+/)[0]); // Tách phần số và chuyển sang số nguyên
+    
+        const newNum = numChar + 1; // Tăng phần số lên 1
+    
+        // Định dạng lại phần số để có độ dài tương tự
+        const newString = newNum.toString().padStart(lastId.length - wordChar.length, '0');
+    
+        const newId = wordChar + newString; // Kết hợp phần chữ và phần số mới
+    
+        return newId;
+    }catch(e){
+        console.log(e)
+    }
+    
+}
 
-module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient,formatResponseClient}
+
+module.exports = {formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}
