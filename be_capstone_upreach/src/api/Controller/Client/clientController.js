@@ -100,8 +100,8 @@ async function dataHomePageClient(req,res,next){
         const {userId, email, role} = req.body
         if(role === '2'){
             const infoClient = await clientService.getClientByEmail(email);
-            const infoInfluencer = await influService.getAllInfluencer();
-            return res.json({ Client : infoClient, Influencer : infoInfluencer})
+            const infoInfluencer = await influService.getAllInfluencerByPublish();
+            return res.json({ Client : infoClient, Influencer1 : infoInfluencer})
         }
         return res.json({ message : "Bạn không có quyền truy cập vào"})
     } catch (error) {
