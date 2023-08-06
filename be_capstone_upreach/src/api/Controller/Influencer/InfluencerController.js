@@ -115,6 +115,89 @@ async function dataReportInfluencer(req,res, next){
     }
 }
 
+async function addInfluencer(req,res, next){
+	try {
+		const {} = req.body.contentDetails
+		const {nickname,location, gender,age,intro,type,relationship} = req.body.informationDetails
+		const {email,phone,engagement,post,costfrom,costTo} = req.body.overviewDetails
+		const {instagramLink,instagramFollower,facebookLink, facebookFollower,youtubeLink,youtubeFollower,tiktokLink,tiktokFollower} = req.body.socialDetails
+
+		const {contentDetails,informationDetails,overviewDetails,socialDetails} = req.body
+		return res.json({data : req.body})
+
+        const {  } = req.body;
+
+        if (!await addInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,topicsId,formatId,typeId)) {
+            return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
+        }
+        
+        if (!await addInfluencerPlatformInfomation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,InteractionFB,InteractionInsta,InteractionTiktok,InteractionYoutube,engagement,postsPerWeek,audienceAgeId,quantityAudienceAgeRange,audienceGenderId,quantityGenderList,audienceFollowerMonthId,quantityFollowerMonth,audienceLocationId,quantityLocationList)) {
+            return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
+        }
+
+        if (!await addInfluencerKols(userId,isPublish,dateEdit)) {
+            return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+        }
+        
+        // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+        return res.json({ status: 'True', message: 'Insert Success Influencer' });
+
+    } catch (err) {
+        // Xử lý lỗi
+        console.error(err);
+        res.json({ status: 'False', message: 'Lỗi' });
+    }
+}
+
+async function addInfluencerProfile(req,res, next){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,topicsId,formatId,typeId)
+        if(checkAddInfluencerProfile.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+    }
+}
+
+async function addInfluencerPlatformInfomation(req,res, next){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,InteractionFB,InteractionInsta,InteractionTiktok,InteractionYoutube,engagement,postsPerWeek,audienceAgeId,quantityAudienceAgeRange,audienceGenderId,quantityGenderList,audienceFollowerMonthId,quantityFollowerMonth,audienceLocationId,quantityLocationList)
+        if(checkAddInfluencerPlatformInfomation.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+    }
+}
+
+async function addInfluencerKols(req,res,next){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerKols = await influService.insertKols(userId,isPublish,dateEdit)
+        if(checkAddInfluencerKols.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+    }
+}
+
+
 
 // module.exports = router;
-module.exports ={updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer}
+module.exports ={updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer,addInfluencer}

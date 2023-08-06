@@ -9,7 +9,7 @@ const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const common = require('../../../../common/common')
 
-async function updateProfileClient(req, res, next) {
+async function addProfileClient(req, res, next) {
     try {
         const { location, fullname, email, phonenumber, brandname } = req.body;
 
@@ -26,7 +26,7 @@ async function updateProfileClient(req, res, next) {
         }
         
         // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-        return res.json({ status: 'True', message: 'Insert Success' });
+        return res.json({ status: 'True', message: 'Insert Success Client' });
 
     } catch (err) {
         // Xử lý lỗi
@@ -110,4 +110,4 @@ async function dataHomePageClient(req,res,next){
 }
 
 // module.exports = router;
-module.exports = {updateProfileClient, dataHomePageClient};
+module.exports = {addProfileClient, dataHomePageClient};
