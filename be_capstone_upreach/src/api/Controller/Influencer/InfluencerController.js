@@ -5,6 +5,7 @@ const cloudinary = require("cloudinary").v2;
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService")
+// const pagination = require('./pagination')
 const router = express.Router();
 
 router.put("/api/influ/update", updateInfo);
@@ -44,15 +45,33 @@ async function updateInfo(req, res, next) {
 
 async function getAllInfluencer(req,res,next) {
 	try{
+		const page = parseInt(req.query.page)
+		const limit = parseInt(req.query.limit)
+		console.log("page "+ page)
+		console.log("limit "+ limit)
+		const startIndex = (page - 1) * limit
+		const endIndex = page * limit
 		const result = await influService.getAllInfluencer()
 		if(!result){
 			console.log('FAILS');
 			return res.json({message :'Fails '});
 		}
-		return res.status(200).json({ 
-			message: "Search thành công",
-			data: result
-		});
+		const JsonData = {} 
+		JsonData.data = result.slice(startIndex,endIndex)
+		JsonData.TotalPage = result.length/12 > parseInt(result.length/12) ? parseInt(result.length/12) + 1 : parseInt(result.length/12)
+		if(endIndex < result.length){
+			JsonData.next = {
+				page : page + 1,
+				limit : limit
+			}
+		}
+		if(startIndex > 0){
+			JsonData.previous = {
+				page : page - 1,
+				limit : limit
+			}
+		}
+		return res.json({JsonData:JsonData})
 	}catch(err){
         console.log(err);
         return res.json({ message: "Lỗi ", err });
@@ -70,6 +89,7 @@ async function searchInfluencer(req, res, next) {
 			message: "Search thành công",
 			data: result
 		});
+		
 	} else {
 		return res.json({ message: "Update Thất bại" });
 	}

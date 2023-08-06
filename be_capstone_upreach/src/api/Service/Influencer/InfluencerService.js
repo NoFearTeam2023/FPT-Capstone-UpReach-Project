@@ -4,13 +4,13 @@ const config = require('../../Config/dbConfig');
 const common = require('../../../../common/common')
 const pool = new sql.ConnectionPool(config);
 
+
 async function getAllInfluencer(){
     try {
         const getAllInfluencer = "getAllInfluence";
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
-        console.log(result)
         const data = common.convertDataInfluencer(result.recordset)
         connection.close();
         return data;
