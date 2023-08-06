@@ -10,7 +10,7 @@ async function getAllInfluencer(){
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencer);
-        console.log(result)
+        
         const data = common.formatResponseInfluencerToArray(result.recordset)
         connection.close();
         return data;
@@ -58,7 +58,6 @@ async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo,
         request.input('audienceLocation', sql.NVarChar, audienceLocationStr);
         
         const result = await request.execute(searchInfluencer);
-        console.log(result)
         connection.close();
         const data = common.formatResponseInfluencerToArray(result.recordset)
         return data;
@@ -106,4 +105,19 @@ async function updatePointReport(clientId, pointReport){
     }
 }
 
-module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePointSearch,updatePointReport}
+async function getAllInfluencerByPublish(){
+    try {
+        const getAllInfluencerByPublish = "getAllInfluencerByPublish";
+        const connection = await pool.connect();
+        const request = connection.request();
+        const result = await request.execute(getAllInfluencerByPublish);
+        const data = common.formatResponseInfluencerToArray(result.recordset)
+        connection.close();
+        return data;
+    } catch (err) {
+        console.log('Lỗi thực thi getAllInfluencerByPublish:', err);
+        throw err;
+    }
+}
+
+module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePointSearch,updatePointReport,getAllInfluencerByPublish}
