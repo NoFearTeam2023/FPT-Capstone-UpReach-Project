@@ -28,6 +28,8 @@ const controllerAdmin = require("./src/api/Controller/Admin/AdminController")
 
 const userService = require('./src/api/Service/User/UserService');
 const clientController = require('./src/api/Controller/Client/clientController')
+const router = require('./src/api/Router/userRouter')
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.use(cors());
@@ -67,11 +69,8 @@ cloudinary.config(cloudconfig)
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use('', controllerUser);
-app.use('', controllerInflu);
-app.use('', ListInfluencer);
-app.use('',clientController);
-app.use('', controllerAdmin);
+app.use('/api',router)
+
 
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

@@ -8,16 +8,17 @@ const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService");
 const { getUserByEmail } = require("../../Service/User/UserService");
+const common = require("../../../../common/common")
 const router = express.Router();
 // let influ;
 router.put("/api/influ/update", updateInfo);
 router.post("/api/influ/search", searchInfluencer);
 router.get("/api/influ/get", getAllInfluencer);
 router.post("/api/influ/reportInfluencer", reportInfluencer);
-router.get("/api/influ/get-jobs-influencer", getJobsInfluencer);
-router.get("/api/influ/get-images-influencer", getImagesInfluencer);
-router.get("/api/influ/get-audience-influencer", getAudienceInfluencer);
-router.get("/api/influ/get-profile-update", getProfileInfluencer);
+router.post("/api/influ/dataReportInfluencer",dataReportInfluencer) 
+// router.get("/api/influ/get-jobs-influencer", getJobsInfluencer);
+// router.get("/api/influ/get-images-influencer", getImagesInfluencer);
+// router.get("/api/influ/get-audience-influencer", getAudienceInfluencer);
 
 
 auth.initialize(
@@ -30,12 +31,12 @@ async function updateInfo(req, res, next) {
   try {
     const influ = JSON.parse(req.body.influ);
     const booking = JSON.parse(req.body.booking);
-    // console.log(booking);
+    
     const chart = JSON.parse(req.body.chart);
-    // console.log(chart);
+    
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
-    // console.log(editDate);
+    
     const uploadedImages = [];
     if (influ.Image) {
       for (const image of influ.Image) {
@@ -357,310 +358,92 @@ async function searchInfluencer(req, res, next) {
   }
 }
 
-async function reportInfluencer(req, res, next) {
-  try {
-    const { email, clientId, pointReport } = req.body;
-    const updatePointReport = await influService.updatePointReport(
-      clientId,
-      pointReport
-    );
-    if (updatePointReport.rowsAffected) {
-      const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-      return res.status(200).json({
-        message: "Search thành công",
-        data: infoInfluencer,
-      });
-    } else {
-      return res.json({ message: "Update Thất bại" });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Lỗi", err });
-  }
-}
 
-async function getJobsInfluencer(req, res, next) {
-  try {
-    const user = await getUserByEmail(req.query.email);
-    sql.connect(config, (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
 
-      const request = new sql.Request();
-      request.query(
-        "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
-        (error, response) => {
-          if (error) {
-            console.log(error);
-            return res.json({ message: " " + err });
-          }
-          const influs = [...response.recordset];
-          const filteredData = influs.find(
-            (item) => item.User_ID === user.userId
-          );
-          request.query(
-            `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${filteredData.Profile_ID}'`,
-            async (error, queryResult) => {
-              if (error) {
-                console.log(error);
-                return res.json({ message: " " + err });
-              }
-              const selectedJobs = [];
-              const jobIds = queryResult.recordset;
+// async function getJobsInfluencer(req, res, next) {
+//   try {
+//     const user = await getUserByEmail(req.query.email);
+//     console.log(user);
+//     sql.connect(config, (err) => {
+//       if (err) {
+//         console.log(err);
+//         return res.json({ message: " " + err });
+//       }
 
-              for (const job_Id of jobIds) {
-                const jobIdToFind = job_Id.Job_Id;
-                const queryResultJob = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
-                );
-                selectedJobs.push(queryResultJob.recordset[0]);
-              }
+//       const request = new sql.Request();
+//       request.query(
+//         "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
+//         (error, response) => {
+//           if (error) {
+//             console.log(error);
+//             return res.json({ message: " " + err });
+//           }
+//           const influs = [...response.recordset];
+//           const filteredData = influs.find(
+//             (item) => item.User_ID === user.userId
+//           );
+//           request.query(
+//             `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${filteredData.Profile_ID}'`,
+//             async (error, queryResult) => {
+//               if (error) {
+//                 console.log(error);
+//                 return res.json({ message: " " + err });
+//               }
+//               const selectedJobs = [];
+//               const jobIds = queryResult.recordset;
 
-              const selectedFormats = [];
-              for (const job_Id of jobIds) {
-                const jobIdToFind = job_Id.Job_Id;
-                const queryResultFormat = await request.query(
-                  `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`
-                );
-                // console.log(queryResultFormat);
-                selectedFormats.push({
-                  Format_Id: queryResultFormat.recordset,
-                  Job_Id: jobIdToFind,
-                });
-              }
-              const result = {};
+//               for (const job_Id of jobIds) {
+//                 const jobIdToFind = job_Id.Job_Id;
+//                 const queryResultJob = await request.query(
+//                   `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
+//                 );
+//                 selectedJobs.push(queryResultJob.recordset[0]);
+//               }
 
-              selectedJobs.forEach((job) => {
-                result[job.Job_ID] = {
-                  ...job,
-                  Format_Id:
-                    selectedFormats
-                      .find((format) => format.Job_Id === job.Job_ID)
-                      ?.Format_Id?.map((item) => item.Format_Id) || [],
-                };
-              });
+//               const selectedFormats = [];
+//               for (const job_Id of jobIds) {
+//                 const jobIdToFind = job_Id.Job_Id;
+//                 const queryResultFormat = await request.query(
+//                   `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`
+//                 );
+//                 // console.log(queryResultFormat);
+//                 selectedFormats.push({
+//                   Format_Id: queryResultFormat.recordset,
+//                   Job_Id: jobIdToFind,
+//                 });
+//               }
+//               const result = {};
 
-              const mergedArray = Object.values(result);
-              // console.log(mergedArray);
-              // console.log(selectedFormats);
+//               selectedJobs.forEach((job) => {
+//                 result[job.Job_ID] = {
+//                   ...job,
+//                   Format_Id:
+//                     selectedFormats
+//                       .find((format) => format.Job_Id === job.Job_ID)
+//                       ?.Format_Id?.map((item) => item.Format_Id) || [],
+//                 };
+//               });
 
-              return res.status(200).json({
-                message: "Get Successfully",
-                data: mergedArray,
-              });
-            }
-          );
-        }
-      );
-    });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: " " + err });
-  }
-}
+//               const mergedArray = Object.values(result);
+//               // console.log(mergedArray);
+//               // console.log(selectedFormats);
 
-async function getImagesInfluencer(req, res, next) {
-  try {
-    const user = await getUserByEmail(req.query.email);
-    sql.connect(config, (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
+//               return res.status(200).json({
+//                 message: "Get Successfully",
+//                 data: mergedArray,
+//               });
+//             }
+//           );
+//         }
+//       );
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.json({ message: " " + err });
+//   }
+// }
 
-      const request = new sql.Request();
-      request.query(
-        "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
-        (error, response) => {
-          if (error) {
-            console.log(error);
-            return res.json({ message: " " + err });
-          }
-          const influs = [...response.recordset];
-          const filteredData = influs.find(
-            (item) => item.User_ID === user.userId
-          );
-
-          request.query(
-            `SELECT Image_ID FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Profile_ID = '${filteredData.Profile_ID}'`,
-            async (error, queryResult) => {
-              if (error) {
-                console.log(error);
-                return res.json({ message: " " + err });
-              }
-              // console.log('run',queryResult.recordset);
-              const selectedImages = [];
-              const imageIds = queryResult.recordset;
-
-              for (const ImageId of imageIds) {
-                const ImageIdToFind = ImageId.Image_ID;
-                const queryResultImage = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Image_ID = '${ImageIdToFind}'`
-                );
-                selectedImages.push(queryResultImage.recordset[0]);
-              }
-              return res.status(200).json({
-                message: "Get Successfully",
-                data: selectedImages,
-              });
-            }
-          );
-        }
-      );
-    });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: " " + err });
-  }
-}
-
-async function getAudienceInfluencer(req, res, next) {
-  try {
-    const user = await getUserByEmail(req.query.email);
-    sql.connect(config, async (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
-
-      const request = new sql.Request();
-      request.query(
-        "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
-        async (error, response) => {
-          if (error) {
-            console.log(error);
-            return res.json({ message: " " + err });
-          }
-          const influs = [...response.recordset];
-          const filteredData = influs.find(
-            (item) => item.User_ID === user.userId
-          );
-
-          const selectedFollowers = await getSelectedFollowers(
-            request,
-            filteredData
-          );
-          const selectedGenders = await getSelectedGenders(
-            request,
-            filteredData
-          );
-          const selectedAges = await getSelectedAges(request, filteredData);
-          const selectedLocations = await getSelectedLocations(
-            request,
-            filteredData
-          );
-
-          const responseData = {
-            selectedFollowers: selectedFollowers,
-            selectedGenders: selectedGenders,
-            selectedAges: selectedAges,
-            selectedLocations: selectedLocations,
-          };
-
-          return res.status(200).json({
-            message: "Get Successfully",
-            data: responseData,
-          });
-        }
-      );
-    });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: " " + err });
-  }
-}
-
-async function getSelectedFollowers(request, filteredData) {
-  return new Promise((resolve, reject) => {
-    request.query(
-      `SELECT AudienceFollowerMonth FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE Platform_ID = '${filteredData.Platform_ID}'`,
-      async (error, queryResult) => {
-        if (error) {
-          console.log(error);
-          return reject(error);
-        }
-        const selectedFollowers = [];
-        const followers = queryResult.recordset;
-
-        for (const follower of followers) {
-          const followerToFind = follower.AudienceFollowerMonth;
-          const queryResultfollower = await request.query(
-            `SELECT * FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE AudienceFollowerMonth = '${followerToFind}'`
-          );
-          selectedFollowers.push(queryResultfollower.recordset[0]);
-        }
-        resolve(selectedFollowers);
-      }
-    );
-  });
-}
-
-async function getSelectedGenders(request, filteredData) {
-  return new Promise((resolve, reject) => {
-    request.query(
-      `SELECT AudienceGenderList.AudienceGenderList_ID, AudienceGenderList.AudienceGenderId, AudienceGender.Gender, AudienceGenderList.Platform_ID, AudienceGenderList.Quantity 
-      FROM [UpReachDB].[dbo].[AudienceGenderList]
-      INNER JOIN [UpReachDB].[dbo].[AudienceGender] ON AudienceGenderList.AudienceGenderId = AudienceGender.AudienceGenderId
-      WHERE AudienceGenderList.Platform_ID = '${filteredData.Platform_ID}'`,
-      async (error, queryResult) => {
-        if (error) {
-          console.log(error);
-          return reject(error);
-        }
-        const selectedGenders = queryResult.recordset;
-        resolve(selectedGenders);
-      }
-    );
-  });
-}
-
-async function getSelectedAges(request, filteredData) {
-  return new Promise((resolve, reject) => {
-    request.query(
-      `SELECT AudienceAgeRangeList.AudienceAgeList_ID, AudienceAgeRangeList.AudienceAge_ID, AudienceAgeRange.AgeRange, AudienceAgeRangeList.Platform_ID, AudienceAgeRangeList.Quantity 
-      FROM [UpReachDB].[dbo].[AudienceAgeRangeList]
-      INNER JOIN [UpReachDB].[dbo].[AudienceAgeRange] ON AudienceAgeRangeList.AudienceAge_ID = AudienceAgeRange.AudienceAge_ID
-      WHERE AudienceAgeRangeList.Platform_ID = '${filteredData.Platform_ID}'`,
-      async (error, queryResult) => {
-        if (error) {
-          console.log(error);
-          return reject(error);
-        }
-        const selectedAges = queryResult.recordset;
-        resolve(selectedAges);
-      }
-    );
-  });
-}
-
-async function getSelectedFollowers(request, filteredData) {
-  return new Promise((resolve, reject) => {
-    request.query(
-      `SELECT AudienceLocation FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE Platform_ID = '${filteredData.Platform_ID}'`,
-      async (error, queryResult) => {
-        if (error) {
-          console.log(error);
-          return reject(error);
-        }
-        const selectedLocations = [];
-        const locations = queryResult.recordset;
-
-        for (const location of locations) {
-          const locationToFind = location.AudienceLocation;
-          const queryResultLocation = await request.query(
-            `SELECT * FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE AudienceLocation = N'${locationToFind}'`
-          );
-          selectedLocations.push(queryResultLocation.recordset[0]);
-        }
-        resolve(selectedLocations);
-      }
-    );
-  });
-}
-
-// async function getProfileInfluencer(req, res, next) {
+// async function getImagesInfluencer(req, res, next) {
 //   try {
 //     const user = await getUserByEmail(req.query.email);
 //     sql.connect(config, (err) => {
@@ -670,56 +453,97 @@ async function getSelectedFollowers(request, filteredData) {
 //       }
 
 //       const request = new sql.Request();
-
 //       request.query(
-//         `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}'`,
+//         "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
+//         (error, response) => {
+//           if (error) {
+//             console.log(error);
+//             return res.json({ message: " " + err });
+//           }
+//           const influs = [...response.recordset];
+//           const filteredData = influs.find(
+//             (item) => item.User_ID === user.userId
+//           );
+//             console.log(filteredData);
+//           request.query(
+//             `SELECT Image_ID FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Profile_ID = '${filteredData.Profile_ID}'`,
+//             async (error, queryResult) => {
+//               if (error) {
+//                 console.log(error);
+//                 return res.json({ message: " " + err });
+//               }
+//               // console.log('run',queryResult.recordset);
+//               const selectedImages = [];
+//               const imageIds = queryResult.recordset;
+
+//               for (const ImageId of imageIds) {
+//                 const ImageIdToFind = ImageId.Image_ID;
+//                 const queryResultImage = await request.query(
+//                   `SELECT * FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Image_ID = '${ImageIdToFind}'`
+//                 );
+//                 selectedImages.push(queryResultImage.recordset[0]);
+//               }
+//               return res.status(200).json({
+//                 message: "Get Successfully",
+//                 data: selectedImages,
+//               });
+//             }
+//           );
+//         }
+//       );
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.json({ message: " " + err });
+//   }
+// }
+
+// async function getAudienceInfluencer(req, res, next) {
+//   try {
+//     const user = await getUserByEmail(req.query.email);
+//     sql.connect(config, async (err) => {
+//       if (err) {
+//         console.log(err);
+//         return res.json({ message: " " + err });
+//       }
+
+//       const request = new sql.Request();
+//       request.query(
+//         "SELECT * FROM [UpReachDB].[dbo].[KOLs]",
 //         async (error, response) => {
 //           if (error) {
 //             console.log(error);
 //             return res.json({ message: " " + err });
 //           }
 //           const influs = [...response.recordset];
-//           const publishedObject = influs.find(item => item.isPublish === true);
-//           let dataReturn = []
-//           if(publishedObject){
-//             const  selectedTypes = await request.query(
-//               `BEGIN
-//               SELECT InfluencerTypeList.TypeList_ID, InfluencerTypeList.Type_Id, InfluencerType.Name, InfluencerTypeList.Profile_ID
-//       FROM [UpReachDB].[dbo].[InfluencerTypeList]
-//       INNER JOIN [UpReachDB].[dbo].[InfluencerType] ON InfluencerTypeList.Type_Id = InfluencerType.Type_ID
-//       WHERE InfluencerTypeList.Profile_ID = '${publishedObject.Profile_ID}'
-//             END`
-//             );
-//             const selectedTopics = await request.query(
-//               `BEGIN
-//               SELECT InfluencerContentTopicsLists.ContentTopicsId, InfluencerContentTopicsLists.Topics_Id, InfluencerContentTopic.Name, InfluencerContentTopicsLists.Profile_ID
-//       FROM [UpReachDB].[dbo].[InfluencerContentTopicsLists]
-//       INNER JOIN [UpReachDB].[dbo].[InfluencerContentTopic] ON InfluencerContentTopicsLists.Topics_Id = InfluencerContentTopic.Topics_ID
-//       WHERE InfluencerContentTopicsLists.Profile_ID = '${publishedObject.Profile_ID}'
-//             END`
-//             );
-//             // console.log(selectedTypes.recordsets[0], selectedTopics.recordsets[0]);
-//             dataReturn = [...dataReturn,  {id: influs.User_ID , ...selectedTypes.recordsets[0], ...selectedTopics.recordsets[0]}];
+//           const filteredData = influs.find(
+//             (item) => item.User_ID === user.userId
+//           );
 
-//           }
-//           for (let influ of influs) {
-//             const  selectedPlatforms = await request.query(
-//               `BEGIN
-//               SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${influ.Platform_ID}'
-//             END`
-//             );
-//             const selectedProfiles = await request.query(
-//               `BEGIN
-//               SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influ.Profile_ID}'
-//             END`
-//             );
-//             // console.log(selectedProfiles.recordsets[0][0], selectedPlatforms.recordsets[0][0]);
-//             dataReturn = [...dataReturn,  {id: influ.User_ID , ...selectedProfiles.recordsets[0][0], ...selectedPlatforms.recordsets[0][0]}];
+//           const selectedFollowers = await getSelectedFollowers(
+//             request,
+//             filteredData
+//           );
+//           const selectedGenders = await getSelectedGenders(
+//             request,
+//             filteredData
+//           );
+//           const selectedAges = await getSelectedAges(request, filteredData);
+//           const selectedLocations = await getSelectedLocations(
+//             request,
+//             filteredData
+//           );
 
-//           }
+//           const responseData = {
+//             selectedFollowers: selectedFollowers,
+//             selectedGenders: selectedGenders,
+//             selectedAges: selectedAges,
+//             selectedLocations: selectedLocations,
+//           };
+
 //           return res.status(200).json({
 //             message: "Get Successfully",
-//             data: dataReturn,
+//             data: responseData,
 //           });
 //         }
 //       );
@@ -730,77 +554,128 @@ async function getSelectedFollowers(request, filteredData) {
 //   }
 // }
 
-async function getProfileInfluencer(req, res, next) {
-  try {
-    const user = await getUserByEmail(req.query.email);
-    sql.connect(config, async (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
+// async function getSelectedFollowers(request, filteredData) {
+//   return new Promise((resolve, reject) => {
+//     request.query(
+//       `SELECT AudienceFollowerMonth FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE Platform_ID = '${filteredData.Platform_ID}'`,
+//       async (error, queryResult) => {
+//         if (error) {
+//           console.log(error);
+//           return reject(error);
+//         }
+//         const selectedFollowers = [];
+//         const followers = queryResult.recordset;
 
-      const request = new sql.Request();
+//         for (const follower of followers) {
+//           const followerToFind = follower.AudienceFollowerMonth;
+//           const queryResultfollower = await request.query(
+//             `SELECT * FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE AudienceFollowerMonth = '${followerToFind}'`
+//           );
+//           selectedFollowers.push(queryResultfollower.recordset[0]);
+//         }
+//         resolve(selectedFollowers);
+//       }
+//     );
+//   });
+// }
 
-      request.query(
-        `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}'`,
-        async (error, response) => {
-          if (error) {
-            console.log(error);
-            return res.json({ message: " " + err });
-          }
-          const influs = [...response.recordset];
-          const publishedObject = influs.find((item) => item.isPublish === true);
-          let dataReturn = [];
+// async function getSelectedGenders(request, filteredData) {
+//   return new Promise((resolve, reject) => {
+//     request.query(
+//       `SELECT AudienceGenderList.AudienceGenderList_ID, AudienceGenderList.AudienceGenderId, AudienceGender.Gender, AudienceGenderList.Platform_ID, AudienceGenderList.Quantity 
+//       FROM [UpReachDB].[dbo].[AudienceGenderList]
+//       INNER JOIN [UpReachDB].[dbo].[AudienceGender] ON AudienceGenderList.AudienceGenderId = AudienceGender.AudienceGenderId
+//       WHERE AudienceGenderList.Platform_ID = '${filteredData.Platform_ID}'`,
+//       async (error, queryResult) => {
+//         if (error) {
+//           console.log(error);
+//           return reject(error);
+//         }
+//         const selectedGenders = queryResult.recordset;
+//         resolve(selectedGenders);
+//       }
+//     );
+//   });
+// }
 
-          if (publishedObject) {
-            const selectedTypes = await request.query(
-              `SELECT InfluencerTypeList.TypeList_ID, InfluencerTypeList.Type_Id, InfluencerType.Name, InfluencerContentTopicsLists.Profile_ID
-              FROM [UpReachDB].[dbo].[InfluencerTypeList]
-              INNER JOIN [UpReachDB].[dbo].[InfluencerType] ON InfluencerTypeList.Type_Id = InfluencerType.Type_ID
-              WHERE InfluencerTypeList.Profile_ID = '${publishedObject.Profile_ID}'`
-            );
-              console.log('1', selectedTypes.recordsets);
-            const selectedTopics = await request.query(
-              `SELECT InfluencerContentTopicsLists.ContentTopicsId, InfluencerContentTopicsLists.Topics_Id, InfluencerContentTopic.Name, InfluencerContentTopicsLists.Profile_ID
-              FROM [UpReachDB].[dbo].[InfluencerContentTopicsLists]
-              INNER JOIN [UpReachDB].[dbo].[InfluencerContentTopic] ON InfluencerContentTopicsLists.Topics_Id = InfluencerContentTopic.Topics_ID
-              WHERE InfluencerContentTopicsLists.Profile_ID = '${publishedObject.Profile_ID}'`
-            );
-            console.log('2', selectedTopics.recordsets);
-            for (let influ of influs) {
-              const selectedPlatforms = await request.query(
-                `SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${influ.Platform_ID}'`
-              );
+// async function getSelectedAges(request, filteredData) {
+//   return new Promise((resolve, reject) => {
+//     request.query(
+//       `SELECT AudienceAgeRangeList.AudienceAgeList_ID, AudienceAgeRangeList.AudienceAge_ID, AudienceAgeRange.AgeRange, AudienceAgeRangeList.Platform_ID, AudienceAgeRangeList.Quantity 
+//       FROM [UpReachDB].[dbo].[AudienceAgeRangeList]
+//       INNER JOIN [UpReachDB].[dbo].[AudienceAgeRange] ON AudienceAgeRangeList.AudienceAge_ID = AudienceAgeRange.AudienceAge_ID
+//       WHERE AudienceAgeRangeList.Platform_ID = '${filteredData.Platform_ID}'`,
+//       async (error, queryResult) => {
+//         if (error) {
+//           console.log(error);
+//           return reject(error);
+//         }
+//         const selectedAges = queryResult.recordset;
+//         resolve(selectedAges);
+//       }
+//     );
+//   });
+// }
 
-              const selectedProfiles = await request.query(
-                `SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influ.Profile_ID}'`
-              );
+// async function getSelectedFollowers(request, filteredData) {
+//   return new Promise((resolve, reject) => {
+//     request.query(
+//       `SELECT AudienceLocation FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE Platform_ID = '${filteredData.Platform_ID}'`,
+//       async (error, queryResult) => {
+//         if (error) {
+//           console.log(error);
+//           return reject(error);
+//         }
+//         const selectedLocations = [];
+//         const locations = queryResult.recordset;
 
-              dataReturn.push({
-                id: influ.User_ID,
-                // ...selectedTypes.recordsets[0],
-                // ...selectedTopics.recordsets[0],
-                ...selectedProfiles.recordsets[0][0],
-                ...selectedPlatforms.recordsets[0][0],
-              });
-            }
-          }
+//         for (const location of locations) {
+//           const locationToFind = location.AudienceLocation;
+//           const queryResultLocation = await request.query(
+//             `SELECT * FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE AudienceLocation = N'${locationToFind}'`
+//           );
+//           selectedLocations.push(queryResultLocation.recordset[0]);
+//         }
+//         resolve(selectedLocations);
+//       }
+//     );
+//   });
+// }
 
+	async function reportInfluencer(req, res, next) {
+    try {
+      const {email,clientId,pointReport} = req.body;
+      const updatePointReport = await influService.updatePointReport(clientId, pointReport);
+      if (updatePointReport.rowsAffected) {
+        const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+        const data = common.formatResponseInfluencerToObject(infoInfluencer)
           return res.status(200).json({
-            message: "Get Successfully",
-            data: dataReturn,
-          });
-        }
-      );
-    });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: " " + err });
+          message: "Search thành công",
+          data: data
+        });
+      } else {
+        return res.json({ message: "Update Thất bại" });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
+    }
   }
+
+async function dataReportInfluencer(req,res, next){
+	try {
+        const {userId, email,role} = req.body
+    const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+		const data = common.formatResponseInfluencerToArray(infoInfluencer)
+        return res.json({ 
+            Influencer : data
+            })
+    } catch (error) {
+        return res.json({message : 'Lỗi ' + error});
+    }
 }
 
-
-module.exports = router;
+module.exports = {updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer}
 
           //           request.query(
           //             `

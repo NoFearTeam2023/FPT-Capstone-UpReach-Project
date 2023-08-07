@@ -1,6 +1,6 @@
 
 // Get Array Dataa Influencer to Object
-const formatResponseInfluencer = (payload) => {
+const formatResponseInfluencerToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -16,7 +16,7 @@ const formatResponseInfluencer = (payload) => {
     return formatValue;
 }
 
-const formatResponseUser = (payload) => {
+const formatResponseUserToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -29,7 +29,7 @@ return formatValue;
 }
 
 // Get Array Dataa Client to Object
-const formatResponseClient = (payload) => {
+const formatResponseClientToObject = (payload) => {
     const formatValue = payload.reduce(
         ( _accumulator, currentValue) => {
             return {
@@ -43,7 +43,7 @@ const formatResponseClient = (payload) => {
 }
 
 // Get Array Data Influencer with not duplicate
-function convertDataInfluencer(data) {
+function formatResponseInfluencerToArray(data) {
     const result = [];
     const kolGroups = {};
 
@@ -78,7 +78,7 @@ function convertDataInfluencer(data) {
     return result;
 }
 // Get Array Data Client with not duplicate
-function convertDataClient(data) {
+function formatResponseClientToArray(data) {
     const result = [];
     const clientGroup = {};
 
@@ -121,4 +121,4 @@ function increaseID(lastId) {
 }
 
 
-module.exports = {formatResponseInfluencer,formatResponseUser,convertDataInfluencer,convertDataClient,formatResponseClient,increaseID}
+module.exports = {formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}

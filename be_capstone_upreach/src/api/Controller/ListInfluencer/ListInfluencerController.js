@@ -4,16 +4,7 @@ const express =require('express')
 
 const router = express.Router();
 
-router.get('/api/getalllist', GetAllList);
-router.post('/api/getalllistbyuser', GetAllListByUser);
-router.post('/api/getlistbyuserid', GetListByUserId);
-router.post('/api/addlistclient', AddListClient);
-router.post('/api/gettablekols', GetTableKOLs);
-router.post('/api/deletelistclient', DeleteListClient);
-router.post('/api/editnamelist', EditNameList);
-router.post('/api/deletetablekols', DeleteTableKOLs);
-router.post('/api/addtotablekols', AddToTableKOLs);
-router.post('/api/deletealltable', DeleteAllTable);
+
 // router.post('/api/addtotablekols', AddToTableKOLs);
 //get all list
 async function GetAllList(req,res) {
@@ -281,4 +272,4 @@ async function AddToTableKOLs(req,res) {
     })
 }
 
-module.exports = router;
+module.exports = {GetAllList,GetAllListByUser,GetListByUserId,AddListClient,GetTableKOLs,DeleteListClient,EditNameList,DeleteTableKOLs,AddToTableKOLs,DeleteAllTable};
