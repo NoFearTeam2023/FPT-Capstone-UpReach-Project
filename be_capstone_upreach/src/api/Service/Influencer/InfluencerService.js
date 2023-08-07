@@ -176,22 +176,24 @@ async function getLastInfluencerTypeListId(){
     }
 }
 
-async function insertInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,topicsId,formatId,typeId){
+async function insertInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,typeId){
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
+        
+
+        const profileId = await getLastProfileId()
+        const lastProfileId =  common.increaseID(profileId.Profile_ID);
+        const typeListId = await getLastInfluencerTypeListId()
+        const lastTypeListId =  common.increaseID(typeListId.TypeList_ID);
+
+
         const connection = await pool.connect();
         const request = connection.request();
-
-        const profileId = common.increaseID(getLastProfileId());
-        const contentTopicsId = common.increaseID(getLastInfluencerContentTopicsListsId());
-        const formatListId = common.increaseID(getLastInfluencerContentFormatListsId());
-        const typeListId = common.increaseID(getLastInfluencerTypeListId());
-
-        request.input('profileId',  sql.NVarChar, profileId);
+        request.input('profileId',  sql.NVarChar, lastProfileId);
         request.input('fullName',  sql.NVarChar, fullName);
         request.input('nickName',  sql.NVarChar, nickName);
         request.input('email',  sql.NVarChar, email);
-        request.input('age',  sql.NVarChar, age);
+        request.input('age',  sql.Int, age);
         request.input('phone',  sql.NVarChar, phone);
         request.input('gender',  sql.NVarChar, gender);
         request.input('bio',  sql.NVarChar, bio);
@@ -201,13 +203,7 @@ async function insertInfluencerProfile(fullName,nickName,email,age,phone,gender,
         request.input('costEstimateTo',  sql.Int, costEstimateTo);
         request.input('followers',  sql.Int, followers);
 
-        request.input('contentTopicsId',  sql.NVarChar, contentTopicsId);
-        request.input('topicsId',  sql.NVarChar, topicsId);
-
-        request.input('formatListId',  sql.NVarChar, formatListId);
-        request.input('formatId',  sql.NVarChar, formatId);
-
-        request.input('typeListId',  sql.NVarChar, typeListId);
+        request.input('typeListId',  sql.NVarChar, lastTypeListId);
         request.input('typeId',  sql.NVarChar, typeId);
 
         const result = await request.execute(insertInfluencerProfile);
@@ -289,19 +285,17 @@ async function getLastAudienceLocationListId(){
     }
 }
 
-async function insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,InteractionFB,InteractionInsta,InteractionTiktok,InteractionYoutube,engagement,postsPerWeek,audienceAgeId,quantityAudienceAgeRange,audienceGenderId,quantityGenderList,audienceFollowerMonthId,quantityFollowerMonth,audienceLocationId,quantityLocationList){
+async function insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,engagement,postsPerWeek){
     try {
         const insertInfluencerPlatformInformation = "insertInfluencerPlatformInformation";
+        
+        const platformId = getLastPlatformInformationId()
+        const lastPlatformId = common.increaseID(platformId.Platform_ID);
+        
         const connection = await pool.connect();
         const request = connection.request();
 
-        const platformId = common.increaseID(getLastPlatformInformationId());
-        const audienceAgeListId = common.increaseID(getLastAudienceAgeRangeListId());
-        const audienceGenderListId = common.increaseID(getLastAudienceGenderListId());
-        const audienceFollowerMonthListId = common.increaseID(getLastAudienceFollowerMonthListId());
-        const audienceLocationListId = common.increaseID(getLastAudienceLocationListId());
-
-        request.input('platformId', sql.NVarChar, platformId);
+        request.input('platformId', sql.NVarChar, lastPlatformId);
         request.input('linkFB', sql.NVarChar, linkFB);
         request.input('linkInsta', sql.NVarChar, linkInsta);
         request.input('linkTiktok', sql.NVarChar, linkTiktok);
@@ -310,28 +304,8 @@ async function insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,l
         request.input('followInsta', sql.Int, followInsta);
         request.input('followTikTok', sql.Int, followTikTok);
         request.input('followYoutube', sql.Int, followYoutube);
-        request.input('InteractionFB', sql.Int, InteractionFB);
-        request.input('InteractionInsta', sql.Int, InteractionInsta);
-        request.input('InteractionTiktok', sql.Int, InteractionTiktok);
-        request.input('InteractionYoutube', sql.Int, InteractionYoutube);
         request.input('engagement', sql.Float, engagement);
         request.input('postsPerWeek', sql.Float, postsPerWeek);
-
-        request.input('audienceAgeListId', sql.NVarChar, audienceAgeListId);
-        request.input('audienceAgeId', sql.NVarChar, audienceAgeId);
-        request.input('quantityAudienceAgeRange', sql.Int, quantityAudienceAgeRange);
-
-        request.input('audienceGenderListId', sql.NVarChar, audienceGenderListId);
-        request.input('audienceGenderId', sql.NVarChar, audienceGenderId);
-        request.input('quantityGenderList', sql.Int, quantityGenderList);
-
-        request.input('audienceFollowerMonthListId', sql.NVarChar, audienceFollowerMonthListId);
-        request.input('audienceFollowerMonthId', sql.NVarChar, audienceFollowerMonthId);
-        request.input('quantityFollowerMonth', sql.Int, quantityFollowerMonth);
-
-        request.input('audienceLocationListId', sql.NVarChar, audienceLocationListId);
-        request.input('audienceLocationId', sql.NVarChar, audienceLocationId);
-        request.input('quantityLocationList', sql.Int, quantityLocationList);
 
         const result = await request.execute(insertInfluencerPlatformInformation);
         connection.close();
@@ -359,16 +333,20 @@ async function getLastKOLsId(){
 async function insertKols(userId,isPublish,dateEdit){
     try {
         const insertKols = "insertKols";
+        
+        const kolsId = getLastKOLsId()
+        const lastKolsId = common.increaseID(kolsId.KOLs_ID);
+        const platformId = getLastPlatformInformationId()
+        const lastPlatformId = common.increaseID(platformId.Platform_ID);
+        const profileId = getLastProfileId()
+        const lastProfileId = common.increaseID(profileId.Profile_ID);
+
         const connection = await pool.connect();
         const request = connection.request();
 
-        const kolsId = common.increaseID(getLastKOLsId());
-        const platformId = common.increaseID(getLastPlatformInformationId());
-        const profileId = common.increaseID(getLastProfileId());
-
-        request.input('kolsId', sql.NVarChar, kolsId)
-        request.input('platformId', sql.NVarChar, platformId)
-        request.input('profileId', sql.NVarChar, profileId)
+        request.input('kolsId', sql.NVarChar, lastKolsId)
+        request.input('platformId', sql.NVarChar, lastPlatformId)
+        request.input('profileId', sql.NVarChar, lastProfileId)
         request.input('userId', sql.NVarChar, userId)
         request.input('isPublish', sql.Bit, isPublish)
         request.input('dateEdit', sql.NVarChar, dateEdit)
@@ -383,4 +361,35 @@ async function insertKols(userId,isPublish,dateEdit){
     }
 }
 
-module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePointSearch,updatePointReport,getAllInfluencerByPublish,insertInfluencerPlatformInformation,insertInfluencerProfile,insertKols}
+async function insertDatatoContentTopic(dataArray) {
+    try {
+        const insertDatatoContentTopicProcedure = "InsertInfluencerContentTopics";
+        var result;
+
+        const profileId = await getLastProfileId();
+        const lastProfileId = profileId.Profile_ID;
+        
+        const connection = await pool.connect();
+        
+        for (const value of dataArray) {
+            const contentTopicsIdList = await getLastInfluencerContentTopicsListsId();
+            const lastContentTopicsId = common.increaseID(contentTopicsIdList.ContentTopicsId);
+            console.log("Topic_ID ", lastContentTopicsId);
+            await pool.connect();
+            const request = connection.request();
+            request.input('contentTopicsId', sql.NVarChar, lastContentTopicsId);
+            request.input('profileId', sql.NVarChar, lastProfileId);
+            request.input('name', sql.NVarChar, value);
+            
+            result = await request.execute(insertDatatoContentTopicProcedure);
+        }
+        
+        connection.close();
+        return result;
+    } catch (error) {
+        console.log('Lỗi thực thi insertDatatoContentTopic : ', error);
+        throw error;
+    }
+}
+
+module.exports = {getAllInfluencer,searchInfluencer,getAllInfluencerByEmail,updatePointSearch,updatePointReport,getAllInfluencerByPublish,insertInfluencerPlatformInformation,insertInfluencerProfile,insertKols,insertDatatoContentTopic}

@@ -50,7 +50,8 @@ async function InsertPointRemained(){
         }
         
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+        console.log(e)
+        return false;
     }
 }
 
@@ -71,7 +72,8 @@ async function InsertInvoice(){
         }
         
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertInvoice ", err });
+        console.log(e)
+        return false;
     }
 }
 
@@ -91,7 +93,8 @@ async function InsertClient(userId,address,fullName,emailClient,imageClient, pho
             return false;
         }
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertClient ", err });
+        console.log(e)
+        return false;
     }
 }
 
