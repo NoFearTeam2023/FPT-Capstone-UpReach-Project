@@ -5,14 +5,10 @@ const cloudinary = require("cloudinary").v2;
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService")
+const userService = require("../../Service/User/UserService")
 const common = require("../../../../common/common")
 const router = express.Router();
 
-router.put("/api/influ/update", updateInfo);
-router.post("/api/influ/search",searchInfluencer)
-router.get("/api/influ/get",getAllInfluencer)
-router.post("/api/influ/reportInfluencer",reportInfluencer)
-router.post("/api/influ/dataReportInfluencer",dataReportInfluencer) // get data for Report Page for user is influencer
 
 auth.initialize(
 	passport,
@@ -117,7 +113,7 @@ async function reportInfluencer(req, res, next) {
 		}
 	} catch (err) {
 		console.log(err);
-		return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
+		return res.status(500).json({ message: "Lỗi", err });
 	}
 }
 
@@ -134,6 +130,106 @@ async function dataReportInfluencer(req,res, next){
     }
 }
 
+async function addInfluencer(req,res, next){
+	try {
+		const {nickname,location, gender,age,intro,typeId,relationship} = req.body.informationDetails
+		const {emailContact,phone,engagement,post,costfrom,costTo} = req.body.overviewDetails
+		const {instagramLink,instagramFollower,facebookLink, facebookFollower,youtubeLink,youtubeFollower,tiktokLink,tiktokFollower} = req.body.socialDetails
+		const followers = instagramFollower + facebookFollower + youtubeFollower + tiktokFollower
+		// const {name,email} = req.body.influencerDetail
+		// const user = await userService.getUserByEmail(email);
+		const now = Date.now();
+        if (!await addInfluencerProfile('thien',nickname,emailContact,age,phone,gender,intro,location,relationship,costfrom,costTo,followers,typeId)) {
+            return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
+        }
+        if (!await addDataToContentTopic(req.body.contentDetails)){
+			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
+		}
+        if (!await addInfluencerPlatformInfomation(facebookLink,instagramLink,tiktokLink,youtubeLink,facebookFollower,instagramFollower,tiktokFollower,youtubeFollower,engagement,post)) {
+            return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
+        }
+
+        if (!await addInfluencerKols('1',0,now)) {
+            return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+        }
+        
+        // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+        return res.json({ status: 'True', message: 'Insert Success Influencer' });
+
+    } catch (err) {
+        // Xử lý lỗi
+        res.json({ status: 'False', message: 'Lỗi' });
+    }
+}
+
+
+
+async function addInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,typeId){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,typeId)
+        if(checkAddInfluencerProfile.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+		console.log(e)
+        return false;
+    }
+}
+
+async function addDataToContentTopic(dataArray){
+	try {
+		const checkAddDataToContentTopic = await influService.insertDatatoContentTopic(dataArray)
+		if(checkAddDataToContentTopic.rowsAffected[0]){
+			return true;
+        } else {
+            return false;
+        }
+	} catch (error) {
+		console.log(error)
+        return false;
+	}
+}
+
+async function addInfluencerPlatformInfomation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,engagement,postsPerWeek){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,linkYoutube,followFB,followInsta,followTikTok,followYoutube,engagement,postsPerWeek)
+        if(checkAddInfluencerPlatformInfomation.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        console.log(e)
+        return false;
+    }
+}
+
+async function addInfluencerKols(userId,isPublish,dateEdit){
+	try{
+        
+        // Thực hiện insert
+        const checkAddInfluencerKols = await influService.insertKols(userId,isPublish,dateEdit)
+        if(checkAddInfluencerKols.rowsAffected[0]){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }catch(e){
+        console.log(e)
+        return false;
+    }
+}
+
+
 
 // module.exports = router;
-module.exports ={updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer}
+module.exports ={updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer,addInfluencer}

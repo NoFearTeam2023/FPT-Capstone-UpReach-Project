@@ -80,6 +80,9 @@ async function confirmRegister(req, res, next){
         }
         if(otp === userModels.otpData && email === userModels.userEmail && passwordMatch){
             result = await userService.insertInfoUser(userModels.userId,role,email,userModels.userPassword);
+            if(role === '3'){
+                return res.json({status: "True", message : "Account Influencer Is Created"});
+            }
             if(result.rowsAffected){
                 passport.authenticate("local",async (err, user, info) => {
                     if (err) {
@@ -128,9 +131,13 @@ async function login(req,res,next){
         const email = req.body.email;
 
         const userSearch = await userService.getUserByEmail(email);
+        console.log("User" ,userSearch)
         const userId = userSearch.userId;
         const roleUser = userSearch.userRole
         const existedUserId = await userService.getSessionUserById(userId);
+
+        const infoInfluencer = await userService.getUserInfluencerByEmail(email)
+        const infoClient = await userService.getUserClientByEmail(email)
 
         passport.authenticate("local",async (err, user, info) => {
             if (err) {
@@ -139,12 +146,12 @@ async function login(req,res,next){
             if (!user) {
                 return res.status(401).json({ message: "Sai email hoặc sai mật khẩu" });
             }
+            console.log( "role" , roleUser)
             if(existedUserId.length > 0){
                 return res.status(200).json({ 
-                    message: "User Id tồn tại",
+                    message: "User Đã Đăng Nhập ",
                     data: {
-                        // "User" : roleUser === '3' ? infoInfluencer: infoClient
-                        "User" : user
+                        "User" : user.roleId === '3' ? infoInfluencer: infoClient
                     }
                 });
             }
@@ -157,10 +164,12 @@ async function login(req,res,next){
                 if(!result){
                     return res.json({message :'Fails Add Session'});
                 }
+                const infoInfluencer = await userService.getUserInfluencerByEmail(email)
+                const infoClient = await userService.getUserInfluencerByEmail(email)
                 return res.status(200).json({
                     message: "Them session vao db thanh cong",
                     data: {
-                        "User" : user
+                        "User" : user.roleId === '3' ? infoInfluencer: infoClient
                     }
                 });
             });

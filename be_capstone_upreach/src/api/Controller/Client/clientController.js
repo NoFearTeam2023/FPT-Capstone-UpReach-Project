@@ -9,7 +9,7 @@ const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const common = require('../../../../common/common')
 
-async function updateProfileClient(req, res, next) {
+async function addProfileClient(req, res, next) {
     try {
         const { location, fullname, email, phonenumber, brandname } = req.body;
 
@@ -26,7 +26,7 @@ async function updateProfileClient(req, res, next) {
         }
         
         // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-        return res.json({ status: 'True', message: 'Insert Success' });
+        return res.json({ status: 'True', message: 'Insert Success Client' });
 
     } catch (err) {
         // Xử lý lỗi
@@ -50,7 +50,8 @@ async function InsertPointRemained(){
         }
         
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertPointRemained ", err });
+        console.log(e)
+        return false;
     }
 }
 
@@ -71,7 +72,8 @@ async function InsertInvoice(){
         }
         
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertInvoice ", err });
+        console.log(e)
+        return false;
     }
 }
 
@@ -91,7 +93,8 @@ async function InsertClient(userId,address,fullName,emailClient,imageClient, pho
             return false;
         }
     }catch(e){
-        return res.json({status : 'False', message: "Lỗi chạy lệnh InsertClient ", err });
+        console.log(e)
+        return false;
     }
 }
 
@@ -110,4 +113,4 @@ async function dataHomePageClient(req,res,next){
 }
 
 // module.exports = router;
-module.exports = {updateProfileClient, dataHomePageClient};
+module.exports = {addProfileClient, dataHomePageClient};
