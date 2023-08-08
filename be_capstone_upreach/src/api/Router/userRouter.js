@@ -19,7 +19,7 @@ router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
 router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);
 router.post("/influ/addInfluencer",influencerController.addInfluencer);
 
-router.post('/client/updateClientProfile', clientController.addProfileClient);
+router.post('/client/updateClientProfile', clientController.updateProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient)
 
 router.get('/getalllist', listInfluencerController.GetAllList);
@@ -32,5 +32,6 @@ router.post('/editnamelist', listInfluencerController.EditNameList);
 router.post('/deletetablekols', listInfluencerController.DeleteTableKOLs);
 router.post('/addtotablekols', listInfluencerController.AddToTableKOLs);
 router.post('/deletealltable', listInfluencerController.DeleteAllTable);
+
 
 module.exports = router

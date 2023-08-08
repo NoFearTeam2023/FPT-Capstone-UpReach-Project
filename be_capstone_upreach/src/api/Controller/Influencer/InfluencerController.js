@@ -78,11 +78,11 @@ async function getAllInfluencer(req,res,next) {
 
 async function searchInfluencer(req, res, next) {
 	try {
-	const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation } = req.body;
+	const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom } = req.body;
 
 	const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
 	if (updatePointSearch.rowsAffected) {
-		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation);
+		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
 			return res.status(200).json({
 			message: "Search thành công",
 			data: result

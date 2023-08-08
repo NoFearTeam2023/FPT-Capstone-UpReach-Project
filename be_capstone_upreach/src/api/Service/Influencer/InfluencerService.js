@@ -36,7 +36,7 @@ async function getAllInfluencerByEmail(email){
     }
 }
 // contentTopic name is category
-async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation){
+async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom){
     try {
         const searchInfluencer = "searchInfluencer";
         const connection = await pool.connect();
@@ -57,7 +57,12 @@ async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo,
         request.input('contentFormats', sql.NVarChar, contentFormatsStr);
         request.input('audienceGender', sql.NVarChar, audienceGenderStr);
         request.input('audienceLocation', sql.NVarChar, audienceLocationStr);
-        
+        request.input('followerFrom', sql.Int, followerFrom);
+        request.input('followerTo', sql.Int, followerTo);
+        request.input('postsPerWeekFrom', sql.Int, postsPerWeekFrom);
+        request.input('postsPerWeekTo', sql.Int, postsPerWeekTo);
+        request.input('engagementTo', sql.Int, engagementTo);
+        request.input('engagementFrom', sql.Int, engagementFrom);
         const result = await request.execute(searchInfluencer);
         connection.close();
         const data = common.formatResponseInfluencerToArray(result.recordset)
