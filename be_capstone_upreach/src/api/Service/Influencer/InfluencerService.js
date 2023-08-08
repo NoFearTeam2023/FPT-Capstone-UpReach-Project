@@ -111,9 +111,11 @@ async function getAllInfluencerByPublish(){
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencerByPublish);
-        const data = common.formatResponseInfluencerToArray(result.recordset)
-        connection.close();
-        return data;
+        if(result){
+            const data = common.formatResponseInfluencerToArray(result.recordset)
+            connection.close();
+            return data;
+        }
     } catch (err) {
         console.log('Lỗi thực thi getAllInfluencerByPublish:', err);
         throw err;
