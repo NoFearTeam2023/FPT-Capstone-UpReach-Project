@@ -41,7 +41,7 @@ async function register(req, res, next){
             return res.json({status : 'False', message: "Email đã được sử dụng" });
         }else {
             const mailOptions = {
-                from: 'thienndde150182@gmail.com', 
+                from: 'UpReachFpt2023@gmail.com', 
                 to: userModels.userEmail, 
                 subject: 'OTP for Registration', 
                 text: `Your OTP for registration is: ${userModels.otpData}` 
@@ -210,7 +210,7 @@ async function forgotPassword(req,res,next){
 
 async function confirmForgotPassword(req,res,next){
     try{
-
+        
     }
     catch(err){
         return res.json({message : ' ' + err});

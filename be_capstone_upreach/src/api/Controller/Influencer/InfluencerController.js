@@ -162,8 +162,6 @@ async function addInfluencer(req,res, next){
     }
 }
 
-
-
 async function addInfluencerProfile(fullName,nickName,email,age,phone,gender,bio,address,relationship,costEstimateFrom,costEstimateTo,followers,typeId){
 	try{
         
@@ -228,7 +226,6 @@ async function addInfluencerKols(userId,isPublish,dateEdit){
         return false;
     }
 }
-
 
 
 // module.exports = router;
