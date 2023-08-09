@@ -291,7 +291,7 @@ async function insertInfluencerPlatformInformation(linkFB,linkInsta,linkTiktok,l
     try {
         const insertInfluencerPlatformInformation = "insertInfluencerPlatformInformation";
         
-        const platformId = getLastPlatformInformationId()
+        const platformId = await getLastPlatformInformationId()
         const lastPlatformId = common.increaseID(platformId.Platform_ID);
         
         const connection = await pool.connect();
@@ -336,11 +336,11 @@ async function insertKols(userId,isPublish,dateEdit){
     try {
         const insertKols = "insertKols";
         
-        const kolsId = getLastKOLsId()
+        const kolsId = await getLastKOLsId()
         const lastKolsId = common.increaseID(kolsId.KOLs_ID);
-        const platformId = getLastPlatformInformationId()
+        const platformId = await getLastPlatformInformationId()
         const lastPlatformId = common.increaseID(platformId.Platform_ID);
-        const profileId = getLastProfileId()
+        const profileId = await getLastProfileId()
         const lastProfileId = common.increaseID(profileId.Profile_ID);
 
         const connection = await pool.connect();

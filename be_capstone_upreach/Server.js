@@ -27,9 +27,6 @@ const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
 app.use(cors());
 
-
-app.use(cors());
-
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(express.urlencoded({ extended: false }));

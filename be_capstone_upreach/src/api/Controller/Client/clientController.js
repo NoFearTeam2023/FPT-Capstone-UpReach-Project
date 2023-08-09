@@ -2,37 +2,62 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const {v4 : uuidv4} = require("uuid")
-
 const router = express.Router();
 
 const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const common = require('../../../../common/common')
-
+const cloudinary = require('../../Config/cloudConfig')
 async function addProfileClient(req, res, next) {
-    try {
-        const { location, fullname, email, phonenumber, brandname } = req.body;
+    const { location, fullName, email, phoneNumber, brandName, image } = req.body;
+    return res.json({data : req.body})
+    try{
+        const imageData = JSON.parse(req.body.image);
+		const uploadedImages = [];
+		for (const image of influ.Image) {
+            if (image.thumbUrl) {
+				const img = await cloudinary.uploader.upload(image.thumbUrl, {
+					public_id: image.uid,
+					resource_type: "auto",
+				});
+                uploadedImages.push({userId: influ.userId, id:image.uid, url: img.url});
+			}else uploadedImages.push({userId: influ.userId,id:image.uid, url: image.url}); 
+		}
+		influ.Image = uploadedImages
+		console.log(influ);
 
-        if (!await InsertPointRemained()) {
-            return res.json({ status: 'False', message: 'Insert PointRemained Fails' });
-        }
-        
-        if (!await InsertClient('0f276419-2912-4e70-91a9-f5838c0680eb', location, fullname, email, 'hình thiện', phonenumber, brandname)) {
-            return res.json({ status: 'False', message: 'Insert Client Fails' });
-        }
-
-        if (!await InsertInvoice()) {
-            return res.json({ status: 'False', message: 'Insert Invoice Fails' });
-        }
-        
-        // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-        return res.json({ status: 'True', message: 'Insert Success Client' });
-
-    } catch (err) {
-        // Xử lý lỗi
-        console.error(err);
-        res.json({ status: 'False', message: 'Lỗi' });
+		return res.status(201).json({
+			message: "Update Successfully",
+			data: influ,
+		});
+    }catch(e){
+        res.json({  message: e });
     }
+    
+    // try {
+    //     return res.json({data : req.body})
+    //     const { location, fullname, email, phonenumber, brandname } = req.body;
+
+    //     if (!await InsertPointRemained()) {
+    //         return res.json({ status: 'False', message: 'Insert PointRemained Fails' });
+    //     }
+        
+    //     if (!await InsertClient('0f276419-2912-4e70-91a9-f5838c0680eb', location, fullname, email, 'hình thiện', phonenumber, brandname)) {
+    //         return res.json({ status: 'False', message: 'Insert Client Fails' });
+    //     }
+
+    //     if (!await InsertInvoice()) {
+    //         return res.json({ status: 'False', message: 'Insert Invoice Fails' });
+    //     }
+        
+    //     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+    //     return res.json({ status: 'True', message: 'Insert Success Client' });
+
+    // } catch (err) {
+    //     // Xử lý lỗi
+    //     console.error(err);
+    //     res.json({ status: 'False', message: 'Lỗi' });
+    // }
 }
 
 async function InsertPointRemained(){

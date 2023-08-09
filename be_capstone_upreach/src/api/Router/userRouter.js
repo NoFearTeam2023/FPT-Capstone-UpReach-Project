@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
+const multer  = require("multer");
 const influencerController = require('../Controller/Influencer/InfluencerController')
 const clientController = require('../Controller/Client/clientController')
 const userController = require('../Controller/User/UserController')
 const listInfluencerController = require('../Controller/ListInfluencer/ListInfluencerController')
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 router.post('/login', userController.login);
 router.post('/register', userController.register);
