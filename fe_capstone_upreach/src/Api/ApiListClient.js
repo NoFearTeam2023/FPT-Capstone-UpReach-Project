@@ -2,8 +2,8 @@ import axiosClient from "./AxiosClient"
 
 const ApiListClient = {
     updateProfileClient(data){
-        const url = '/updateClientProfile';
-        return axiosClient.post(url, data)
+        const url = '/client/updateClientProfile';
+        return axiosClient.post(url, data,{ headers: { 'Content-Type': 'multipart/form-data' }})
     },
 
 }

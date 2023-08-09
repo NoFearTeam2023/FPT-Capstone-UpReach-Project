@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Collapse, Form, Input, Row } from "antd";
+import { Avatar, Button, Col, Collapse, Form, Input, Row,Modal,Upload } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React, { useEffect, useRef, useState } from "react";
 import "./ClientProfilePage.css";
@@ -18,30 +18,36 @@ const Index_ClientProfile = () => {
   const [isModalOpenUpdateEmail, setIsModalOpenUpdateEmail] = useState(false);
   const [isSubModel, setSubModel] = useState(false);
   const [isModalOpenChangePassword, setIsModalOpenChangePassword] =useState(false);
-  const [data, setData] = useState();
-  const inputRef = useRef(null);
-  const [image, setImage] = useState("");
   const [message, setMessage] = useState()
   const [status, setStatus] = useState()
   const navigate = useNavigate(); 
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnFocusLoss: true,
-    draggable: true,
-    theme: "dark",
-  }
+  
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileList, setFileList] = useState()
 
-  function onFinish(value) {
-    setData(value);
-    FetchDataProfile(value)
-  }
+  const [formValues, setFormValues] = useState({
+    image: '',
+    fullName: '',
+    brandName: '',
+    phoneNumber: '',
+    location: '',
+    email: ''
+  });
+
+  
 
   useEffect(() =>{
     if(status ==='True'){
       navigate('/homepage')
     }
   },[status])
+
+  const onFinish = () => {
+    console.log(formValues)
+    FetchDataProfile(formValues)
+  }
 
   const FetchDataProfile = async (data) => {
     try {
@@ -61,20 +67,52 @@ const Index_ClientProfile = () => {
     }
   }; 
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value
+    });
+  };
+  const updateImageValue = (newValue) => {
+    setFormValues({
+      ...formValues, // Sao chép tất cả các giá trị hiện tại của formValues
+      image: newValue // Thay đổi giá trị của image thành newValue
+    });
+  };
+
+  const handleCancel = () => setPreviewOpen(false);
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  };
+  const handleChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+    updateImageValue(newFileList)
+  }
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
+
   function handleClickShowDialog() {
     setIsModalOpenUpdateEmail(true);
   }
   function handleClickShowDialogChangePassword() {
     setIsModalOpenChangePassword(true);
   }
-  const handleImageClick = () => {
-    inputRef.current.click();
-  };
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    console.log(file);
-    setImage(file);
-  };
 
   const items = [
     {
@@ -104,12 +142,21 @@ const Index_ClientProfile = () => {
     },
   ];
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined size={10} />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnFocusLoss: true,
+    draggable: true,
+    theme: "dark",
+  }
+
+  const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
   return (
     <Row style={{ marginTop: "4%" }}>
@@ -124,7 +171,7 @@ const Index_ClientProfile = () => {
             <div>
               <Form
                 className="client-form"
-                onFinish={onFinish}
+                onFinish= {onFinish}
                 name="validateOnly"
                 layout="vertical"
                 autoComplete="off"
@@ -139,6 +186,26 @@ const Index_ClientProfile = () => {
                 }}
               >
                 <div>
+                  <Form.Item>
+                  <Upload
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                  >
+                    {fileList ? null : uploadButton}
+                  </Upload>
+                  <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                    <img
+                      alt="example"
+                      style={{
+                        width: '100%',
+                      }}
+                      src={previewImage}
+                    />
+                  </Modal>
+                  </Form.Item>
                   <Form.Item
                     rules={[
                       {
@@ -149,7 +216,7 @@ const Index_ClientProfile = () => {
                     name="fullname"
                     label="Full Name"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="fullName" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -161,13 +228,13 @@ const Index_ClientProfile = () => {
                     name="brandname"
                     label="Brand Name"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="brandName" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item name="location" label="Location">
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="location" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item name="email" label="Email">
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="email" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -181,7 +248,7 @@ const Index_ClientProfile = () => {
                     name="phonenumber"
                     label="Phone Number"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="phoneNumber" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                 </div>
                 <div></div>
@@ -211,25 +278,6 @@ const Index_ClientProfile = () => {
               style={{ width: "10%" }}
               items={items}
             />
-          </Col>
-          <Col span={8}>
-            <div onClick={handleImageClick}>
-              {image ? (
-                <Avatar
-                  shape="square"
-                  src={URL.createObjectURL(image)}
-                  size={400}
-                />
-              ) : (
-                <Avatar shape="square" icon={uploadButton} size={400} />
-              )}
-              <input
-                type="file"
-                ref={inputRef}
-                onChange={handleImageChange}
-                style={{ display: "none" }}
-              />
-            </div>
           </Col>
         </Row>
       </Col>
