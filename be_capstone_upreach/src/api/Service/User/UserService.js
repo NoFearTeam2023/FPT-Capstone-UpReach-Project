@@ -4,7 +4,7 @@ const config = require('../../Config/dbConfig');
 const common = require('../../../../common/common')
 const pool = new sql.ConnectionPool(config);
 
-async function getAll(){
+async function getAll() {
     const getUsers = "getAllUser";
     pool.connect().then(() => {
         const request = pool.request();
@@ -19,7 +19,7 @@ async function getAll(){
     });
 }
 
-async function getUserById(id){
+async function getUserById(id) {
     try {
         const searchUserById = "getInfoUserById";
         const connection = await pool.connect();
@@ -35,7 +35,7 @@ async function getUserById(id){
     }
 }
 
-async function getUserByEmail(email){
+async function getUserByEmail(email) {
     try {
         const searchUserByEmail = "getInfoUserByEmail";
         const connection = await pool.connect();
@@ -51,7 +51,7 @@ async function getUserByEmail(email){
     }
 }
 
-async function getUserInfluencerByEmail(email){
+async function getUserInfluencerByEmail(email) {
     try {
         const getUserInfluencerByEmail = "getInfoUserInfluencerByEmail";
         const connection = await pool.connect();
@@ -67,7 +67,7 @@ async function getUserInfluencerByEmail(email){
     }
 }
 
-async function getUserClientByEmail(email){
+async function getUserClientByEmail(email) {
     try {
         const getUserClientByEmail = "getInfoUserClientByEmail";
         const connection = await pool.connect();
@@ -83,7 +83,7 @@ async function getUserClientByEmail(email){
     }
 }
 
-async function getDataForUser(email){
+async function getDataForUser(email) {
     try {
         const getDataForUser = "getDataForUser";
         const connection = await pool.connect();
@@ -99,8 +99,8 @@ async function getDataForUser(email){
     }
 }
 
-async function insertInfoUser(id, role, email, password){
-    
+async function insertInfoUser(id, role, email, password) {
+
     try {
         const connection = await pool.connect();
         const insertQuery = "InsertInfoUser";
@@ -118,8 +118,8 @@ async function insertInfoUser(id, role, email, password){
     }
 }
 
-async function insertInfoClient(Client_ID, Remaining_ID, User_ID, Address,FullName,Email_Client,Image_Client,Phone_Client,Brand_Client){
-    
+async function insertInfoClient(Client_ID, Remaining_ID, User_ID, Address, FullName, Email_Client, Image_Client, Phone_Client, Brand_Client) {
+
     try {
         const connection = await pool.connect();
         const insertQuery = "insertInfoClient";
@@ -142,8 +142,8 @@ async function insertInfoClient(Client_ID, Remaining_ID, User_ID, Address,FullNa
     }
 }
 
-async function insertInfoKols(id, role, email, password){
-    
+async function insertInfoKols(id, role, email, password) {
+
     try {
         const connection = await pool.connect();
         const insertQuery = "insertInfoKols";
@@ -170,7 +170,7 @@ async function insertSessionUser(sessionId, userID, maxAge, expired) {
         request.input('userID', sql.NVarChar, userID);
         request.input('duration', sql.NVarChar, maxAge);
         request.input('expired', sql.NVarChar, expired);
-    
+
         const result = await request.execute(insertSession);
         console.log('Đã Thêm thành công session')
         connection.close();
@@ -181,17 +181,17 @@ async function insertSessionUser(sessionId, userID, maxAge, expired) {
     }
 }
 
-async function deleteSessionUser(sessionId){
+async function deleteSessionUser(sessionId) {
     try {
         const deleteSessionUser = "deleteSessionUserBySessionId"
         const connection = await pool.connect();
         const request = connection.request();
         request.input('sessionId', sql.NVarChar, sessionId);
-    
+
         const result = await request.execute(deleteSessionUser);
         connection.close();
         return result;
-        
+
     } catch (err) {
         console.log('Lỗi thực thi deleteSessionUserBySessionId:', err);
         throw err;
@@ -199,7 +199,7 @@ async function deleteSessionUser(sessionId){
 
 }
 
-async function deleteSessionUserById(userId){
+async function deleteSessionUserById(userId) {
     try {
         const deleteSessionUser = "deleteSessionUserById"
         const connection = await pool.connect();
@@ -214,7 +214,7 @@ async function deleteSessionUserById(userId){
     }
 }
 
-async function getSessionUserById(userId){
+async function getSessionUserById(userId) {
     try {
         const getSessionUser = "getSessionUserId"
         const connection = await pool.connect();
@@ -233,4 +233,4 @@ async function getSessionUserById(userId){
 
 
 
-module.exports ={getAll,getUserById,getUserByEmail,getUserInfluencerByEmail,getUserClientByEmail,getDataForUser,getSessionUserById,insertInfoUser,insertSessionUser,deleteSessionUser,deleteSessionUserById};
+module.exports = { getAll, getUserById, getUserByEmail, getUserInfluencerByEmail, getUserClientByEmail, getDataForUser, getSessionUserById, insertInfoUser, insertSessionUser, deleteSessionUser, deleteSessionUserById };
