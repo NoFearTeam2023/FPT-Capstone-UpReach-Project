@@ -112,18 +112,28 @@ async function dataReportInfluencer(req, res, next) {
 	}
 }
 
+
 async function addInfluencer(req, res, next) {
 	try {
+		const image = req.body.image[0]
+        const uploadedImages = [];
+        if (image.thumbUrl) {
+            const img = await cloudinary.uploader.upload(image.thumbUrl, {
+                public_id: image.uid,
+                resource_type: "auto",
+            });
+            uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+        } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
 		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
 		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
 		const { instagramLink, instagramFollower, facebookLink, facebookFollower, youtubeLink, youtubeFollower, tiktokLink, tiktokFollower } = req.body.socialDetails
 		const idInflu = req.body.idInflu;
 		const followers = instagramFollower + facebookFollower + youtubeFollower + tiktokFollower
-		// const {name,email} = req.body.influencerDetail
-		// const user = await userService.getUserByEmail(email);
+		const {name,email} = req.body.influencerDetail
+		const user = await userService.getUserByEmail(email);
 		const now = new Date();
 		const dateNow = now.toISOString();
-		if (!await addInfluencerProfile('thien', nickname, emailContact, age, phone, gender, intro, location, relationship, costfrom, costTo, followers, typeId)) {
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location,uploadedImages.url, relationship, costfrom, costTo, followers, typeId)) {
 			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
 		}
 		if (!await addDataToContentTopic(req.body.contentDetails)) {
@@ -133,7 +143,7 @@ async function addInfluencer(req, res, next) {
 			return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
 		}
 
-		if (!await addInfluencerKols('37bb7df8-4a79-417e-9b5a-e47a45d786ba', 0, dateNow)) {
+		if (!await addInfluencerKols(user.userId, 0, dateNow)) {
 			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
 		}
 
@@ -152,11 +162,11 @@ async function addInfluencer(req, res, next) {
 	}
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
 	try {
 
 		// Thực hiện insert
-		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
+		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
 		if (checkAddInfluencerProfile.rowsAffected[0]) {
 			return true;
 		} else {

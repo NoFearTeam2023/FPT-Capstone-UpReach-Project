@@ -20,12 +20,9 @@ const router = require('./src/api/Router/userRouter')
 const app = express();
 const PORT = process.env.PORT;
 const cloudconfig = require('./src/api/Config/cloudConfig')
-app.use(cors());
-
 
 app.use(cors());
 app.use(express.json())
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
