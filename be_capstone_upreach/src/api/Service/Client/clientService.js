@@ -5,13 +5,14 @@ const common = require('../../../../common/common')
 const pool = new sql.ConnectionPool(config);
 
 
+
+
 async function getAllClient(){
     try {
         const getAllClient = "getAllClient";
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllClient);
-        console.log(result)
         const data = common.formatResponseClientToArray(result.recordset)
         connection.close();
         return data;
@@ -97,7 +98,6 @@ async function insertInvoice(
             request.input('transactionDate', sql.NVarChar, transactionDate );
             
             const result = await request.execute(insertInvoice);
-            console.log(result)
             connection.close();
             return result;
         } catch (err) {
@@ -122,7 +122,6 @@ async function insertPointRemained(
             request.input('usageResultSearching', sql.Int, usageResultSearching );
             
             const result = await request.execute(insertPointRemained);
-            console.log(result)
             connection.close();
             return result;
         } catch (err) {
@@ -156,7 +155,7 @@ async function insertClient(
         request.input('phoneClient', sql.NVarChar, phoneClient );
         request.input('brandClient', sql.NVarChar, brandClient );
         const result = await request.execute(insertClient);
-        console.log(result)
+        
         connection.close();
         return result;
     } catch (err) {

@@ -30,7 +30,7 @@ async function getUserById(id){
         connection.close();
         return data;
     } catch (err) {
-        console.log('Lỗi thực thi getInfoUserByEmail:', err);
+        console.log('Lỗi thực thi getInfoUserById:', err);
         throw err;
     }
 }
@@ -47,6 +47,38 @@ async function getUserByEmail(email){
         return data;
     } catch (err) {
         console.log('Lỗi thực thi getInfoUserByEmail:', err);
+        throw err;
+    }
+}
+
+async function getUserInfluencerByEmail(email){
+    try {
+        const getUserInfluencerByEmail = "getInfoUserInfluencerByEmail";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('EmailUser', sql.NVarChar, email);
+        const result = await request.execute(getUserInfluencerByEmail);
+        const data = common.formatResponseUserToObject(result.recordset)
+        connection.close();
+        return data;
+    } catch (err) {
+        console.log('Lỗi thực thi getUserInfluencerByEmail:', err);
+        throw err;
+    }
+}
+
+async function getUserClientByEmail(email){
+    try {
+        const getUserClientByEmail = "getInfoUserClientByEmail";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('EmailUser', sql.NVarChar, email);
+        const result = await request.execute(getUserClientByEmail);
+        const data = common.formatResponseUserToObject(result.recordset)
+        connection.close();
+        return data;
+    } catch (err) {
+        console.log('Lỗi thực thi getUserClientByEmail:', err);
         throw err;
     }
 }
@@ -201,4 +233,4 @@ async function getSessionUserById(userId){
 
 
 
-module.exports ={getAll,getUserById,getUserByEmail,getDataForUser,getSessionUserById,insertInfoUser,insertSessionUser,deleteSessionUser,deleteSessionUserById};
+module.exports ={getAll,getUserById,getUserByEmail,getUserInfluencerByEmail,getUserClientByEmail,getDataForUser,getSessionUserById,insertInfoUser,insertSessionUser,deleteSessionUser,deleteSessionUserById};

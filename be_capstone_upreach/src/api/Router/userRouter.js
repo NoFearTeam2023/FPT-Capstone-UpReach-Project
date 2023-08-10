@@ -14,7 +14,7 @@ router.post('/confirm', userController.confirmRegister);
 router.post('/logout', userController.logout);
 
 
-router.get("/admin/get-influ-report", adminController.getInfluReport);
+
 router.get("/admin/get-approve-report", adminController.getApproveReport);
 router.post("/admin/approve-report", adminController.postApproveReport);
 
@@ -24,11 +24,11 @@ router.post("/influ/search",influencerController.searchInfluencer);
 router.get("/influ/get",influencerController.getAllInfluencer);
 router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
 router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);
-// router.get("/influ/get-jobs-influencer", influencerController.getJobsInfluencer);
-// router.get("/influ/get-images-influencer", influencerController.getImagesInfluencer);
-// router.get("/influ/get-audience-influencer", influencerController.getAudienceInfluencer);
+router.get("/influ/get-jobs-influencer", influencerController.getJobsInfluencer);
+router.get("/influ/get-images-influencer", influencerController.getImagesInfluencer);
+router.post("/influ/addInfluencer",influencerController.addInfluencer);
 
-router.post('/client/updateClientProfile', clientController.updateProfileClient);
+router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient)
 
 router.get('/getalllist', listInfluencerController.GetAllList);

@@ -17,153 +17,6 @@ const router = express.Router();
 //     (email) => userModels.find((user) => user.userEmail === email)
 //   );
 
-
-//----------------------------------Report Approved-------------------------
-
-
-async function getInfluReport(req, res, next) {
-  try {
-    const users = await getAllInfluencer();
-    const userIds = users.map((item)=>item.userId)
-    const uniqueIds = [...new Set(userIds)];
-    sql.connect(config, async (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
-      
-      const request = new sql.Request();
-      const approvedInfos = []
-      for (let userId of uniqueIds) {
-
-        const approvedInfluInfo = await  request.query(`
-        SELECT Top 1 * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${userId}' AND isPublish = 1
-        
-        `)
-        if(approvedInfluInfo.recordset.length > 0 )
-        approvedInfos.push(approvedInfluInfo.recordset[0])
-    }
-
-    const approvedReports = []
-    const filteredInfoSidebar = []
-    for(let approvedInfo of approvedInfos ) {
-      const infoUser = await userService.getUserById(approvedInfo.User_ID);
-      const infoInfluencer = await influService.getAllInfluencerByEmail(infoUser.Email);
-      const data = common.formatResponseInfluencerToArray(infoInfluencer)
-      const filteredInfo =  data.find((item) =>item.isPublish)
-      filteredInfoSidebar.push(filteredInfo)
-    
-      const influUserApprove = await  request.query(`
-      SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE Platform_ID = '${approvedInfo.Platform_ID}' 
-      `)
-      const influPlatformApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${approvedInfo.Platform_ID}' 
-        `)
-
-        const influProfileApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${approvedInfo.Profile_ID}' 
-        `)
-
-        const influImageApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Profile_ID = '${approvedInfo.Profile_ID}' 
-        `)
-        const influAudienceFollowerApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE Platform_ID = '${approvedInfo.Platform_ID}' 
-        `)
-
-        const influAudienceLocationApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE Platform_ID = '${approvedInfo.Platform_ID}' 
-        `)
-
-        const influAudienceGenderApprove = await  request.query(`
-        SELECT AudienceGenderList.AudienceGenderList_ID, AudienceGenderList.AudienceGenderId, AudienceGender.Gender, AudienceGenderList.Platform_ID, AudienceGenderList.Quantity 
-    FROM [UpReachDB].[dbo].[AudienceGenderList]
-    INNER JOIN [UpReachDB].[dbo].[AudienceGender] ON AudienceGenderList.AudienceGenderId = AudienceGender.AudienceGenderId
-    WHERE AudienceGenderList.Platform_ID = '${approvedInfo.Platform_ID}'
-        `)
-
-        const influAudienceAgeApprove = await  request.query(`
-        SELECT AudienceAgeRangeList.AudienceAgeList_ID, AudienceAgeRangeList.AudienceAge_ID, AudienceAgeRange.AgeRange, AudienceAgeRangeList.Platform_ID, AudienceAgeRangeList.Quantity 
-    FROM [UpReachDB].[dbo].[AudienceAgeRangeList]
-    INNER JOIN [UpReachDB].[dbo].[AudienceAgeRange] ON AudienceAgeRangeList.AudienceAge_ID = AudienceAgeRange.AudienceAge_ID
-    WHERE AudienceAgeRangeList.Platform_ID = '${approvedInfo.Platform_ID}'
-        `)
-
-
-
-      const jobIds = await request.query(
-          `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${approvedInfo.Profile_ID}'`,
-          );
-
-
-          const selectedJobs = [];
-
-            for (const job_Id of jobIds.recordset) {
-              const jobIdToFind = job_Id.Job_Id;
-              const queryResultJob = await request.query(
-                `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
-              );
-              selectedJobs.push(queryResultJob.recordset[0]);
-            }
-
-            const selectedFormats = [];
-            for (const job_Id of jobIds.recordset) {
-              const jobIdToFind = job_Id.Job_Id;
-              const queryResultFormat = await request.query(
-                `
-                SELECT * FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'
-        `
-              );
-             
-              selectedFormats.push({
-                Format_Id: queryResultFormat.recordset,
-                Job_Id: jobIdToFind,
-              });
-            }
-            const result = {};
-
-            selectedJobs.forEach((job) => {
-              result[job.Job_ID] = {
-                ...job,
-                Format_Id:
-                  selectedFormats
-                    .find((format) => format.Job_Id === job.Job_ID)
-                    ?.Format_Id?.map((item) => item.Format_Id) || [],
-              };
-            });
-
-            const influJobsApprove = Object.values(result);
-
-            const sidebarData = filteredInfoSidebar.find((item)=> item.userId === approvedInfo.User_ID)
-          const reportApprove = { 
-            user: influUserApprove.recordset[0],
-            profile:  influProfileApprove.recordset[0],
-            platform: influPlatformApprove.recordset[0],
-            image: influImageApprove.recordset,
-            audienceFollower: influAudienceFollowerApprove.recordset,
-            audienceAge:influAudienceAgeApprove.recordset,
-            audienceGender:influAudienceGenderApprove.recordset,
-            audienceLocation: influAudienceLocationApprove.recordset,
-            jobs: influJobsApprove,
-            type: sidebarData.influencerTypeName,
-            topics: sidebarData.influencerContentTopicName
-
-          }  
-          approvedReports.push(reportApprove)
-        }
-        return res.status(200).json({
-          message: "Get influencer report successfully!",
-          data: approvedReports
-        });
-        
-    });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: " " + err });
-  }
-}
-
-
 //----------------------------------Report Waiting Approve-------------------------
 
 
@@ -188,7 +41,7 @@ async function getInfluReport(req, res, next) {
           if(influInfoApprove.recordset.length > 0 )
           approveInfos.push(influInfoApprove.recordset[0])
       }
-
+      
       const filteredInfoSidebar = []
       const reportApproves = []
       for(let approveInfo of approveInfos ) {
@@ -200,7 +53,7 @@ async function getInfluReport(req, res, next) {
       
         const influUserApprove = await  request.query(`
         SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE Platform_ID = '${approveInfo.Platform_ID}' 
-        `)
+        `)  
         const influPlatformApprove = await  request.query(`
           SELECT * FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${approveInfo.Platform_ID}' 
           `)
@@ -276,7 +129,7 @@ async function getInfluReport(req, res, next) {
                       ?.Format_Id?.map((item) => item.Format_Id) || [],
                 };
               });
-
+              
               const influJobsApprove = Object.values(result);
 
               const sidebarData = filteredInfoSidebar.find((item)=> item.userId === approveInfo.User_ID)
@@ -292,7 +145,6 @@ async function getInfluReport(req, res, next) {
               jobs: influJobsApprove,
               type: sidebarData.influencerTypeName,
               topics: sidebarData.influencerContentTopicName
-
             }  
             reportApproves.push(reportApprove)
           }
@@ -308,20 +160,162 @@ async function getInfluReport(req, res, next) {
     }
   }
 
+//   async function dataReportAdmin(req,res,next){
+//     try {
+//         const {userId, email, role} = req.body
+//         if(role === '2'){
+//             const infoClient = await clientService.getClientByEmail(email);
+//             const infoInfluencer = await influService.getAllInfluencerByPublish();
+//             return res.json({ Client : infoClient, Influencer1 : infoInfluencer})
+//         }
+//         return res.json({ message : "Bạn không có quyền truy cập vào"})
+//     } catch (error) {
+//         return res.json({message : ' ' + error});
+//     }
+// }
+
   async function postApproveReport(req, res, next) {
     try {
-      const { userId,kolsId, isPublish } = req.body;
+      const {userId,kolsId,profilesId, platformsId, profile } = req.body;
       sql.connect(config, async (err) => {
         if (err) {
           console.log(err);
           return res.json({ message: " " + err });
         }
+
         const request = new sql.Request();
-        const adminApprove = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE KOLs_ID = '${kolsId}' 
+       
+
+        const selectedKOLsID = await  request.query(`
+        BEGIN
+        SELECT KOLs_ID FROM [UpReachDB].[dbo].[KOLs] 
+        WHERE User_ID = '${userId}' AND isPublish = 1
+        END
         `)
+        const selectedProfileID = await  request.query(`
+        BEGIN
+        SELECT Profile_ID FROM [UpReachDB].[dbo].[KOLs] 
+        WHERE User_ID = '${userId}' AND isPublish = 1
+        END
+        `)
+        const selectedPlatformID = await  request.query(`
+        BEGIN
+        SELECT Platform_ID FROM [UpReachDB].[dbo].[KOLs] 
+        WHERE User_ID = '${userId}' AND isPublish = 1
+        END
+        `)
+        const kolIdObject = selectedKOLsID.recordset[0];
+        const kolObject2 = {...kolIdObject}
+        const kolId = kolObject2.KOLs_ID;
+        const profileIdObject = selectedProfileID.recordset[0];
+        const profileObject2 = {...profileIdObject}
+        const profileId = profileObject2.Profile_ID;
+        const platformIdObject = selectedPlatformID.recordset[0];
+        const platformObject2 = {...platformIdObject}
+        const platformId = platformObject2.Platform_ID;
+        
+        await request.query(`BEGIN
+        UPDATE [UpReachDB].[dbo].[HistoryViewInfluencerReport] 
+        SET KOLs_ID = '${kolsId}'
+        WHERE KOLs_ID = '${kolId}'
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[InfluencerContentFormatsList] 
+        SET Profile_ID = '${profilesId}'
+        WHERE Profile_ID = '${profileId}'
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[InfluencerContentTopicsLists] 
+        SET Profile_ID = '${profilesId}'
+        WHERE Profile_ID = '${profileId}'
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[InfluencerTypeList] 
+        SET Profile_ID = '${profilesId}'
+        WHERE Profile_ID = '${profileId}'
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[ListKOLs] 
+        SET KOLs_ID = '${kolsId}'
+        WHERE KOLs_ID = '${kolId}'
+        END
+
+        BEGIN
+        SELECT * FROM [UpReachDB].[dbo].[KOLs] 
+        WHERE User_ID = '${userId}' AND isPublish = 1
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[KOLs]
+        SET isPublish = 0
+        WHERE User_ID = '${userId}'
+        END
+
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[KOLs]
+        SET isPublish = 1
+        WHERE KOLs_ID = '${kolsId}'
+        END 
+`)
+
+        const selectedJobID = await  request.query(`
+        BEGIN
+        SELECT JOB_ID FROM [UpReachDB].[dbo].[InfluencerJobList] 
+        WHERE Profile_ID = '${profileId}'
+        END
+        `)
+
+        const jobIdObjects = selectedJobID.recordset;
+        for (let jobIdObject of jobIdObjects) {
+          const jobId = jobIdObject.JOB_ID;
+          const deleteJobID = await  request.query(`
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] 
+        WHERE JOB_ID = '${jobId}'
+        END
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[InfluencerJob] 
+        WHERE JOB_ID = '${jobId}'
+        END
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
+        WHERE JOB_ID = '${jobId}'
+        END
+        `)
+      }
+
+        const adminApprove = await  request.query(`
+        
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[AudienceAgeRangeList] WHERE Platform_ID = '${platformId}';
+        DELETE FROM [UpReachDB].[dbo].[AudienceFollowerMonthList] WHERE Platform_ID = '${platformId}';
+        DELETE FROM [UpReachDB].[dbo].[AudienceGenderList] WHERE Platform_ID = '${platformId}';
+        DELETE FROM [UpReachDB].[dbo].[AudienceLocationList] WHERE Platform_ID = '${platformId}';
+        END
+
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Profile_ID = '${profileId}';
+        END
+
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${userId}' AND isPublish = 0;
+        END
+        
+        `)
+        await request.query(`
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[PlatformInformation] WHERE Platform_ID = '${platformId}';
+        END
+
+        BEGIN
+        DELETE FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${profileId}';
+        END`)
           return res.status(200).json({
-            message: "Search thành công",
+            message: "Approve successful!",
             // data: 
           });
           
@@ -332,4 +326,4 @@ async function getInfluReport(req, res, next) {
     }
   }
 
-  module.exports = {getInfluReport, getApproveReport, postApproveReport }
+  module.exports = { getApproveReport, postApproveReport }
