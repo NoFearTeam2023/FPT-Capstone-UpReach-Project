@@ -24,6 +24,7 @@ import VerifyInfluencerRegister from "./SignUpInfluencer/VerifyInfluencerRegiste
 import CreatInfluencerProfilePage from "./CreateInfluencer/CreatInfluencerProfilePage";
 import ResetPasswordPage from "./ForgotPassword/ResetPasswordPage";
 import MyInfluencer from "./MyInfluencerPage/MyInfluencer";
+import InfluencerProfile from "./InfluencerProfilePage/InfluencerProfile";
 
 function Pages_Index() {
   const navigate = useNavigate();
@@ -222,6 +223,14 @@ function Pages_Index() {
         element={
           <>
             <MyInfluencer />
+          </>
+        }
+      />
+      <Route
+        path="/influencer-profile"
+        element={
+          <>
+            <InfluencerProfile />
           </>
         }
       />

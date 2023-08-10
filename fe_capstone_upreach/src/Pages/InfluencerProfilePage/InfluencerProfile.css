@@ -1,0 +1,67 @@
+
+.coverMain-client-profile .basicInformation p {
+    font-weight: 900;
+    font-size: 20px;
+    text-align: right;
+    margin-right: 50px;
+    margin-top: 0px;
+    font-family: volkhov;
+
+
+}
+.coverMain-client-profile .client-form {
+    
+    font-family: volkhov;
+    font-weight: 800;
+    font-size: 20px;
+    padding-left: 5%;
+
+}
+.coverMain-client-profile .btn_update{
+    width: 100px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    border: 1px solid #000;
+    background: #34A853;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    color: #fff;
+}
+.coverMain-client-profile .ant-collapse-header-text{
+    color: #000;
+    font-family: Volkhov;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.12px;
+}
+.coverMain-client-profile .collapse_advanced{
+    margin-left: 50px;
+}
+
+.coverMain-client-profile .btn_verification{
+    border-radius: 8px;
+    border: 1px solid #3F48CC;
+    background: #FFF;
+
+
+}
+.coverMain-client-profile .btn-button{
+    display: flex;
+    justify-content: center;
+}
+.coverMain-client-profile .btn_input{
+    width: 478px;
+    height: 43.69px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    background: #FFF;
+}
+.coverMain-client-profile .basicInformation .ant-modal-body{
+    text-align: center;
+    font-family: Volkhov;
+    font-weight: 700;
+
+ }
+

@@ -1,20 +1,19 @@
 import { Avatar, Button, Col, Collapse, Form, Input, Row,Modal,Upload } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React, { useEffect, useRef, useState } from "react";
-import "./ClientProfilePage.css";
+import "./InfluencerProfile.css";
 import {
   DownCircleOutlined,
   EditOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import UpdateEmail from "./UpdateEmail";
-import ChangePassword from "./ChangePassword";
+
 import ApiListClient from "../../Api/ApiListClient";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navigate, useNavigate } from "react-router-dom";
 
-const Index_ClientProfile = () => {
+const InfluencerProfile = () => {
   const [isModalOpenUpdateEmail, setIsModalOpenUpdateEmail] = useState(false);
   const [isSubModel, setSubModel] = useState(false);
   const [isModalOpenChangePassword, setIsModalOpenChangePassword] =useState(false);
@@ -33,8 +32,8 @@ const Index_ClientProfile = () => {
     brandName: '',
     phoneNumber: '',
     location: '',
-    emailContact: '',
-    clientDetail: null,
+    email: '',
+    influencerDetail: null,
   });
 
  
@@ -42,7 +41,7 @@ const Index_ClientProfile = () => {
   useEffect(() =>{
     const data = localStorage.getItem('formData');
     const formDataJson = JSON.parse(data);
-    setFormValues(prevDetails => ({ ...prevDetails, clientDetail: formDataJson }));
+    setFormValues(prevDetails => ({ ...prevDetails, influencerDetail: formDataJson }));
     if(status ==='True'){
       navigate('/homepage')
     }
@@ -55,7 +54,7 @@ const Index_ClientProfile = () => {
 
   const FetchDataProfile = async (data) => {
     try {
-      const response = await ApiListClient.updateProfileClient(data);
+      const response = await ApiListClient.addNewInfluencerImage(data);
       if(response.status === "False"){
         toast.error(response.message, toastOptions)
         setStatus(response.status)
@@ -110,41 +109,6 @@ const Index_ClientProfile = () => {
       </div>
     </div>
   );
-
-  function handleClickShowDialog() {
-    setIsModalOpenUpdateEmail(true);
-  }
-  function handleClickShowDialogChangePassword() {
-    setIsModalOpenChangePassword(true);
-  }
-
-  const items = [
-    {
-      key: "1",
-      label: "Advanced",
-      children: (
-        <>
-          <div>
-            <p>Sign-In Email</p>
-            <EditOutlined onClick={handleClickShowDialog} />
-            <UpdateEmail
-              isModalOpenUpdateEmail={isModalOpenUpdateEmail}
-              setIsModalOpenUpdateEmail={setIsModalOpenUpdateEmail}
-              isSubModel={isSubModel}
-              setSubModel={setSubModel}
-            />
-
-            <p>Password</p>
-            <EditOutlined onClick={handleClickShowDialogChangePassword} />
-            <ChangePassword
-              isModalOpenChangePassword={isModalOpenChangePassword}
-              setIsModalOpenChangePassword={setIsModalOpenChangePassword}
-            />
-          </div>
-        </>
-      ),
-    },
-  ];
 
   const toastOptions = {
     position: "bottom-right",
@@ -237,8 +201,8 @@ const Index_ClientProfile = () => {
                   <Form.Item name="location" label="Location">
                     <Input name="location" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
-                  <Form.Item name="emailContact" label="Email">
-                    <Input name="emailContact" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
+                  <Form.Item name="email" label="Email">
+                    <Input name="email" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -280,7 +244,7 @@ const Index_ClientProfile = () => {
               }}
               expandIconPosition="right"
               style={{ width: "10%" }}
-              items={items}
+            //   items={items}
             />
           </Col>
         </Row>
@@ -290,4 +254,4 @@ const Index_ClientProfile = () => {
   );
 };
 
-export default Index_ClientProfile;
+export default InfluencerProfile;
