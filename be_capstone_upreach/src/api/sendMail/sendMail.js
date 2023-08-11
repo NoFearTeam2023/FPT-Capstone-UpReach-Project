@@ -4,8 +4,8 @@ const { authenticator } = require('otplib');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-    user: 'upreachfpt2023@gmail.com', // Địa chỉ email của bạn
-    pass: 'asgqajblbqjbrbqf' // Mật khẩu email của bạn
+    user: 'upreach07@gmail.com', // Địa chỉ email của bạn
+    pass: 'immklawziavhtopu' // Mật khẩu email của bạn
     }
 });
 // Gửi email

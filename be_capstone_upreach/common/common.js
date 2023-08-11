@@ -1,4 +1,4 @@
-
+const _ = require('lodash');
 // Get Array Dataa Influencer to Object
 const formatResponseInfluencerToObject = (payload) => {
     const formatValue = payload.reduce(
@@ -56,12 +56,22 @@ function formatResponseInfluencerToArray(data) {
         kolGroups[kolId]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
         kolGroups[kolId]["audienceLocation"] = new Set([item["audienceLocation"]]);
         kolGroups[kolId]["audienceGender"] = new Set([item["audienceGender"]]);
+        kolGroups[kolId]["AudienceAgeList"] = new Set([item["AudienceAgeList"]]);
+        kolGroups[kolId]["AudienceFollowerList"] = new Set([item["AudienceFollowerList"]]);
+        kolGroups[kolId]["AudienceFollowerMonth"] = new Set([item["AudienceFollowerMonth"]]);
+        kolGroups[kolId]["AudiencerLocation"] = new Set([item["AudiencerLocation"]]);
+        kolGroups[kolId]["Image"] = new Set([item["Image"]]);
     } else {
         kolGroups[kolId]["influencerTypeName"].add(item["influencerTypeName"]);
         kolGroups[kolId]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
         kolGroups[kolId]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
         kolGroups[kolId]["audienceLocation"].add(item["audienceLocation"]);
         kolGroups[kolId]["audienceGender"].add(item["audienceGender"]);
+        kolGroups[kolId]["AudienceAgeList"].add(item["AudienceAgeList"]);
+        kolGroups[kolId]["AudienceFollowerList"].add(item["AudienceFollowerList"]);
+        kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
+        kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
+        kolGroups[kolId]["Image"].add(item["Image"]);
     }
     });
 
@@ -72,6 +82,11 @@ function formatResponseInfluencerToArray(data) {
     kolData["influencerContentFormatName"] = Array.from(kolData["influencerContentFormatName"]);
     kolData["audienceLocation"] = Array.from(kolData["audienceLocation"]);
     kolData["audienceGender"] = Array.from(kolData["audienceGender"]);
+    kolData["AudienceAgeList"] = Array.from(kolData["AudienceAgeList"]);
+    kolData["AudienceFollowerList"] = Array.from(kolData["AudienceFollowerList"]);
+    kolData["AudienceFollowerMonth"] = Array.from(kolData["AudienceFollowerMonth"]);
+    kolData["AudiencerLocation"] = Array.from(kolData["AudiencerLocation"]);
+    kolData["Image"] = Array.from(kolData["Image"]);
     result.push(kolData);
     }
     
@@ -101,6 +116,75 @@ function formatResponseClientToArray(data) {
     return result;
 }
 
+function formatChartDataInfluencer(data) {
+    const dataChartGroup = {};
+
+    _.forEach(data, (item) => {
+        const influencerId = item["influencerId"];
+
+        if (!dataChartGroup[influencerId]) {
+            dataChartGroup[influencerId] = {
+                "influencerId": influencerId,
+                "dataFollower": [],
+                "dataGender": [],
+                "dataAge": [],
+                "dataLocation": [],
+                "dataJob":[]
+            };
+        }
+
+        dataChartGroup[influencerId]["dataFollower"].push({
+            "monthFollow": item["monthFollowAudiencer"],
+            "value": item["quantityFollowerAudiencer"]
+        });
+
+        dataChartGroup[influencerId]["dataGender"].push({
+            "sex": item["genderAudiencer"],
+            "value": item["quantityGenderAudiencer"]
+        });
+
+        dataChartGroup[influencerId]["dataAge"].push({
+            "type": item["ageRangeAudiencer"],
+            "value": item["quantityAgeRangeAudiencer"]
+        });
+
+        dataChartGroup[influencerId]["dataLocation"].push({
+            "type": item["locationAudiencer"],
+            "value": item["quantityLocationAudiencer"]
+        });
+        dataChartGroup[influencerId]["dataJob"].push({
+            "jobId": item["idJob"],
+            "jobName": item["nameJob"],
+            "jobPlatform": item["platformJob"],
+            "costForm": item["costForm"],
+            "costTo": item["costTo"],
+            "quantityNumberWork": item["quantityNumberWork"],
+            "linkJob": item["linkJob"],
+            "describes": item["describes"],
+            "startDate": item["startDate"],
+            "endDate": item["endDate"],
+            "statusId": item["statusId"],
+            "formatid": item["formatid"]
+        });
+
+    });
+
+    const result = _.values(dataChartGroup);
+    
+    // Loại bỏ các đối tượng trùng lặp trong mảng
+    _.forEach(result, (item) => {
+        item["dataFollower"] = _.uniqBy(item["dataFollower"], "monthFollow");
+        item["dataGender"] = _.uniqBy(item["dataGender"], "sex");
+        item["dataAge"] = _.uniqBy(item["dataAge"], "type");
+        item["dataLocation"] = _.uniqBy(item["dataLocation"], "type");
+        item["dataJob"] = _.uniqBy(item["dataJob"], "jobId");
+        // Xóa các trường không cần thiết - Dung -> delete item[]
+        // delete item["monthFollowAudiencer"];
+        // delete item["quantityFollowerAudiencer"];
+    });
+    
+    return result;
+}
 function increaseID(lastId) {
     try{
         const wordChar= lastId.match(/[A-Za-z]+/)[0]; // Tách phần chữ ra khỏi mã
@@ -121,4 +205,4 @@ function increaseID(lastId) {
 }
 
 
-module.exports = {formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}
+module.exports = {formatChartDataInfluencer,formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}
