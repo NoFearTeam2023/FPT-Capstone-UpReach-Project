@@ -20,6 +20,7 @@ router.get("/influ/get", influencerController.getAllInfluencer);
 router.post("/influ/reportInfluencer", influencerController.reportInfluencer);
 router.post("/influ/dataReportInfluencer", influencerController.dataReportInfluencer);
 router.post("/influ/addInfluencer", influencerController.addInfluencer);
+router.post("/influ/data-chart", influencerController.getDataForChar);
 
 router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient)

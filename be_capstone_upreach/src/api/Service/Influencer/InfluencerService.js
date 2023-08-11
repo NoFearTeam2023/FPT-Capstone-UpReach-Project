@@ -394,4 +394,21 @@ async function insertDatatoContentTopic(dataArray) {
     }
 }
 
-module.exports = { getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic }
+async function getChartDataInfluencer(influencerId){
+    try {
+        const getDataForChartInfluencer = "getDataForChart";
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('influencerId', sql.NVarChar, influencerId)
+
+        const result = await request.execute(getDataForChartInfluencer);
+        connection.close();
+        return result.recordset;
+    } catch (error) {
+        console.log('Lỗi thực thi getDataForChar : ', error);
+        throw error;
+    }
+}
+
+module.exports = { getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer}

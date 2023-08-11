@@ -46,11 +46,10 @@ async function getAllInfluencer(req, res, next) {
 	try {
 		const result = await influService.getAllInfluencer()
 		if (!result) {
-			console.log('FAILS');
 			return res.json({ message: 'Fails ' });
 		}
 		return res.status(200).json({
-			message: "Search thành công",
+			message: "get data getAllInfluencer success",
 			data: result
 		});
 	} catch (err) {
@@ -250,7 +249,24 @@ async function createInflu(req, res, next) {
 	}
 }
 
+async function getDataForChar(req,res,next){
+	try {
+		const{influencerId} = req.body
+		const response = await influService.getChartDataInfluencer(influencerId) 
+		const result = common.formatChartDataInfluencer(response)
+		if (!response) {
+			return res.json({ message: 'Fails ' });
+		}
+		return res.status(200).json({
+			message: "get data getAllInfluencer success",
+			data: result
+		});
+	} catch (error) {
+		return res.json({ message: ' ' + error });
+	}
+}
+
 
 
 // module.exports = router;
-module.exports = { updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu }
+module.exports = { getDataForChar,updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu }
