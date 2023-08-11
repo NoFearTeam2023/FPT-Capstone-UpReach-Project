@@ -78,14 +78,14 @@ async function confirmRegister(req, res, next) {
         }
         if (otp === userModels.otpData && email === userModels.userEmail && passwordMatch) {
             result = await userService.insertInfoUser(userModels.userId, role, email, userModels.userPassword);
-            if (role === '3') {
-                const infoInflue = await createClientOrInflu(email, role);
-                return res.json({
-                    status: "True",
-                    message: "Account Influencer Is Created",
-                    idInflue: infoInflue._id
-                });
-            }
+            // if (role === '3') {
+            //     const infoInflue = await createClientOrInflu(email, role);
+            //     return res.json({
+            //         status: "True",
+            //         message: "Account Influencer Is Created",
+            //         idInflue: infoInflue._id
+            //     });
+            // }
             if (result.rowsAffected) {
                 passport.authenticate("local", async (err, user, info) => {
                     if (err) {
