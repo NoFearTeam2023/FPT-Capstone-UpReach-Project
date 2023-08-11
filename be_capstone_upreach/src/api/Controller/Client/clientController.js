@@ -3,8 +3,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const {v4 : uuidv4} = require("uuid")
 
-const router = express.Router();
-
 const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const common = require('../../../../common/common')
@@ -104,7 +102,7 @@ async function dataHomePageClient(req,res,next){
         if(role === '2'){
             const infoClient = await clientService.getClientByEmail(email);
             const infoInfluencer = await influService.getAllInfluencerByPublish();
-            return res.json({ Client : infoClient, AllInfluencer : infoInfluencer})
+            return res.json({ Client : infoClient, data : infoInfluencer})
         }
         return res.json({ message : "Bạn không có quyền truy cập vào"})
     } catch (error) {
@@ -112,5 +110,4 @@ async function dataHomePageClient(req,res,next){
     }
 }
 
-// module.exports = router;
 module.exports = {addProfileClient, dataHomePageClient};

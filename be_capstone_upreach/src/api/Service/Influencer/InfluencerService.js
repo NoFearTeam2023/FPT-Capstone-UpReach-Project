@@ -36,7 +36,7 @@ async function getAllInfluencerByEmail(email){
     }
 }
 // contentTopic name is category
-async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom){
+async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom,audienceAge){
     try {
         const searchInfluencer = "searchInfluencer";
         const connection = await pool.connect();
@@ -47,6 +47,7 @@ async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo,
         const contentFormatsStr = Array.isArray(contentFormats) ? contentFormats.join(',') : contentFormats;
         const audienceGenderStr = Array.isArray(audienceGender) ? audienceGender.join(',') : audienceGender;
         const audienceLocationStr = Array.isArray(audienceLocation) ? audienceLocation.join(',') : audienceLocation;
+        const audienceAgeStr = Array.isArray(audienceAge) ? audienceAge.join(',') : audienceAge;
 
         request.input('costEstimateFrom', sql.Int, costEstimateFrom );
         request.input('costEstimateTo', sql.Int, costEstimateTo );
@@ -63,9 +64,10 @@ async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo,
         request.input('postsPerWeekTo', sql.Int, postsPerWeekTo);
         request.input('engagementTo', sql.Int, engagementTo);
         request.input('engagementFrom', sql.Int, engagementFrom);
+        request.input('audienceAge', sql.NVarChar, audienceAgeStr);
         const result = await request.execute(searchInfluencer);
         connection.close();
-        const data = common.formatResponseInfluencerToArray(result.recordset)
+        const data = common.formatResponseInfluencerToArray(result.recordset)   
         return data;
     } catch (err) {
         console.log('Lỗi thực thi searchInfluencer:', err);
@@ -117,9 +119,14 @@ async function getAllInfluencerByPublish(){
         const connection = await pool.connect();
         const request = connection.request();
         const result = await request.execute(getAllInfluencerByPublish);
-        const data = common.formatResponseInfluencerToArray(result.recordset)
-        connection.close();
-        return data;
+        
+        if(result){
+            const data = common.formatResponseInfluencerToArray(result.recordset)
+            connection.close();
+            return data;
+        }else{
+            return false;
+        }
     } catch (err) {
         console.log('Lỗi thực thi getAllInfluencerByPublish:', err);
         throw err;
