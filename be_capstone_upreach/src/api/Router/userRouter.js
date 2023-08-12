@@ -17,13 +17,18 @@ router.post('/logout', userController.logout);
 
 router.get("/admin/get-approve-report", adminController.getApproveReport);
 router.post("/admin/approve-report", adminController.postApproveReport);
+router.get("/admin/get-influencer-account", adminController.getInfluencerAccount);
+router.put("/admin/edit-influ", adminController.editInflu);
+router.put("/admin/lock-influ", adminController.lockInflu);
+router.put("/admin/unlock-influ", adminController.unlockInflu);
+
 
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
 router.get("/influ/get",influencerController.getAllInfluencer);
 router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
-router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);
+router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);  
 router.get("/influ/get-jobs-influencer", influencerController.getJobsInfluencer);
 router.get("/influ/get-images-influencer", influencerController.getImagesInfluencer);
 router.post("/influ/addInfluencer",influencerController.addInfluencer);

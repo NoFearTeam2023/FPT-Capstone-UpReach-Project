@@ -76,7 +76,7 @@ async function updateInfo(req, res, next) {
           const filteredData = influs.find(
             (item) => item.User_ID === influ.userId
           );
-          // return
+          
 
           if (filteredData.isPublish) {
             const kolsId = Math.floor(Math.random() * 100000).toString();
@@ -94,8 +94,8 @@ async function updateInfo(req, res, next) {
             await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[Profile]
-            (Profile_ID, fullName, NickName, Email, Age, Phone, Gender, Bio, Address, Relationship, CostEstimateFrom, CostEstimateTo, Followers)
-            VALUES ('${profileId}', N'${influ.influencerfullName}', N'${influ.influencerNickName}', '${influ.influencerEmail}', '${influ.influencerAge}', '${influ.influencerPhone}', '${influ.influencerGender}', N'${influ.influencerBio}', N'${influ.influencerAddress}', N'${influ.influencerRelationship}', '${influ.influencerCostEstimateFrom}', '${influ.influencerCostEstimateTo}', '${influ.influencerFollowers}')
+            (Profile_ID, fullName, NickName, Email, Age, Phone, Gender, Bio, Address, isAccepted,Relationship, CostEstimateFrom, CostEstimateTo, Followers)
+            VALUES ('${profileId}', N'${influ.influencerfullName}', N'${influ.influencerNickName}', '${influ.influencerEmail}', '${influ.influencerAge}', '${influ.influencerPhone}', '${influ.influencerGender}', N'${influ.influencerBio}', N'${influ.influencerAddress}', '1',N'${influ.influencerRelationship}', '${influ.influencerCostEstimateFrom}', '${influ.influencerCostEstimateTo}', '${influ.influencerFollowers}')
             END
             `);
 

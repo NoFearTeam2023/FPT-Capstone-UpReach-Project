@@ -326,4 +326,159 @@ const router = express.Router();
     }
   }
 
-  module.exports = { getApproveReport, postApproveReport }
+  async function getInfluencerAccount(req, res, next) {
+    try {
+      const users = await getAllInfluencer();
+      const userIds = users.map((item)=>item.userId)
+      const uniqueIds = [...new Set(userIds)];
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        
+        const request = new sql.Request();
+        const influsInfo = []
+        for (let userId of uniqueIds) {
+
+          const influInfo = await  request.query(`
+          SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${userId}' AND isPublish = 1
+          `)
+          influsInfo.push(influInfo.recordset[0])
+         
+      }
+      
+      const profileInfos = []
+
+      for(let influInfo of influsInfo ) {
+        
+        const profileInfo = await  request.query(`
+        SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influInfo.Profile_ID}' 
+        `)
+        profileInfos.push(profileInfo.recordset[0])
+
+          }
+          return res.status(200).json({
+            message: "Get approve report successfully!",
+            data: profileInfos
+          });
+          
+      });
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function editInflu(req, res, next) {
+    try {
+      const influ = JSON.parse(req.body.influ);
+      const influId = JSON.parse(req.body.influId);
+
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('fullName', sql.NVarChar, influ.fullName)
+        .input('age', sql.Int, influ.Age)
+        .input('gender', sql.NVarChar, influ.Gender)
+        .input('relationship', sql.NVarChar, influ.Relationship)
+        .input('email', sql.NVarChar, influ.Email)
+        .input('phone', sql.NVarChar, influ.Phone)
+        .input('address', sql.NVarChar, influ.Address)
+        .input('profileId', sql.NVarChar, influId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Profile]
+            SET       
+               fullName = @fullName,
+               Age = @age,
+               Gender = @gender,
+               Relationship = @relationship,
+               Email = @email,
+               Phone = @phone,
+               Address = @address
+            WHERE Profile_ID = @profileId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Update Successfully",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function lockInflu(req, res, next) {
+    try {
+      const influId = JSON.parse(req.body.influId);
+      
+      console.log(influId);
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('profileId', sql.NVarChar, influId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Profile]
+            SET       
+               isAccepted = 0
+            WHERE Profile_ID = @profileId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Lock Influencer Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function unlockInflu(req, res, next) {
+    try {
+      const influId = JSON.parse(req.body.influId);
+      
+      console.log(influId);
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('profileId', sql.NVarChar, influId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Profile]
+            SET       
+               isAccepted = 1
+            WHERE Profile_ID = @profileId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Unlock Influencer Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu }
