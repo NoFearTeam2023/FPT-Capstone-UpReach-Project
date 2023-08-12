@@ -272,7 +272,7 @@ async function createInflu(req, res, next) {
 	}
 }
 
-async function getDataForChar(req,res,next){
+async function getDataForChart(req,res,next){
 	try {
 		const{influencerId} = req.body
 		const response = await influService.getChartDataInfluencer(influencerId) 
@@ -292,4 +292,4 @@ async function getDataForChar(req,res,next){
 
 
 // module.exports = router;
-module.exports = { getDataForChar,updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu }
+module.exports = { getDataForChart,updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu }

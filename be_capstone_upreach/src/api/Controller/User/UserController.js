@@ -108,7 +108,7 @@ async function confirmRegister(req, res, next) {
                             status: 'True',
                             message: "Them session vao db thanh cong",
                             data: user,
-                            idClient: infoClient._id
+                            idInMogodb: user.roleId === '3' ? influ._id : client._id   
                         });
                     });
 
@@ -248,8 +248,8 @@ async function createClientOrInflu(email, roleId) {
 async function createClient(req, res, next) {
     try {
         const { username, email } = req.body;
-        const usernameCheck = await influModel.findOne({ username })
-        const emailCheck = await influModel.findOne({ email })
+        const usernameCheck = await clientModel.findOne({ username })
+        const emailCheck = await clientModel.findOne({ email })
         if (usernameCheck) {
             return res.json({ msg: "Nick name already used", status: false });
         }
@@ -260,7 +260,7 @@ async function createClient(req, res, next) {
             email: email,
             username: username
         });
-        return res.json({ status: true, data: influ })
+        return res.json({ status: true, data: client })
     }
     catch (err) {
         return res.json({ message: ' ' + err });
