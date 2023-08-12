@@ -144,7 +144,7 @@ function formatChartDataInfluencer(data) {
         });
 
         dataChartGroup[influencerId]["dataAge"].push({
-            "type": item["ageRangeAudiencer"],
+            "type": item["ageRange"],
             "value": item["quantityAgeRangeAudiencer"]
         });
 
