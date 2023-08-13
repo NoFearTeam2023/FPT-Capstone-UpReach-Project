@@ -10,6 +10,7 @@ const clientService = require('../../Service/Client/clientService')
 const userService = require('../../Service/User/UserService')
 const common = require('../../../../common/common');
 const clientModel = require('../../Model/MogooseSchema/clientModel');
+const influModel = require('../../Model/MogooseSchema/influModel');
 
 async function addProfileClient(req, res, next) {
     try {
@@ -22,13 +23,13 @@ async function addProfileClient(req, res, next) {
             });
             uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
         } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
-        
+
         const { location, fullname, emailContact, phonenumber, brandname, idClient } = req.body;
-       
+
         if (!await InsertPointRemained()) {
             return res.json({ status: 'False', message: 'Insert PointRemained Fails' });
         }
-        const {name , email} = req.body.clientDetail;
+        const { name, email } = req.body.clientDetail;
         const user = await userService.getUserByEmail(email);
         if (!await InsertClient(user.userId, location, fullname, emailContact, uploadedImages.url, phonenumber, brandname)) {
             return res.json({ status: 'False', message: 'Insert Client Fails' });
@@ -39,10 +40,11 @@ async function addProfileClient(req, res, next) {
         }
 
         await clientModel.findByIdAndUpdate(idClient, {
+            avatarImage: uploadedImages.url,
             username: fullname
         })
         // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-        return res.json({ status: 'True', message: 'Insert Success Client',dataImage: uploadedImages, });
+        return res.json({ status: 'True', message: 'Insert Success Client', dataImage: uploadedImages, });
 
     } catch (err) {
         // Xử lý lỗi
@@ -128,5 +130,39 @@ async function dataHomePageClient(req, res, next) {
     }
 }
 
+// Check if an influe is already in the Client booking array
+const isInflueInArray = (client, idInflue) => {
+    return client.booking.some(existingInflueId => existingInflueId.equals(idInflue));
+};
+
+// Add Influe to booking in client array
+async function addInflueToBookingInClient(req, res, next) {
+    try {
+        const { _idClient, _idInflue } = req.body;
+        const client = await clientModel.findById(_idClient);
+        if (!client) {
+            return res.json({ msg: "Client don't already", status: false });
+        }
+        const influe = await influModel.findById(_idInflue);
+        if (!influe) {
+            return res.json({ msg: "Influenecer don't already", status: false });
+        }
+
+        if (isInflueInArray(client, influe._id)) {
+            return res.json({ msg: "Influenecer have already in the Client booking array", status: false });
+        } else {
+            client.booking.push(influe._id);
+            await client.save();
+            return res.status(200).json({
+                status: true,
+                data: client,
+            })
+        }
+    } catch (error) {
+        return res.json({ message: ' ' + error });
+    }
+}
+
+
 // module.exports = router;
-module.exports = { addProfileClient, dataHomePageClient };
+module.exports = { addProfileClient, dataHomePageClient, addInflueToBookingInClient };

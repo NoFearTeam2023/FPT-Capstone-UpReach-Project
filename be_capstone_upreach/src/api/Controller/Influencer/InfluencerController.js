@@ -42,56 +42,56 @@ async function updateInfo(req, res, next) {
 	}
 }
 
-async function getAllInfluencer(req,res,next) {
-	try{
+async function getAllInfluencer(req, res, next) {
+	try {
 		const page = parseInt(req.query.page)
 		const limit = parseInt(req.query.limit)
-		console.log("page "+ page)
-		console.log("limit "+ limit)
+		console.log("page " + page)
+		console.log("limit " + limit)
 		const startIndex = (page - 1) * limit
 		const endIndex = page * limit
 		const result = await influService.getAllInfluencer()
 		if (!result) {
 			return res.json({ message: 'Fails ' });
 		}
-		const JsonData = {} 
-		JsonData.data = result.slice(startIndex,endIndex)
-		JsonData.TotalPage = result.length/12 > parseInt(result.length/12) ? parseInt(result.length/12) + 1 : parseInt(result.length/12)
-		if(endIndex < result.length){
+		const JsonData = {}
+		JsonData.data = result.slice(startIndex, endIndex)
+		JsonData.TotalPage = result.length / 12 > parseInt(result.length / 12) ? parseInt(result.length / 12) + 1 : parseInt(result.length / 12)
+		if (endIndex < result.length) {
 			JsonData.next = {
-				page : page + 1,
-				limit : limit
+				page: page + 1,
+				limit: limit
 			}
 		}
-		if(startIndex > 0){
+		if (startIndex > 0) {
 			JsonData.previous = {
-				page : page - 1,
-				limit : limit
+				page: page - 1,
+				limit: limit
 			}
 		}
-		return res.json({JsonData:JsonData})
-	}catch(err){
-        console.log(err);
-        return res.json({ message: "Lỗi ", err });
-    }
+		return res.json({ JsonData: JsonData })
+	} catch (err) {
+		console.log(err);
+		return res.json({ message: "Lỗi ", err });
+	}
 }
 
 async function searchInfluencer(req, res, next) {
 	try {
-	const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom,audienceAge } = req.body;
-	// Update lại điểm khi search thông tin Influencer
-	// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
-	// if (updatePointSearch.rowsAffected) {
+		const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
+		// Update lại điểm khi search thông tin Influencer
+		// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
+		// if (updatePointSearch.rowsAffected) {
 		// const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
 		// 	return res.status(200).json({
 		// 	message: "Search thành công",
 		// 	data: result
 		// });
-	// } else {
-	// 	return res.json({ message: "Update Thất bại" });
-	// }
-	const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom,audienceAge);
-			return res.status(200).json({
+		// } else {
+		// 	return res.json({ message: "Update Thất bại" });
+		// }
+		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
+		return res.status(200).json({
 			message: "Search thành công",
 			data: result
 		});
@@ -138,24 +138,24 @@ async function dataReportInfluencer(req, res, next) {
 async function addInfluencer(req, res, next) {
 	try {
 		const image = req.body.image[0]
-        const uploadedImages = [];
-        if (image.thumbUrl) {
-            const img = await cloudinary.uploader.upload(image.thumbUrl, {
-                public_id: image.uid,
-                resource_type: "auto",
-            });
-            uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
-        } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
+		const uploadedImages = [];
+		if (image.thumbUrl) {
+			const img = await cloudinary.uploader.upload(image.thumbUrl, {
+				public_id: image.uid,
+				resource_type: "auto",
+			});
+			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
 		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
 		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
 		const { instagramLink, instagramFollower, facebookLink, facebookFollower, youtubeLink, youtubeFollower, tiktokLink, tiktokFollower } = req.body.socialDetails
 		const idInflu = req.body.idInflu;
 		const followers = instagramFollower + facebookFollower + youtubeFollower + tiktokFollower
-		const {name,email} = req.body.influencerDetail
+		const { name, email } = req.body.influencerDetail
 		const user = await userService.getUserByEmail(email);
 		const now = new Date();
 		const dateNow = now.toISOString();
-		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location,uploadedImages.url, relationship, costfrom, costTo, followers, typeId)) {
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, uploadedImages.url, relationship, costfrom, costTo, followers, typeId)) {
 			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
 		}
 		if (!await addDataToContentTopic(req.body.contentDetails)) {
@@ -170,6 +170,7 @@ async function addInfluencer(req, res, next) {
 		}
 
 		await influModel.findByIdAndUpdate(idInflu, {
+			avatarImage: uploadedImages.url,
 			nickname: nickname
 		})
 		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
@@ -184,11 +185,11 @@ async function addInfluencer(req, res, next) {
 	}
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
 	try {
 
 		// Thực hiện insert
-		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
+		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
 		if (checkAddInfluencerProfile.rowsAffected[0]) {
 			return true;
 		} else {
@@ -272,10 +273,10 @@ async function createInflu(req, res, next) {
 	}
 }
 
-async function getDataForChart(req,res,next){
+async function getDataForChart(req, res, next) {
 	try {
-		const{influencerId} = req.body
-		const response = await influService.getChartDataInfluencer(influencerId) 
+		const { influencerId } = req.body
+		const response = await influService.getChartDataInfluencer(influencerId)
 		const result = common.formatChartDataInfluencer(response)
 		if (!response) {
 			return res.json({ message: 'Fails ' });
@@ -289,7 +290,23 @@ async function getDataForChart(req,res,next){
 	}
 }
 
+async function getIdOfInflu(req, res, next) {
+	try {
+		const { email } = req.body
+		const emailCheck = await influModel.findOne({ email })
+		if (!emailCheck) {
+			return res.json({ msg: "Influencer don't already", status: false });
+		}
+		return res.status(200).json({
+			status: true,
+			data: emailCheck,
+		})
+	} catch (error) {
+		return res.json({ message: ' ' + error });
+	}
+}
+
 
 
 // module.exports = router;
-module.exports = { getDataForChart,updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu }
+module.exports = { getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu }
