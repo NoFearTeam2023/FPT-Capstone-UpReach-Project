@@ -1,0 +1,67 @@
+.influ-update-images{
+    width: auto;
+    height: 100%;
+    overflow-x: scroll;
+	overflow-y: hidden;
+    padding: 25px 50px;
+    border-bottom: #ccc 1px solid;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.influ-update-images:hover::-webkit-scrollbar-thumb {
+	z-index: 2;
+	visibility: visible;
+}
+
+.influ-update-images::-webkit-scrollbar {
+    height: 10px;
+}
+
+.influ-update-images::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 0 20px;
+}
+
+.influ-update-images::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: #bdbdbd;
+	z-index: 1;
+	visibility: hidden;
+
+}
+
+.influ-update-images::-webkit-scrollbar-thumb:hover {
+	background: #858585;
+}
+
+.influ-update-images .influ-update-image {
+    width: 250px;
+    height: 100%;
+    border-radius: 30px;
+}
+
+.influ-update-images .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select,.influ-update-images .ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload.ant-upload-select {
+    width: 250px;
+    height: 250px;
+    margin: 10px 35px 0;
+}
+
+.influ-update-images .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item-container, .influ-update-images .ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item-container, .influ-update-images .ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list.ant-upload-list-picture-circle .ant-upload-list-item-container, .influ-update-images .ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload-list.ant-upload-list-picture-circle .ant-upload-list-item-container {
+    width: 250px;
+    height: 250px;
+    margin: 10px 35px 0;
+}
+
+.influ-update-images .ant-upload-list,.influ-update-images  .ant-upload-list-picture-card {
+
+    width: max-content ;
+    flex-direction: row ;
+    display: flex ;    
+}
+
+.influ-update-images .ant-tooltip{
+    display: none; 
+}

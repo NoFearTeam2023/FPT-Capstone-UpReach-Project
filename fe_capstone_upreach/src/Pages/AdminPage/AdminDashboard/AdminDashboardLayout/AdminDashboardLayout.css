@@ -1,0 +1,66 @@
+.admin-dashboard-layout {
+    width: 100%;
+    height: 94vh;
+    padding: 30px 20px;
+}
+
+.admin-dashboard-title {
+    padding: 0 20px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin-dashboard-title p {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.dashboard-filter {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-filter p {
+    color: #ccc;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.dashboard-sort-by {
+    width: 73%;
+    height: 100%;
+    border: #ccc 1px solid;
+    border-radius: 8px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 15px;
+    cursor: pointer;
+}
+.dashboard-sort-by .ant-dropdown-trigger{
+    color: #000;
+    width: 100%;
+}
+
+.admin-top {
+    width: 100%;
+    height: 350px;
+    display: flex;
+}
+
+.admin-top-cards{
+    width: 55%;
+    height: 350px;
+}
+
+.admin-top-income {
+    width: 45%;
+    height: 350px;
+    padding: 0 10px 0 30px;
+    padding-right: 10px;
+}

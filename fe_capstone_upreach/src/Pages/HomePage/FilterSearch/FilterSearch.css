@@ -1,0 +1,71 @@
+.width-400{
+    width: 400px !important;
+}
+
+.contentHomePage{
+	padding: 0;
+}
+
+.popupFilter{
+	height: auto;
+	width: 50%;
+	background-color: white;
+	border-radius: 10px;
+    padding: 28px;
+}
+
+.dropdowSlider{
+	height: 40px;
+	width: auto !important;
+	line-height: 10px;
+	background-color: #eceff5;
+	border-radius: 80px;
+}
+
+.width-100-percent{
+    width: 100%;
+}
+
+.popupFilter::-webkit-scrollbar {
+	z-index: 999;
+	border-radius: 100px;
+    width: 8px;
+    background-color: #F5F5F5;
+} 
+.popupFilter::-webkit-scrollbar-thumb {
+	z-index: 999;
+	border-radius: 100px;
+    background-color: gray;
+}
+
+.shadowBox{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.selectFilterAudiance{
+    height: 65px;
+	width: 100%;
+	line-height: 10px;
+}
+.inputSelect{
+    width: 100% !important;
+    height: 65px !important;
+}
+.inputSelect .ant-select-selector{
+    height: 100%;
+    border-radius: 80px;
+}
+
+.inputSelect :hover{
+	opacity: 100%;
+	cursor: pointer;
+}
+
+.hinden-scroll{
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+.filterSearch{
+	padding: 15px;
+	border-radius: 15px;
+}

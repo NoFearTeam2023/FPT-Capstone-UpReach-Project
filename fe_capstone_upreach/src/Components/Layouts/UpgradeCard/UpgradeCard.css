@@ -1,0 +1,80 @@
+.upgrade-card-bg {
+    width: 100%;
+    height: 900px;
+    background-color: #fff;
+    border-radius: 10px;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+}
+
+.upgrade-card-bg .upgrade-card-header {
+    width: 100%;
+    height: 300px;
+    padding: 40px 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upgrade-card-bg .upgrade-card-tag-socials {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.upgrade-card-bg .upgrade-card-tag {
+    width: 40%;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.upgrade-card-bg .upgrade-card-socials {
+    width: 40%;
+	height: 40px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.upgrade-card-bg .upgrade-card-cost {
+    display: flex;
+    align-items: baseline;
+}
+
+.upgrade-card-bg .upgrade-card-btn {
+    width: 30%;
+    height: 50px;
+}
+
+.upgrade-card-bg .upgrade-card-content {
+    width: 100%;
+    height: 600px;
+    padding: 10px 30px;
+}
+
+/* .upgrade-card-content-title {
+    font-size: 16px;
+    font-weight: 600px;
+} */
+
+.upgrade-card-bg .upgrade-card-content-sub-title {
+    width: 100%;
+    height: 100%;
+    padding: 20px 0 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.upgrade-card-content-line-item{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

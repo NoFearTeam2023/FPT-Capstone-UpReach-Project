@@ -1,97 +1,104 @@
-@import url('https://fonts.googleapis.com/css2?family=Volkhov:wght@700&display=swap');  
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&family=Volkhov:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Volkhov:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100&family=Volkhov:wght@700&display=swap");
 
-.margin-left-110{
-    margin-left: 110px;
+.margin-left-110 {
+	margin-left: 110px;
 }
 
-.font-size-10{
-    font-size: 10px !important;
+.font-size-10 {
+	font-size: 10px !important;
 }
 
-.font-size-12{
-    font-size: 12px !important; 
+.font-size-12 {
+	font-size: 12px !important;
 }
 
-.font-size-15{
-    font-size: 15px !important;
+.font-size-15 {
+	font-size: 15px !important;
 }
 
-.font-size-16{
-    font-size: 16px !important;
+.font-size-16 {
+	font-size: 16px !important;
 }
 
-.font-Poppins{
-    font-family: 'Poppins', sans-serif;
+.font-Poppins {
+	font-family: "Poppins", sans-serif;
 }
 
-.font-Volkhov{
-    font-family: 'Volkhov', serif;
+.font-Volkhov {
+	font-family: "Volkhov", serif;
 }
 
-.backgroundPage{
-    background: linear-gradient(0.25turn,rgba(151, 150, 240, 0.5), rgba(251, 199, 212, 0.5));
+.backgroundPage {
+	background: linear-gradient(
+		0.25turn,
+		rgba(151, 150, 240, 0.5),
+		rgba(251, 199, 212, 0.5)
+	);
 }
 
-.logoText{
-    font-family: 'Volkhov', serif;
-    background: -webkit-linear-gradient(45deg, #2196F3, #F44336);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
+.text-lineHeight-30 {
+	line-height: 30px;
 }
 
-.navHeader{
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: black;
-    text-decoration: none;
+.contentIntroducePage {
+	height: 275vh;
+	width: 100%;
+	font-size: 24px;
+	font-weight: bold;
+	margin-top: 60px;
+	padding: 100px 50px;
 }
 
-.contentHomePage{
-    height: 275vh;
-    width: 100%;
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 60px;
+.contentHomePage {
+	--height: 275vh;
+	width: 100%;
+	font-size: 24px;
+	font-weight: bold;
+	margin-top: 60px;
+	padding: 100px 50px;
 }
-  
-.container{
-    padding-top: 8vh;
-    /* background-color: white; */
-    height: 76vh;
-    width: 100%;
+
+.container {
+	padding-top: 2vh;
+	/* background-color: white; */
+	height: 52vh;
+	width: 100%;
 }
 
 select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    width: 300px;
-    border: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	width: 300px;
+	border: none;
 }
-select:focus{
-    outline: none;
+select:focus {
+	outline: none;
 }
 
 select::-ms-expand {
-    display: none;
+	display: none;
 }
 
-.input-left{
-    height: 48px;
-    background-color: white;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+.input-left {
+	height: 48px;
+	background-color: white;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
 }
 
-.input-right{
-    height: 48px;
-    background-color: white;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
-    border-left: 1px solid black;
+.input-right {
+	height: 48px;
+	background-color: white;
+	border-top-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+	border-left: 1px solid black;
 }
 
-.backgroundDark{
-    background-color: black;
+.backgroundDark {
+	background-color: black;
+}
+
+p {
+	margin-bottom: 0 !important;
 }

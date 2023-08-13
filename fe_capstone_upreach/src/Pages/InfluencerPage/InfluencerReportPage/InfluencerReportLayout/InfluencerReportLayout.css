@@ -1,0 +1,133 @@
+.influencer-report-layout {
+    width: 100%;
+    height: 94vh;
+    padding: 40px;
+}
+
+.influencer-report-title {
+    padding: 0 20px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.influencer-report-title p {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.report-filter {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.report-filter p {
+    color: #ccc;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.report-sort-by {
+    width: 73%;
+    height: 100%;
+    border: #ccc 1px solid;
+    border-radius: 8px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 15px;
+    cursor: pointer;
+}
+.report-sort-by .ant-dropdown-trigger{
+    color: #000;
+    width: 100%;
+}
+
+.update-btn {
+	height: 50px;
+	color: #419BDA;
+	padding: 14px;
+	display: flex;
+	width: fit-content;
+	flex-direction: row-reverse;
+	align-items: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.update-btn svg {
+	margin-top: 2px;
+}
+
+.update-btn svg path {
+    fill:#419BDA
+};
+
+.update-btn:hover {
+	color: #419BDA !important;
+	border-color: #419BDA !important;
+}
+.update-btn:hover svg {
+	animation: rot-svg 2s infinite;
+}
+@keyframes rot-svg {
+	0% {
+		transform: translateX(0px);
+	}
+
+	50% {
+		transform: translateX(10px);
+	}
+
+	100% {
+		transform: translateX(0px);
+	}
+}
+
+.influencer-report-list {
+    width: 100%;
+    height: 715px;
+    padding: 0 50px;
+    margin-top: 100px;
+    overflow-y: scroll;
+}
+
+.influencer-report-list::-webkit-scrollbar-track {
+    -webkit-box-shadow: 0;
+    border-radius: 0;
+    background-color: transparent;
+  }
+  .influencer-report-list::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+  }
+  
+  .influencer-report-list:hover::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: grey;
+  }
+  
+  .influencer-report-list::-webkit-scrollbar-thumb {
+    visibility: visible;
+  }
+  .influencer-report-list::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: grey;
+  }
+
+  .influencer-report-layout .ant-ribbon-wrapper {
+    width: 423px;
+    height: 270px;
+  }
+
+  /* .new-report {
+    background-color: #e6e6e6;
+  } */
+  

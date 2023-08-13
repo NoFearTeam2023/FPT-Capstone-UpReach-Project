@@ -1,0 +1,11 @@
+.influ-sidebar-bg {
+    width: 250px;
+    height: 100vh;
+    padding: 90px 10px 20px;
+    background-color: #419BDA;
+}
+
+.ant-menu-light .ant-menu-item-selected,.ant-menu-light>.ant-menu .ant-menu-item-selected{
+    background-color: #d9d9d92b;
+}
+

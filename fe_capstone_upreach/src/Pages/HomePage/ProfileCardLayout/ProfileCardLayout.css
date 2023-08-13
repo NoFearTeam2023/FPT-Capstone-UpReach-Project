@@ -1,0 +1,10 @@
+.custom-modal .ant-modal-body {
+	background-color: #ccc;
+	border-radius: 30px;
+	max-height: 900px;
+}
+
+.profile-card-layout {
+	width: 100%;
+	padding: 80px;
+}

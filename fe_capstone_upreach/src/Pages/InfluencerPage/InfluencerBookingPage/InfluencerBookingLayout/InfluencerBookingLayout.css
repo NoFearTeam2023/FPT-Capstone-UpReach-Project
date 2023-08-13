@@ -1,0 +1,88 @@
+.influencer-booking-layout {
+    width: 100%;
+    height: 94vh;
+    padding: 40px;
+}
+
+.influencer-booking-title {
+    padding: 0 20px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.influencer-booking-title p {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.booking-filter {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.booking-filter p {
+    color: #ccc;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.booking-sort-by {
+    width: 73%;
+    height: 100%;
+    border: #ccc 1px solid;
+    border-radius: 8px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 15px;
+    cursor: pointer;
+}
+.booking-sort-by .ant-dropdown-trigger{
+    color: #000;
+    width: 100%;
+}
+
+
+.influencer-booking-sub-title {
+    width: 90%;
+    height: fit-content;
+    padding: 20px 40px;
+    display: flex;
+}
+
+.influencer-booking-list {
+    width: 100%;
+    height: 715px;
+    padding: 0 20px;
+    overflow-y: scroll;
+
+}
+.influencer-booking-list::-webkit-scrollbar-track {
+    -webkit-box-shadow: 0;
+    border-radius: 0;
+    background-color: transparent;
+  }
+  .influencer-booking-list::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+  }
+  
+  .influencer-booking-list:hover::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: grey;
+  }
+  
+  .influencer-booking-list::-webkit-scrollbar-thumb {
+    visibility: visible;
+  }
+  .influencer-booking-list::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: grey;
+  }

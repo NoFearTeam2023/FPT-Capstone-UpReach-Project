@@ -7,16 +7,12 @@ const sql = require("mssql");
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService");
-const { getUserByEmail } = require("../../Service/User/UserService");
-const common = require("../../../../common/common");
 const userService = require("../../Service/User/UserService");
+const common = require("../../../../common/common");
+const influModel = require("../../Model/MogooseSchema/influModel");
+const { getUserByEmail } = require("../../Service/User/UserService");
+const { lte } = require("lodash");
 const router = express.Router();
-// let influ;
-router.put("/api/influ/update", updateInfo);
-router.post("/api/influ/search", searchInfluencer);
-router.get("/api/influ/get", getAllInfluencer);
-router.post("/api/influ/reportInfluencer", reportInfluencer);
-router.post("/api/influ/dataReportInfluencer", dataReportInfluencer);
 
 auth.initialize(
   passport,
@@ -28,6 +24,7 @@ async function updateInfo(req, res, next) {
   try {
     const influ = JSON.parse(req.body.influ);
     const booking = JSON.parse(req.body.booking);
+    console.log(booking);
 
     const chart = JSON.parse(req.body.chart);
 
@@ -35,6 +32,7 @@ async function updateInfo(req, res, next) {
     const editDate = JSON.parse(req.body.editDate);
 
     const uploadedImages = [];
+
     if (influ.Image) {
       for (const image of influ.Image) {
         if (image.thumbUrl) {
@@ -76,14 +74,17 @@ async function updateInfo(req, res, next) {
           const filteredData = influs.find(
             (item) => item.User_ID === influ.userId
           );
-          
 
-          if (filteredData.isPublish) {
-            const kolsId = Math.floor(Math.random() * 100000).toString();
-            const platformId = Math.floor(Math.random() * 100000).toString();
-            const profileId = Math.floor(Math.random() * 100000).toString();
+          const randomNumber = Math.floor(Math.random() * 10000); 
+          const formattedNumber = randomNumber.toString().padStart(4, '0'); 
+      
+          if (filteredData) {
+            if (filteredData.isPublish) {
+              const kolsId = 'INF' + formattedNumber;
+              const platformId = 'IPF' + formattedNumber;
+              const profileId = 'IPR' + formattedNumber;
 
-            await request.query(`
+              await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[PlatformInformation]
             (Platform_ID, Follow_FB, Interaction_FB, Follow_Insta, Interaction_Insta, Follow_Youtube, Interaction_Youtube, Follow_Tiktok, Interaction_Tiktok, Engagement, Postsperweek)
@@ -91,7 +92,7 @@ async function updateInfo(req, res, next) {
             END
             `);
 
-            await request.query(`
+              await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[Profile]
             (Profile_ID, fullName, NickName, Email, Age, Phone, Gender, Bio, Address, isAccepted,Relationship, CostEstimateFrom, CostEstimateTo, Followers)
@@ -99,7 +100,7 @@ async function updateInfo(req, res, next) {
             END
             `);
 
-            await request.query(`
+              await request.query(`
               BEGIN
                 INSERT INTO [UpReachDB].[dbo].[KOLs]
                 (KOLs_ID, Profile_ID, Platform_ID, User_ID, isPublish, Date_edit )
@@ -107,126 +108,140 @@ async function updateInfo(req, res, next) {
               END
             `);
 
-            for (let i = 0; i < uploadedImages.length; i++) {
-              const imageObject = uploadedImages[i];
-              const imageId = imageObject.id;
-              const imageUrl = imageObject.url;
-
               await request.query(`
                 BEGIN
-                  INSERT INTO [UpReachDB].[dbo].[ImageKOLs]
-                  (Image_ID, Profile_ID, Image )
-                  VALUES ('${imageId}', '${profileId}', '${imageUrl}')
+                    DELETE FROM [UpReachDB].[dbo].[ImageKOLs]
+                    WHERE Profile_ID = '${profileId}'
                 END
               `);
-            }
 
-            if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
-              for (let i = 0; i < chart.dataFollower.length; i++) {
-                const followerListId = Math.floor(
-                  Math.random() * 100000
-                ).toString();
-                const dataFollowerObject = chart.dataFollower[i];
-                const date = dataFollowerObject.date;
-                const quantity = dataFollowerObject.value;
-                await request.query(`
+              for (let i = 0; i < uploadedImages.length; i++) {
+                const imageObject = uploadedImages[i];
+                const imageId = 'IMG' + formattedNumber;
+                const imageUrl = imageObject.url;
+
+                const queryText = `
+                  
+                  BEGIN
+                      INSERT INTO [UpReachDB].[dbo].[ImageKOLs] (Image_ID, Profile_ID, Image)
+                      VALUES (@imageId, @profileId, @imageUrl)
+                  END;
+              `;
+                try {
+                  const request = new sql.Request();
+                  request.input("imageId", sql.NVarChar, imageId);
+                  request.input("profileId", sql.NVarChar, profileId);
+                  request.input("imageUrl", sql.NVarChar, imageUrl);
+
+                  const result = await request.query(queryText);
+                } catch (error) {
+                  console.error("Error executing query:", error);
+                }
+              }
+
+              if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
+                for (let i = 0; i < chart.dataFollower.length; i++) {
+                  const followerListId = 'AFML' + formattedNumber;
+                  const dataFollowerObject = chart.dataFollower[i];
+                  const date = dataFollowerObject.date;
+                  const quantity = dataFollowerObject.value;
+                  await request.query(`
             BEGIN
               INSERT INTO [UpReachDB].[dbo].[AudienceFollowerMonthList]
               (AudienceFollowerMonthList_ID, AudienceFollowerMonth, Platform_ID, Quantity )
               VALUES ('${followerListId}', '${date}', '${platformId}', '${quantity}')
             END
             `);
+                }
               }
-            }
 
-            if (chart.dataGender && Array.isArray(chart.dataGender)) {
-              const genderIdConvert = new Map([
-                ["Male", "AG001"],
-                ["Female", "AG002"],
-              ]);
-              for (let i = 0; i < chart.dataGender.length; i++) {
-                const genderListId = Math.floor(
-                  Math.random() * 100000
-                ).toString();
-                const dataGenderObject = chart.dataGender[i];
-                const genderId = genderIdConvert.get(dataGenderObject.sex);
-                const quantity = dataGenderObject.value;
+              if (chart.dataGender && Array.isArray(chart.dataGender)) {
+                const genderIdConvert = new Map([
+                  ["Male", "AG001"],
+                  ["Female", "AG002"],
+                ]);
+                for (let i = 0; i < chart.dataGender.length; i++) {
+                  const genderListId = 'AGL' + formattedNumber;
+                  const dataGenderObject = chart.dataGender[i];
+                  const genderId = genderIdConvert.get(dataGenderObject.sex);
+                  const quantity = dataGenderObject.value;
 
-                await request.query(`
+                  await request.query(`
             BEGIN
               INSERT INTO [UpReachDB].[dbo].[AudienceGenderList]
               (AudienceGenderList_ID, AudienceGenderId, Platform_ID, Quantity )
               VALUES ('${genderListId}', '${genderId}', '${platformId}', '${quantity}')
             END
             `);
+                }
               }
-            }
 
-            if (chart.dataAge && Array.isArray(chart.dataAge)) {
-              const ageIdConvert = new Map([
-                ["0-18", "AAI001"],
-                ["19-25", "AAI002"],
-                ["26-40", "AAI003"],
-                ["41-60", "AAI004"],
-              ]);
-              for (let i = 0; i < chart.dataAge.length; i++) {
-                const ageListId = Math.floor(Math.random() * 100000).toString();
-                const dataAgeObject = chart.dataAge[i];
-                const ageId = ageIdConvert.get(dataAgeObject.age);
-                const quantity = dataAgeObject.value;
+              if (chart.dataAge && Array.isArray(chart.dataAge)) {
+                const ageIdConvert = new Map([
+                  ["0-18", "AAI001"],
+                  ["19-25", "AAI002"],
+                  ["26-40", "AAI003"],
+                  ["41-60", "AAI004"],
+                ]);
+                for (let i = 0; i < chart.dataAge.length; i++) {
+                  const ageListId = 'AARL' + formattedNumber;
+                  const dataAgeObject = chart.dataAge[i];
+                  const ageId = ageIdConvert.get(dataAgeObject.age);
+                  const quantity = dataAgeObject.value;
 
-                await request.query(`
+                  await request.query(`
             BEGIN
               INSERT INTO [UpReachDB].[dbo].[AudienceAgeRangeList]
               (AudienceAgeList_ID, AudienceAge_ID, Platform_ID, Quantity )
               VALUES ('${ageListId}', '${ageId}', '${platformId}', '${quantity}')
             END
             `);
+                }
               }
-            }
 
-            if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
-              for (let i = 0; i < chart.dataLocation.length; i++) {
-                const locationListId = Math.floor(
-                  Math.random() * 100000
-                ).toString();
-                const dataLocationObject = chart.dataLocation[i];
-                const location = dataLocationObject.location;
-                const quantity = dataLocationObject.value;
-                await request.query(`
+              if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
+                for (let i = 0; i < chart.dataLocation.length; i++) {
+                  const locationListId ='IALL' + formattedNumber;
+                  const dataLocationObject = chart.dataLocation[i];
+                  const location = dataLocationObject.location;
+                  const quantity = dataLocationObject.value;
+                  await request.query(`
             BEGIN
               INSERT INTO [UpReachDB].[dbo].[AudienceLocationList]
               (AudienceLocationList_ID, AudienceLocation, Platform_ID, Quantity )
               VALUES ('${locationListId}', N'${location}', '${platformId}', '${quantity}')
             END
             `);
+                }
               }
-            }
 
-            const jobIds = [];
-            for (let i = 0; i < booking?.length; i++) {
-              const bookingItem = booking[i];
-              const jobId = Math.floor(Math.random() * 100000).toString();
-              jobIds.push(jobId);
+              const jobIds = [];
+              for (let i = 0; i < booking?.length; i++) {
+                const bookingJob = booking[i];
+                const jobId = 'IJ' + formattedNumber;
+                jobIds.push(jobId);
 
-              request.input("jobId" + i, sql.VarChar, jobId);
-              request.input("jobName" + i, sql.VarChar, bookingItem.jobName);
-              request.input("platform" + i, sql.VarChar, bookingItem.platform);
-              request.input(
-                "costEstimateFrom" + i,
-                sql.Float,
-                bookingItem.costEstimateFrom
-              );
-              request.input(
-                "costEstimateTo" + i,
-                sql.Float,
-                bookingItem.costEstimateTo
-              );
-              request.input("quantity" + i, sql.Int, bookingItem.quantity);
-              request.input("jobLink" + i, sql.VarChar, bookingItem.jobLink);
+                request.input("jobId" + i, sql.NVarChar, jobId);
+                request.input("jobName" + i, sql.NVarChar, bookingJob.jobName);
+                request.input(
+                  "platform" + i,
+                  sql.NVarChar,
+                  bookingJob.platform
+                );
+                request.input(
+                  "costEstimateFrom" + i,
+                  sql.Float,
+                  bookingJob.costEstimateFrom
+                );
+                request.input(
+                  "costEstimateTo" + i,
+                  sql.Float,
+                  bookingJob.costEstimateTo
+                );
+                request.input("quantity" + i, sql.Int, bookingJob.quantity);
+                request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
 
-              request.query(`
-                         
+                request.query(`
                           BEGIN
                             INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
                             (Job_Id, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
@@ -234,28 +249,26 @@ async function updateInfo(req, res, next) {
                           END
                         `);
 
-              for (let j = 0; j < booking[i].formatContent?.length; j++) {
-                const formatListId = Math.floor(
-                  Math.random() * 100000
-                ).toString();
+                for (let j = 0; j < booking[i].formatContent?.length; j++) {
+                  const formatListId = 'JCFL' + formattedNumber;
 
-                await request.query(`
+                  await request.query(`
                             BEGIN
                               INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
                               (FormatListJob_ID, Job_ID, Format_Id)
                               VALUES ('${formatListId}', '${jobId}', '${booking[i].formatContent[j]}')
                             END
                           `);
+                }
               }
-            }
 
-            for (let i = 0; i < jobIds?.length; i++) {
-              const jobId = jobIds[i];
-              const jobListId = Math.floor(Math.random() * 100000).toString();
+              for (let i = 0; i < jobIds?.length; i++) {
+                const jobId = jobIds[i];
+                const jobListId = 'IJL' + formattedNumber;
 
-              request.input("jobListId" + i, sql.VarChar, jobListId);
+                request.input("jobListId" + i, sql.NVarChar, jobListId);
 
-              request.query(`
+                request.query(`
                           
                           BEGIN
                               INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
@@ -263,35 +276,64 @@ async function updateInfo(req, res, next) {
                               VALUES (@jobListId${i}, '${jobId}', '${profileId}')
                               END
                               `);
-            }
+              }
 
-            for (const jobIdToRemove of idRemoveArray) {
-              request.query(`
-                              DELETE FROM [UpReachDB].[dbo].[InfluencerJob]
-                              WHERE Job_ID = '${jobIdToRemove}'
-                            `);
-              request.query(`
-                            DELETE FROM [UpReachDB].[dbo].[InfluencerJobList]
-                            WHERE Job_ID = '${jobIdToRemove}'
-                          `);
-            }
-          } else {
-            for (let i = 0; i < uploadedImages.length; i++) {
-              const imageObject = uploadedImages[i];
-              const imageId = imageObject.id;
-              const imageUrl = imageObject.url;
+              for (const jobIdToRemove of idRemoveArray) {
+                await request.query(`
+                DELETE FROM [UpReachDB].[dbo].[InfluencerJobList]
+                WHERE Job_ID = '${jobIdToRemove}'
+              `);
+                await request.query(
+                  `
+                    DELETE FROM [UpReachDB].[dbo].[JobContentFormatList]
+                    WHERE Job_ID = '${jobIdToRemove}'
+                `
+                );
 
+                await request.query(`
+                          DELETE FROM [UpReachDB].[dbo].[InfluencerJob]
+                          WHERE Job_ID = '${jobIdToRemove}'
+                        `);
+              }
+
+              //------------------------Update False Report----------------------------------
+            } else {
               await request.query(`
-              IF NOT EXISTS (SELECT 1 FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Image_ID = ${imageId})
-              BEGIN
-                INSERT INTO [UpReachDB].[dbo].[ImageKOLs]
-                (Image_ID, Profile_ID, Image )
-                VALUES ('${imageId}', '${filteredData.Profile_ID}', '${imageUrl}')
+            BEGIN
+                DELETE FROM [UpReachDB].[dbo].[ImageKOLs]
+                WHERE Profile_ID = '${filteredData.Profile_ID}'
               END
             `);
-            }
 
-            await request.query(`
+              for (let i = 0; i < uploadedImages.length; i++) {
+                const imageObject = uploadedImages[i];
+                const imageId = 'IMG' + formattedNumber;
+                const imageUrl = imageObject.url;
+
+                const queryText = `
+                BEGIN
+                  INSERT INTO [UpReachDB].[dbo].[ImageKOLs] (Image_ID, Profile_ID, Image)
+                  VALUES (@imageId, @profileId, @imageUrl)
+                END
+              `;
+
+                try {
+                  const request = new sql.Request();
+                  request.input("imageId", sql.NVarChar, imageId);
+                  request.input(
+                    "profileId",
+                    sql.NVarChar,
+                    filteredData.Profile_ID
+                  );
+                  request.input("imageUrl", sql.NVarChar, imageUrl);
+
+                  const result = await request.query(queryText);
+                } catch (error) {
+                  console.error("Error executing query:", error);
+                }
+              }
+
+              await request.query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[PlatformInformation]
             SET       
@@ -315,180 +357,220 @@ async function updateInfo(req, res, next) {
                 WHERE Profile_ID = '${filteredData.Profile_ID}'
             END
             `);
-                      const jobIds = [];
-                    for (let i = 0; i < booking.length; i++) {
-                      const bookingItem = booking[i];
-                      const jobId = Math.floor(Math.random() * 100000).toString();
-                      jobIds.push(jobId);
+              
+            for (let i = 0; i < booking.length; i++) {
+              const bookingJob = booking[i];
+                    //--------------------------Update Job Exist ------------------------------------
+                if (bookingJob?.jobId) {
+                  request.input("jobId" + i, sql.NVarChar, bookingJob.jobId);
+                  request.input("jobName" + i, sql.NVarChar, bookingJob.jobName);
+                  request.input("platform" + i, sql.NVarChar, bookingJob.platform);
+                  request.input(
+                    "costEstimateFrom" + i,
+                    sql.Int,
+                    bookingJob.costEstimateFrom
+                  );
+                  request.input(
+                    "costEstimateTo" + i,
+                    sql.Int,
+                    bookingJob.costEstimateTo
+                  );
+                  request.input("quantity" + i, sql.Int, bookingJob.quantity);
+                  request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
 
-                      request.input("jobId" + i, sql.VarChar, jobId);
-                      request.input("jobName" + i, sql.VarChar, bookingItem.jobName);
-                      request.input("platform" + i, sql.VarChar, bookingItem.platform);
-                      request.input(
-                        "costEstimateFrom" + i,
-                        sql.Float,
-                        bookingItem.costEstimateFrom
-                      );
-                      request.input(
-                        "costEstimateTo" + i,
-                        sql.Float,
-                        bookingItem.costEstimateTo
-                      );
-                      request.input("quantity" + i, sql.Int, bookingItem.quantity);
-                      request.input("jobLink" + i, sql.VarChar, bookingItem.jobLink);
+                  request.query(`
+                        BEGIN
+                          UPDATE [UpReachDB].[dbo].[InfluencerJob]
+                          SET Name_Job = @jobName${i}, Platform_Job = @platform${i}, CostEstimate_From_Job = @costEstimateFrom${i}, CostEstimate_To_Job = @costEstimateTo${i}, Quantity = @quantity${i}, Link = @jobLink${i}
+                          WHERE Job_ID = @jobId${i}
+                        END
+                      `);
 
                       request.query(`
-                        IF NOT EXISTS (SELECT 1 FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = ${
-                          bookingItem?.jobId || null
-                        })
+                        BEGIN
+                          DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${bookingJob.jobId}'
+                        END
+                      `);
+
+                      for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
+                        const formatListId = 'JCFL' + formattedNumber;
+            
+                        const newRequest = new sql.Request();
+                        newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
+                        newRequest.input("jobId" + i, sql.NVarChar, bookingJob?.jobId);
+                        newRequest.input("formatContent" + j , sql.NVarChar, bookingJob?.formatContent[j]);
+            
+                        const formatQuery = `       
+                            BEGIN
+                                INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
+                                (FormatListJob_ID, Job_ID, Format_Id)
+                                VALUES (@formatListId${j}, @jobId${i}, @formatContent${j})
+                            END
+                        `;
+            
+                        await newRequest.query(formatQuery);
+                    }
+
+                    //--------------------------Update Job New ------------------------------------
+
+                } else {     
+                  const jobId = 'IJ' + formattedNumber;
+                  const jobListId = 'IJL' + formattedNumber;
+                  console.log(jobId);
+                  request.input("jobId" + i, sql.NVarChar, jobId);
+                  request.input("jobName"+ i ,sql.NVarChar,bookingJob.jobName);
+                  request.input("platform"+ i ,sql.NVarChar,bookingJob.platform);
+                  request.input("costEstimateFrom"+ i ,sql.Int,bookingJob.costEstimateFrom);
+                  request.input("costEstimateTo"+ i ,sql.Int,bookingJob.costEstimateTo);
+                  request.input("quantity"+ i , sql.Int, bookingJob.quantity);
+                  request.input("jobLink"+ i ,sql.NVarChar, bookingJob.jobLink);
+
+                  request.input("jobListId" + i, sql.NVarChar, jobListId);
+
+                  request.query(`
                         BEGIN
                           INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
                           (Job_Id, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
                           VALUES (@jobId${i}, @jobName${i}, @platform${i}, @costEstimateFrom${i}, @costEstimateTo${i}, @quantity${i}, @jobLink${i})
                         END
-                        ELSE
+                              `);
+
+                  request.query(`
                         BEGIN
-                          UPDATE [UpReachDB].[dbo].[InfluencerJob]
-                          SET Name_Job = @jobName${i}, Platform_Job = @platform${i}, CostEstimate_From_Job = @costEstimateFrom${i}, CostEstimate_To_Job = @costEstimateTo${i}, Quantity = @quantity${i}, Link = @jobLink${i}
-                          WHERE Job_ID = ${bookingItem?.jobId || null}
+                          INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
+                          (JobList_ID, Job_ID, Profile_ID)
+                          VALUES (@jobListId${i}, @jobId${i}, '${filteredData.Profile_ID}')
                         END
-                      `);
-                      if (bookingItem?.jobId) {
-                        await request.query(`
-                      DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${bookingItem?.jobId}'
-                          `);
-                        for (let j = 0; j < booking[i].formatContent?.length; j++) {
-                          const formatListId = Math.floor(
-                            Math.random() * 100000
-                          ).toString();
+                              `);   
 
-                          await request.query(`
-                          BEGIN
-                            INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
-                            (FormatListJob_ID, Job_ID, Format_Id )
-                            VALUES ('${formatListId}', '${bookingItem?.jobId}', '${booking[i].formatContent[j]}')
-                          END
-                        `);
-                          // }
-                        }
-                      }
-                    }
+                      for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
+                        const formatListId = 'JCFL' + formattedNumber;
+                        console.log(jobId,"format");
+                        const newRequest = new sql.Request();
+                        newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
+                        newRequest.input("formatContent" + j, sql.NVarChar, bookingJob?.formatContent[j]);
+            
+                        const formatQuery = `
+                            BEGIN
+                                INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
+                                (FormatListJob_ID, Job_ID, Format_Id)
+                                VALUES (@formatListId${j}, '${jobId}', @formatContent${j})
+                            END
+                        `;
+            
+                        await newRequest.query(formatQuery);
+                  }
+                }  
+              }
 
-                    for (let i = 0; i < jobIds.length; i++) {
-                      const bookingItem = booking[i];
-                      const jobId = jobIds[i];
-                      const jobListId = Math.floor(Math.random() * 100000).toString();
+              for (const jobIdToRemove of idRemoveArray) {
+                const newRequest = new sql.Request();
 
-                      request.input("jobListId" + i, sql.VarChar, jobListId);
+                newRequest.input("jobIdToRemove", sql.NVarChar, jobIdToRemove);
 
-                      request.query(`
-                        IF NOT EXISTS (SELECT 1 FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Job_ID = ${
-                          bookingItem?.jobId || null
-                        })
-                        BEGIN
-                            INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
-                            (JobList_ID, Job_ID, Profile_ID)
-                            VALUES (@jobListId${i}, '${jobId}', '${filteredData.Profile_ID}')
-                        END
-                            `);
-                    }
-                    for (const jobIdToRemove of idRemoveArray) {
-                      request.query(`
-                            DELETE FROM [UpReachDB].[dbo].[InfluencerJob]
-                            WHERE Job_ID = '${jobIdToRemove}'
-                          `);
-                      request.query(`
-                          DELETE FROM [UpReachDB].[dbo].[InfluencerJobList]
-                          WHERE Job_ID = '${jobIdToRemove}'
-                        `);
-                    }
-                    if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
-                      for (let i = 0; i < chart.dataFollower.length; i++) {
-                        const followerListId = Math.floor(
-                          Math.random() * 100000
-                        ).toString();
-                        const dataFollowerObject = chart.dataFollower[i];
-                        const date = dataFollowerObject.date;
-                        const quantity = dataFollowerObject.value;
-                        await request.query(`
+                await newRequest.query(
+                  `
+                    DELETE FROM [UpReachDB].[dbo].[InfluencerJobList]
+                    WHERE Job_ID = @jobIdToRemove
+                `
+                );
+
+                await newRequest.query(
+                  `
+                    DELETE FROM [UpReachDB].[dbo].[JobContentFormatList]
+                    WHERE Job_ID = @jobIdToRemove
+                `
+                );
+
+                await newRequest.query(
+                  `
+                    DELETE FROM [UpReachDB].[dbo].[InfluencerJob]
+                    WHERE Job_ID = @jobIdToRemove
+                `
+                );
+              }
+
+              if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
+                for (let i = 0; i < chart.dataFollower.length; i++) {
+                  const followerListId = 'AFML' + formattedNumber;
+                  const dataFollowerObject = chart.dataFollower[i];
+                  const date = dataFollowerObject.date;
+                  const quantity = dataFollowerObject.value;
+                  await request.query(`
                     BEGIN
                       INSERT INTO [UpReachDB].[dbo].[AudienceFollowerMonthList]
                       (AudienceFollowerMonthList_ID, AudienceFollowerMonth, Platform_ID, Quantity )
-                      VALUES ('${followerListId}', '${date}', '${platformId}', '${quantity}')
+                      VALUES ('${followerListId}', '${date}', '${filteredData.Platform_ID}', '${quantity}')
                     END
                     `);
-                      }
-                    }
-        
-                    if (chart.dataGender && Array.isArray(chart.dataGender)) {
-                      const genderIdConvert = new Map([
-                        ["Male", "AG001"],
-                        ["Female", "AG002"],
-                      ]);
-                      for (let i = 0; i < chart.dataGender.length; i++) {
-                        const genderListId = Math.floor(
-                          Math.random() * 100000
-                        ).toString();
-                        const dataGenderObject = chart.dataGender[i];
-                        const genderId = genderIdConvert.get(dataGenderObject.sex);
-                        const quantity = dataGenderObject.value;
-        
-                        await request.query(`
+                }
+              }
+
+              if (chart.dataGender && Array.isArray(chart.dataGender)) {
+                const genderIdConvert = new Map([
+                  ["Male", "AG001"],
+                  ["Female", "AG002"],
+                ]);
+                for (let i = 0; i < chart.dataGender.length; i++) {
+                  const genderListId = 'AGL' + formattedNumber;
+                  const dataGenderObject = chart.dataGender[i];
+                  const genderId = genderIdConvert.get(dataGenderObject.sex);
+                  const quantity = dataGenderObject.value;
+
+                  await request.query(`
                     BEGIN
                       INSERT INTO [UpReachDB].[dbo].[AudienceGenderList]
                       (AudienceGenderList_ID, AudienceGenderId, Platform_ID, Quantity )
-                      VALUES ('${genderListId}', '${genderId}', '${platformId}', '${quantity}')
+                      VALUES ('${genderListId}', '${genderId}', '${filteredData.Platform_ID}', '${quantity}')
                     END
                     `);
-                      }
-                    }
-        
-                    if (chart.dataAge && Array.isArray(chart.dataAge)) {
-                      const ageIdConvert = new Map([
-                        ["0-18", "AAI001"],
-                        ["19-25", "AAI002"],
-                        ["26-40", "AAI003"],
-                        ["41-60", "AAI004"],
-                      ]);
-                      for (let i = 0; i < chart.dataAge.length; i++) {
-                        const ageListId = Math.floor(Math.random() * 100000).toString();
-                        const dataAgeObject = chart.dataAge[i];
-                        const ageId = ageIdConvert.get(dataAgeObject.age);
-                        const quantity = dataAgeObject.value;
-        
-                        await request.query(`
+                }
+              }
+
+              if (chart.dataAge && Array.isArray(chart.dataAge)) {
+                const ageIdConvert = new Map([
+                  ["0-18", "AAI001"],
+                  ["19-25", "AAI002"],
+                  ["26-40", "AAI003"],
+                  ["41-60", "AAI004"],
+                ]);
+                for (let i = 0; i < chart.dataAge.length; i++) {
+                  const ageListId = 'AARL' + formattedNumber;
+                  const dataAgeObject = chart.dataAge[i];
+                  const ageId = ageIdConvert.get(dataAgeObject.age);
+                  const quantity = dataAgeObject.value;
+
+                  await request.query(`
                     BEGIN
                       INSERT INTO [UpReachDB].[dbo].[AudienceAgeRangeList]
                       (AudienceAgeList_ID, AudienceAge_ID, Platform_ID, Quantity )
-                      VALUES ('${ageListId}', '${ageId}', '${platformId}', '${quantity}')
+                      VALUES ('${ageListId}', '${ageId}', '${filteredData.Platform_ID}', '${quantity}')
                     END
                     `);
-                      }
-                    }
-        
-                    if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
-                      for (let i = 0; i < chart.dataLocation.length; i++) {
-                        const locationListId = Math.floor(
-                          Math.random() * 100000
-                        ).toString();
-                        const dataLocationObject = chart.dataLocation[i];
-                        const location = dataLocationObject.location;
-                        const quantity = dataLocationObject.value;
-                        await request.query(`
+                }
+              }
+
+              if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
+                for (let i = 0; i < chart.dataLocation.length; i++) {
+                  const locationListId = 'IALL' + formattedNumber;
+                  const dataLocationObject = chart.dataLocation[i];
+                  const location = dataLocationObject.location;
+                  const quantity = dataLocationObject.value;
+                  await request.query(`
                     BEGIN
                       INSERT INTO [UpReachDB].[dbo].[AudienceLocationList]
                       (AudienceLocationList_ID, AudienceLocation, Platform_ID, Quantity )
-                      VALUES ('${locationListId}', N'${location}', '${platformId}', '${quantity}')
+                      VALUES ('${locationListId}', N'${location}', '${filteredData.Platform_ID}', '${quantity}')
                     END
                     `);
-                      }
-                    }
-        
+                }
+              }
+            }
           }
 
           return res.status(201).json({
             message: "Update Successfully",
-            date: editDate,
+            date: editDate, 
           });
         }
       );
@@ -501,15 +583,35 @@ async function updateInfo(req, res, next) {
 
 async function getAllInfluencer(req, res, next) {
   try {
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    console.log("page " + page);
+    console.log("limit " + limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
     const result = await influService.getAllInfluencer();
     if (!result) {
-      console.log("FAILS");
       return res.json({ message: "Fails " });
     }
-    return res.status(200).json({
-      message: "Search thành công",
-      data: result,
-    });
+    const JsonData = {};
+    JsonData.data = result.slice(startIndex, endIndex);
+    JsonData.TotalPage =
+      result.length / 12 > parseInt(result.length / 12)
+        ? parseInt(result.length / 12) + 1
+        : parseInt(result.length / 12);
+    if (endIndex < result.length) {
+      JsonData.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+    if (startIndex > 0) {
+      JsonData.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+    return res.json({ JsonData: JsonData });
   } catch (err) {
     console.log(err);
     return res.json({ message: "Lỗi ", err });
@@ -530,27 +632,66 @@ async function searchInfluencer(req, res, next) {
       contentFormats,
       audienceGender,
       audienceLocation,
+      followerFrom,
+      followerTo,
+      postsPerWeekFrom,
+      postsPerWeekTo,
+      engagementTo,
+      engagementFrom,
+      audienceAge,
     } = req.body;
-
-    const updatePointSearch = await influService.updatePointSearch(
-      clientId,
-      pointSearch
+    // Update lại điểm khi search thông tin Influencer
+    // const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
+    // if (updatePointSearch.rowsAffected) {
+    // const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
+    // 	return res.status(200).json({
+    // 	message: "Search thành công",
+    // 	data: result
+    // });
+    // } else {
+    // 	return res.json({ message: "Update Thất bại" });
+    // }
+    const result = await influService.searchInfluencer(
+      costEstimateFrom,
+      costEstimateTo,
+      ageFrom,
+      ageTo,
+      contentTopic,
+      nameType,
+      contentFormats,
+      audienceGender,
+      audienceLocation,
+      followerFrom,
+      followerTo,
+      postsPerWeekFrom,
+      postsPerWeekTo,
+      engagementTo,
+      engagementFrom,
+      audienceAge
     );
-    if (updatePointSearch.rowsAffected) {
-      const result = await influService.searchInfluencer(
-        costEstimateFrom,
-        costEstimateTo,
-        ageFrom,
-        ageTo,
-        contentTopic,
-        nameType,
-        contentFormats,
-        audienceGender,
-        audienceLocation
-      );
+    return res.status(200).json({
+      message: "Search thành công",
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
+  }
+}
+// Trừ điểm khi xem Thông tin của Influencer tại HomePage
+async function reportInfluencer(req, res, next) {
+  try {
+    const { email, clientId, pointReport } = req.body;
+    const updatePointReport = await influService.updatePointReport(
+      clientId,
+      pointReport
+    );
+    if (updatePointReport.rowsAffected) {
+      const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+      const data = common.formatResponseInfluencerToObject(infoInfluencer);
       return res.status(200).json({
         message: "Search thành công",
-        data: result,
+        data: data,
       });
     } else {
       return res.json({ message: "Update Thất bại" });
@@ -558,6 +699,311 @@ async function searchInfluencer(req, res, next) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Lỗi", err });
+  }
+}
+
+async function dataReportInfluencer(req, res, next) {
+  try {
+    const { userId, email, role } = req.body;
+    const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+    const data = common.formatResponseInfluencerToArray(infoInfluencer);
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+
+      const request = new sql.Request();
+
+      const dataPromise = data.map(async (info) => {
+        try {
+          const result = await request.query(`
+          SELECT Date_edit FROM [UpReachDB].[dbo].[KOLs] WHERE KOLs_ID = '${info.influencerId}'
+        `);
+          return { ...info, dateEdit: result.recordset[0].Date_edit };
+        } catch (error) {
+          console.error("Error querying database:", error);
+          throw error;
+        }
+      });
+
+      Promise.all(dataPromise).then((results) => {
+        results.forEach((result) => {
+          if (result.Image[0] === null) {
+            result.Image.splice(0, 1);
+          }
+        });
+        return res.json({
+          Influencer: results,
+        });
+      });
+    });
+  } catch (error) {
+    return res.json({ message: "Lỗi " + error });
+  }
+}
+
+async function addInfluencer(req, res, next) {
+  try {
+    const image = req.body.image[0];
+    const uploadedImages = [];
+    if (image.thumbUrl) {
+      const img = await cloudinary.uploader.upload(image.thumbUrl, {
+        public_id: image.uid,
+        resource_type: "auto",
+      });
+      uploadedImages.push({
+        userId: image.userId,
+        id: image.uid,
+        url: img.url,
+      });
+    } else
+      uploadedImages.push({
+        userId: image.userId,
+        id: image.uid,
+        url: image.url,
+      });
+    const { nickname, location, gender, age, intro, typeId, relationship } =
+      req.body.informationDetails;
+    const { emailContact, phone, engagement, post, costfrom, costTo } =
+      req.body.overviewDetails;
+    const {
+      instagramLink,
+      instagramFollower,
+      facebookLink,
+      facebookFollower,
+      youtubeLink,
+      youtubeFollower,
+      tiktokLink,
+      tiktokFollower,
+    } = req.body.socialDetails;
+    const idInflu = req.body.idInflu;
+    const followers =
+      instagramFollower + facebookFollower + youtubeFollower + tiktokFollower;
+    const { name, email } = req.body.influencerDetail;
+    const user = await userService.getUserByEmail(email);
+    const now = new Date();
+    const dateNow = now.toISOString();
+    if (
+      !(await addInfluencerProfile(
+        name,
+        nickname,
+        emailContact,
+        age,
+        phone,
+        gender,
+        intro,
+        location,
+        uploadedImages.url,
+        relationship,
+        costfrom,
+        costTo,
+        followers,
+        typeId
+      ))
+    ) {
+      return res.json({
+        status: "False",
+        message: "Insert Data Profile Fails",
+      });
+    }
+    if (!(await addDataToContentTopic(req.body.contentDetails))) {
+      return res.json({
+        status: "False",
+        message: "Insert Data To TopicContent Fails",
+      });
+    }
+    if (
+      !(await addInfluencerPlatformInfomation(
+        facebookLink,
+        instagramLink,
+        tiktokLink,
+        youtubeLink,
+        facebookFollower,
+        instagramFollower,
+        tiktokFollower,
+        youtubeFollower,
+        engagement,
+        post
+      ))
+    ) {
+      return res.json({
+        status: "False",
+        message: "Insert Data PlatformInfomation Fails",
+      });
+    }
+
+    if (!(await addInfluencerKols(user.userId, 0, dateNow))) {
+      return res.json({ status: "False", message: "Insert Data Kols Fails" });
+    }
+
+    await influModel.findByIdAndUpdate(idInflu, {
+      nickname: nickname,
+    });
+    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+    return res.json({
+      status: "True",
+      message: "Insert Success Influencer",
+    });
+  } catch (err) {
+    // Xử lý lỗi
+    res.json({ status: "False", message: "Lỗi" });
+  }
+}
+
+async function addInfluencerProfile(
+  fullName,
+  nickName,
+  email,
+  age,
+  phone,
+  gender,
+  bio,
+  address,
+  avatar,
+  relationship,
+  costEstimateFrom,
+  costEstimateTo,
+  followers,
+  typeId
+) {
+  try {
+    // Thực hiện insert
+    const checkAddInfluencerProfile =
+      await influService.insertInfluencerProfile(
+        fullName,
+        nickName,
+        email,
+        age,
+        phone,
+        gender,
+        bio,
+        address,
+        avatar,
+        relationship,
+        costEstimateFrom,
+        costEstimateTo,
+        followers,
+        typeId
+      );
+    if (checkAddInfluencerProfile.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+async function addDataToContentTopic(dataArray) {
+  try {
+    const checkAddDataToContentTopic =
+      await influService.insertDatatoContentTopic(dataArray);
+    if (checkAddDataToContentTopic.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function addInfluencerPlatformInfomation(
+  linkFB,
+  linkInsta,
+  linkTiktok,
+  linkYoutube,
+  followFB,
+  followInsta,
+  followTikTok,
+  followYoutube,
+  engagement,
+  postsPerWeek
+) {
+  try {
+    // Thực hiện insert
+    const checkAddInfluencerPlatformInfomation =
+      await influService.insertInfluencerPlatformInformation(
+        linkFB,
+        linkInsta,
+        linkTiktok,
+        linkYoutube,
+        followFB,
+        followInsta,
+        followTikTok,
+        followYoutube,
+        engagement,
+        postsPerWeek
+      );
+    if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+async function addInfluencerKols(userId, isPublish, dateEdit) {
+  try {
+    // Thực hiện insert
+    const checkAddInfluencerKols = await influService.insertKols(
+      userId,
+      isPublish,
+      dateEdit
+    );
+    if (checkAddInfluencerKols.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+async function createInflu(req, res, next) {
+  try {
+    const { nickname, email } = req.body;
+    const usernameCheck = await influModel.findOne({ nickname });
+    const emailCheck = await influModel.findOne({ email });
+    if (usernameCheck) {
+      return res.json({ msg: "Nick name already used", status: false });
+    }
+    if (emailCheck) {
+      return res.json({ msg: "Email already used", status: false });
+    }
+    const influ = await influModel.create({
+      email: email,
+      nickname: nickname,
+    });
+    return res.json({ status: true, data: influ });
+  } catch (err) {
+    return res.json({ message: " " + err });
+  }
+}
+
+async function getDataForChart(req, res, next) {
+  try {
+    const { influencerId } = req.body;
+    const response = await influService.getChartDataInfluencer(influencerId);
+    const result = common.formatChartDataInfluencer(response);
+    if (!response) {
+      return res.json({ message: "Fails " });
+    }
+    return res.status(200).json({
+      message: "get data getAllInfluencer success",
+      data: result,
+    });
+  } catch (error) {
+    return res.json({ message: " " + error });
   }
 }
 
@@ -571,7 +1017,7 @@ async function getJobsInfluencer(req, res, next) {
       }
       const request = new sql.Request();
       const selectedKOLs = await request.query(
-        `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}' AND isPublish = 1`
+        `SELECT Top 1 * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}' ORDER BY Date_edit DESC`
       );
       request.query(
         `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`,
@@ -588,30 +1034,42 @@ async function getJobsInfluencer(req, res, next) {
             const queryResultJob = await request.query(
               `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
             );
-            selectedJobs.push(queryResultJob.recordset[0]);
+            selectedJobs.push(queryResultJob?.recordset[0]);
           }
 
           const selectedFormats = [];
           for (const job_Id of jobIds) {
-            const jobIdToFind = job_Id.Job_Id;
+            const jobIdToFind = job_Id?.Job_Id;
             const queryResultFormat = await request.query(
               `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`
             );
 
             selectedFormats.push({
-              Format_Id: queryResultFormat.recordset,
+              Format_Id: queryResultFormat?.recordset,
               Job_Id: jobIdToFind,
             });
           }
-          const result = {};
+          const selectedJobsListId = [];
+          for (const job_Id of jobIds) {
+            const jobIdToFind = job_Id.Job_Id;
+            const queryResultJobListId = await request.query(
+              `SELECT JobList_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Job_ID = '${jobIdToFind}'`
+            );
 
-          selectedJobs.forEach((job) => {
-            result[job.Job_ID] = {
+            selectedJobsListId.push({
+              JobList_ID: queryResultJobListId?.recordset[0]?.JobList_ID,
+            });
+          }
+
+          const result = {};
+          selectedJobs.forEach((job, index) => {
+            result[job?.Job_ID] = {
               ...job,
               Format_Id:
                 selectedFormats
-                  .find((format) => format.Job_Id === job.Job_ID)
-                  ?.Format_Id?.map((item) => item.Format_Id) || [],
+                  .find((format) => format?.Job_Id === job?.Job_ID)
+                  ?.Format_Id?.map((item) => item?.Format_Id) || [],
+              JobList_ID: selectedJobsListId[index]?.JobList_ID || "",
             };
           });
 
@@ -641,7 +1099,7 @@ async function getImagesInfluencer(req, res, next) {
 
       const request = new sql.Request();
       const selectedKOLs = await request.query(
-        `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}' AND isPublish = 1`
+        `SELECT Top 1 * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}' ORDER BY Date_edit DESC`
       );
       request.query(
         `SELECT Image_ID FROM [UpReachDB].[dbo].[ImageKOLs] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`,
@@ -806,277 +1264,17 @@ async function getSelectedLocations(request, selectedIds) {
   });
 }
 
-async function reportInfluencer(req, res, next) {
-  try {
-    const { email, clientId, pointReport } = req.body;
-    const updatePointReport = await influService.updatePointReport(
-      clientId,
-      pointReport
-    );
-    if (updatePointReport.rowsAffected) {
-      const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-      const data = common.formatResponseInfluencerToObject(infoInfluencer);
-      return res.status(200).json({
-        message: "Search thành công",
-        data: data,
-      });
-    } else {
-      return res.json({ message: "Update Thất bại" });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Lỗi", err });
-  }
-}
-
-async function dataReportInfluencer(req, res, next) {
-  try {
-    const { userId, email, role } = req.body;
-    const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-    const data = common.formatResponseInfluencerToArray(infoInfluencer);
-    sql.connect(config, async (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: " " + err });
-      }
-    const request = new sql.Request();
-    
-    const dataPromise = data.map(async (info) => {
-      try {
-        const result = await request.query(`
-          SELECT Date_edit FROM [UpReachDB].[dbo].[KOLs] WHERE KOLs_ID = '${info.influencerId}'
-        `);
-        
-        return { ...info, dateEdit: result.recordset[0].Date_edit };
-      } catch (error) {
-        // Xử lý lỗi truy vấn tại đây
-        console.error("Error querying database:", error);
-        throw error; // Ném lỗi để báo hiệu rằng Promise đã thất bại
-      }
-    });
-    
-    Promise.all(dataPromise)
-      .then((results) => {
-        return res.json({
-          Influencer: results,
-        });
-      })
-    
-    
-    
-  });
- 
-  } catch (error) {
-    return res.json({ message: "Lỗi " + error });
-  }
-}
-
-async function addInfluencer(req, res, next) {
-  try {
-    const { nickname, location, gender, age, intro, typeId, relationship } =
-      req.body.informationDetails;
-    const { emailContact, phone, engagement, post, costfrom, costTo } =
-      req.body.overviewDetails;
-    const {
-      instagramLink,
-      instagramFollower,
-      facebookLink,
-      facebookFollower,
-      youtubeLink,
-      youtubeFollower,
-      tiktokLink,
-      tiktokFollower,
-    } = req.body.socialDetails;
-    const followers =
-      instagramFollower + facebookFollower + youtubeFollower + tiktokFollower;
-    // const {name,email} = req.body.influencerDetail
-    // const user = await userService.getUserByEmail(email);
-    const now = Date.now();
-    if (
-      !(await addInfluencerProfile(
-        "thien",
-        nickname,
-        emailContact,
-        age,
-        phone,
-        gender,
-        intro,
-        location,
-        relationship,
-        costfrom,
-        costTo,
-        followers,
-        typeId
-      ))
-    ) {
-      return res.json({
-        status: "False",
-        message: "Insert Data Profile Fails",
-      });
-    }
-    if (!(await addDataToContentTopic(req.body.contentDetails))) {
-      return res.json({
-        status: "False",
-        message: "Insert Data To TopicContent Fails",
-      });
-    }
-    if (
-      !(await addInfluencerPlatformInfomation(
-        facebookLink,
-        instagramLink,
-        tiktokLink,
-        youtubeLink,
-        facebookFollower,
-        instagramFollower,
-        tiktokFollower,
-        youtubeFollower,
-        engagement,
-        post
-      ))
-    ) {
-      return res.json({
-        status: "False",
-        message: "Insert Data PlatformInfomation Fails",
-      });
-    }
-
-    if (!(await addInfluencerKols("1", 0, now))) {
-      return res.json({ status: "False", message: "Insert Data Kols Fails" });
-    }
-
-    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-    return res.json({ status: "True", message: "Insert Success Influencer" });
-  } catch (err) {
-    // Xử lý lỗi
-    res.json({ status: "False", message: "Lỗi" });
-  }
-}
-
-async function addInfluencerProfile(
-  fullName,
-  nickName,
-  email,
-  age,
-  phone,
-  gender,
-  bio,
-  address,
-  relationship,
-  costEstimateFrom,
-  costEstimateTo,
-  followers,
-  typeId
-) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerProfile =
-      await influService.insertInfluencerProfile(
-        fullName,
-        nickName,
-        email,
-        age,
-        phone,
-        gender,
-        bio,
-        address,
-        relationship,
-        costEstimateFrom,
-        costEstimateTo,
-        followers,
-        typeId
-      );
-    if (checkAddInfluencerProfile.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-}
-
-async function addDataToContentTopic(dataArray) {
-  try {
-    const checkAddDataToContentTopic =
-      await influService.insertDatatoContentTopic(dataArray);
-    if (checkAddDataToContentTopic.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-async function addInfluencerPlatformInfomation(
-  linkFB,
-  linkInsta,
-  linkTiktok,
-  linkYoutube,
-  followFB,
-  followInsta,
-  followTikTok,
-  followYoutube,
-  engagement,
-  postsPerWeek
-) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerPlatformInfomation =
-      await influService.insertInfluencerPlatformInformation(
-        linkFB,
-        linkInsta,
-        linkTiktok,
-        linkYoutube,
-        followFB,
-        followInsta,
-        followTikTok,
-        followYoutube,
-        engagement,
-        postsPerWeek
-      );
-    if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-}
-
-async function addInfluencerKols(userId, isPublish, dateEdit) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerKols = await influService.insertKols(
-      userId,
-      isPublish,
-      dateEdit
-    );
-    if (checkAddInfluencerKols.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-}
-
 // module.exports = router;
 module.exports = {
+  getDataForChart,
   updateInfo,
   searchInfluencer,
   getAllInfluencer,
   reportInfluencer,
   dataReportInfluencer,
   addInfluencer,
+  createInflu,
   getJobsInfluencer,
-  getImagesInfluencer,
   getAudienceInfluencer,
+  getImagesInfluencer,
 };

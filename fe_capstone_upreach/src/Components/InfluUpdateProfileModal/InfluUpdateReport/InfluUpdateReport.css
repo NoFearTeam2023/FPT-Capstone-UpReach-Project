@@ -1,0 +1,40 @@
+.influ-update-report-layout {
+	width: 100%;
+	height: 600px;
+	padding: 20px 30px;
+	overflow: hidden;
+	position: relative;
+}
+
+.ant-tabs-top > .ant-tabs-nav {
+	margin-bottom: 0 !important;
+}
+.ant-tabs-card,
+.ant-tabs-content-holder,
+.ant-tabs-tabpane,
+.ant-tabs-tabpane-active,
+.ant-tabs-content,
+.ant-tabs-content-top {
+	height: 100% !important;
+}
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+	background: #ccc;
+}
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+	background: #fff;
+}
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+	margin: -2px;
+}
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-operations {
+	display: none;
+}
+.ant-tabs .ant-tabs-tab:hover {
+	color: rgb(175, 175, 175);
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+	color: #000000bf;
+}
+
+

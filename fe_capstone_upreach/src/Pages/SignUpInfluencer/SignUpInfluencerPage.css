@@ -1,0 +1,66 @@
+body{
+    height: 100vh;
+    font-family: Volkhov;
+}
+#content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0;
+}
+
+.form-content{
+    margin: 0 auto;
+    width: 30%;
+    display: block;
+}
+.title-signup{
+    padding-top: 20%;
+    font-size: 185%;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 12%;
+}
+.signUp-btn{
+    min-height: 50px;
+    padding: 0 4px;
+    appearance: none;
+    border-radius: 8px;
+    width: calc(100% - 10px);
+    margin-bottom: 3%;
+}
+.signUp-submit{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    font-weight: 600;
+    font-size: 95%;
+    background: black;
+    color: white;
+    width: 100%;
+    padding: 28px;
+    margin: 0 auto 4% auto;
+
+}
+/* Verifu Influencer Register */
+.verify-influencer-background{
+    padding: 60px;
+    height: 100vh;
+    background: white;
+    position: relative;
+}
+.verify-influencer-bg{
+    background-color: #fff;
+    width: 40vw;
+    height: 60vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    border-radius: 2rem;
+    box-shadow: 0 8px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+
+}
+
+

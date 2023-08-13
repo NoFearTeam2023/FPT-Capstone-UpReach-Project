@@ -1,0 +1,111 @@
+.update-report-audience-layout {
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #fff;
+	padding: 50px 0px 50px 60px;
+	display: flex;
+	border-bottom-right-radius: 20px;
+}
+
+.update-report-audience-layout:hover::-webkit-scrollbar-thumb {
+	z-index: 2;
+	visibility: visible;
+}
+
+.update-report-audience-layout::-webkit-scrollbar {
+	width: 8px;
+}
+
+.update-report-audience-layout::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 5px;
+}
+
+.update-report-audience-layout::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: #bdbdbd;
+	z-index: 1;
+	visibility: hidden;
+}
+
+.update-report-audience-layout::-webkit-scrollbar-thumb:hover {
+	background: #858585;
+}
+
+.update-report-audience-layout .report-audience-bg {
+	width: 90%;
+	height: 300px;
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: #ccc 1px solid;
+	border-radius: 0 20px 20px 20px;
+	margin-bottom: 50px;
+}
+
+.update-report-audience-layout .audience-follower-chart,
+.update-report-audience-layout .audience-gender-chart {
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.update-report-audience-layout .audience-follower-chart .follower-chart {
+	width: 100%;
+	height: 90%;
+}
+
+.update-report-audience-layout .audience-gender-chart .gender-chart {
+	width: fit-content;
+	height: 230px;
+	display: flex;
+	flex-direction: column;
+}
+
+.update-report-audience-layout .audience-age-chart,
+.update-report-audience-layout .audience-location-chart {
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.update-report-audience-layout .audience-age-chart .age-chart,
+.update-report-audience-layout .audience-location-chart .location-chart {
+	width: 100%;
+	height: 90%;
+}
+
+.update-report-audience-layout .import-excel-follower {
+	 width: 0.1px;
+	 height: 0.1px;
+	 opacity: 0;
+	 overflow: hidden;
+	 position: absolute;
+	 z-index: -1;
+  }
+  .update-report-audience-layout .file-label{
+	width:110px;
+	position: absolute;
+	left: 8px;
+	top:-30px;
+	z-index: 2;
+	outline: none;
+	background-color:#bdbdbd ;
+	cursor: pointer;
+	padding: 2px 5px;
+	text-align: center;
+	border-radius: 8px 8px 0 0;
+  }
+  .update-report-audience-layout .import-excel-follower + .file-label * {
+	pointer-events: none;
+  }

@@ -1,0 +1,20 @@
+.booking-page-bg {
+    width: 100%;
+	font-size: 24px;
+	font-weight: bold;
+	background-color: #F8F9FF;
+	display: flex;
+}
+
+.booking-page-bg .booking-page-sidebar {
+    width: 13%;
+    height: 100vh;
+}
+
+
+.booking-page-content {
+    width: 87%;
+    height: 100vh;
+    padding-top: 90px;
+    overflow: hidden;
+}

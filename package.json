@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "rc-steps": "^6.0.0",
     "otp-generator": "^4.0.1",
     "otplib": "^12.0.1"
   }

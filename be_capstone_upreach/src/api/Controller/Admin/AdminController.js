@@ -121,12 +121,12 @@ const router = express.Router();
               const result = {};
 
               selectedJobs.forEach((job) => {
-                result[job.Job_ID] = {
+                result[job?.Job_ID] = {
                   ...job,
                   Format_Id:
                     selectedFormats
-                      .find((format) => format.Job_Id === job.Job_ID)
-                      ?.Format_Id?.map((item) => item.Format_Id) || [],
+                      .find((format) => format?.Job_Id === job?.Job_ID)
+                      ?.Format_Id?.map((item) => item?.Format_Id) || [],
                 };
               });
               
@@ -192,6 +192,7 @@ const router = express.Router();
         WHERE User_ID = '${userId}' AND isPublish = 1
         END
         `)
+
         const selectedProfileID = await  request.query(`
         BEGIN
         SELECT Profile_ID FROM [UpReachDB].[dbo].[KOLs] 
@@ -204,17 +205,18 @@ const router = express.Router();
         WHERE User_ID = '${userId}' AND isPublish = 1
         END
         `)
-        const kolIdObject = selectedKOLsID.recordset[0];
-        const kolObject2 = {...kolIdObject}
-        const kolId = kolObject2.KOLs_ID;
-        const profileIdObject = selectedProfileID.recordset[0];
-        const profileObject2 = {...profileIdObject}
-        const profileId = profileObject2.Profile_ID;
-        const platformIdObject = selectedPlatformID.recordset[0];
-        const platformObject2 = {...platformIdObject}
-        const platformId = platformObject2.Platform_ID;
+        const kolObject = selectedKOLsID.recordset[0];
+        const kolIdObject = {...kolObject}
+        const kolId = kolIdObject.KOLs_ID;
+        const profileObject = selectedProfileID.recordset[0];
+        const profileIdObject = {...profileObject}
+        const profileId = profileIdObject.Profile_ID;
+        const platformObject = selectedPlatformID.recordset[0];
+        const platformIdObject = {...platformObject}
+        const platformId = platformIdObject.Platform_ID;
         
-        await request.query(`BEGIN
+        await request.query(`
+        BEGIN
         UPDATE [UpReachDB].[dbo].[HistoryViewInfluencerReport] 
         SET KOLs_ID = '${kolsId}'
         WHERE KOLs_ID = '${kolId}'

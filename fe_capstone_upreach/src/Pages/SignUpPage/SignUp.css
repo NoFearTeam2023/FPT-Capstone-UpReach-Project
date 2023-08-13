@@ -1,0 +1,112 @@
+.heightSignUpBtn {
+    height: 40px;
+}
+
+.signUpLayout p {
+    margin-bottom: 0 !important;
+}
+
+.signUpLayout {
+    width: 100%;
+    text-align: center;
+}
+
+.signUpLayout form{
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);  
+    position: absolute; 
+    
+}
+
+.signUpTitle{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.signUpSubTitle {
+    display: flex;
+}
+
+.signUpSubTitleContent {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.signUpSubChar {
+    color: red;
+}
+
+.signUpGoogle {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    background-color: #fff;
+    border: #000 1px solid;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 45px;
+    
+}
+.GoogleIcon{
+    padding: 5px;
+}
+
+.signUpBorders{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.signUpBorder{
+    border-top: #000 1px solid;
+    width: 100%;
+}
+
+.signUpTypeBtn{
+
+}
+
+.signUpBtn {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #96CBF0, #FBC7D4);   
+    height: 45px;
+    outline: none;
+}
+.signUpBtn:hover {
+ opacity: 0.7;
+ transition: 0.3 ease;
+}
+.signUpBtn:active {
+transform: scale(0.9);
+   }
+
+.signUpBtnText{
+    font-weight: 600;
+    font-size: 20px;
+    color: #464646;
+    /* font-family: 'regular'; */
+}
+.signUpBtn:hover .logInBtnText{
+    color: #464646;
+
+}
+
+.signUpToLogin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loginLink a{
+    margin-left: 5px;
+    text-decoration: none;
+    color: #7f7f7f;
+}
+.loginLink:hover{
+    text-decoration: underline #7f7f7f;
+   
+}

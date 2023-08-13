@@ -1,0 +1,16 @@
+.influ-images{
+    width: 100%;
+    height: 300px;
+    padding: 25px 50px;
+    border-bottom: #ccc 1px solid;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.influ-images .influ-image {
+    width: 26%;
+    height: 100%;
+    border-radius: 30px;
+}
+

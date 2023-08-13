@@ -1,19 +1,72 @@
 .HeaderHomepage {
+    justify-content: space-between;
+    display: flex;
     position: fixed;
     top: 0;
+    padding: 0 60px 0 60px;
     height: 60px;
     width: 100%;
     background-color: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    padding-top: 5px;
     z-index: 1000;
 }
+.HeaderHomepage .headerContent {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    align-items: center;
+}
+.logoText {
+    font-family: 'Volkhov', serif;
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #2196F3, #F44336);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-.HeaderHomepage .Menu {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 22px;
-    line-height: 24px;
+
+.HeaderHomepage .navBar {
+    display: flex;
+    gap: 40px;
+}
+
+.HeaderHomepage .navBar .nav {
     color: #222222;
+    cursor: pointer;
+}
+.nav:hover{
+    text-decoration: underline;
+}
+
+.HeaderHomepage .authBtn {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    width:fit-content;
+    gap: 5px;
+}
+
+.my-list-btn{
+    border-radius: 5px;
+    margin-right: 20px;
+}
+.ant-dropdown-trigger{
+    height: 45px;
+    width: 200px;
+    border-radius: 45px;
+}
+.joinBrandBtn{
+    color: #cd41b5;
+    border: 0.5px solid #cd41b5;
+}
+.joinInfluBtn{
+    background-color: #cd41b5;
+    color: #FFF;
+}
+
+.joinInfluBtn:hover{
+    background-color: #FFF;
 }

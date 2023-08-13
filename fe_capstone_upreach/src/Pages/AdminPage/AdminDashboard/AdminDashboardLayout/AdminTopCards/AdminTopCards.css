@@ -1,0 +1,113 @@
+.admin-top-cards-bg {
+    width: 100%;
+    height: 100%;
+    padding: 0 16px;
+    position: relative;
+}
+
+.admin-top-card1 {
+    position: absolute;
+    left: 310px;
+}
+.admin-top-card1 .admin-top-card-contents p{
+    z-index: 1;
+    transition: 0.5s;
+}
+
+.admin-top-card1 .admin-top-card-contents::before {
+    content: "";
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 50%;
+    background-image: linear-gradient(to top right, #f49898, #ff0000d6);
+    position: absolute;
+    left: 50%;
+    top: 50px;
+    transform: scale(0);
+    transition: transform 0.8s ease 0s;
+  }
+.admin-top-card1 .admin-top-card-contents:hover::before {
+    transform: scale(3);
+  }
+
+
+/* .admin-top-card1 .admin-top-card-contents:hover {
+    transform: translateY(-2px) scale(1.004) translateZ(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
+      0 2px 4px rgba(206, 178, 252, 0.48);
+    background-color: #F57070;
+    color: #FFF;
+} */
+
+.admin-top-card1 .admin-top-card-contents:hover p {
+    color: #FFF;
+}
+
+
+.admin-top-card2 {
+    position: absolute;
+    top: 65px;;
+}
+
+.admin-top-card2 .admin-top-card-contents:hover {
+    transform: translateY(-2px) scale(1.004) translateZ(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
+      0 2px 4px rgba(206, 178, 252, 0.48);
+    background-color: #599BE7;
+    color: #FFF;
+}
+
+.admin-top-card2 .admin-top-card-contents:hover p {
+    color: #FFF;
+}
+
+.admin-top-card3 {
+    position: absolute;
+    left: 605px;
+    top: 115px;
+}
+
+.admin-top-card3 .admin-top-card-contents:hover {
+    transform: translateY(-2px) scale(1.004) translateZ(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
+      0 2px 4px rgba(206, 178, 252, 0.48);
+    background-color: #ecca50d4;
+    color: #FFF;
+
+}
+
+.admin-top-card3 .admin-top-card-contents:hover p {
+    color: #FFF;
+}
+
+.admin-top-cards-bg .ant-ribbon-wrapper .ant-ribbon {
+    --display: none;
+    position: absolute;
+    top: 55px;
+}
+
+.ant-ribbon.ant-ribbon-color-volcano {
+    background: #ff8f69;
+    color: #ff8f69;
+}
+
+/* .admin-top-cards-bg .admin-top-card2:hover .ant-ribbon-wrapper .ant-ribbon {
+    position: absolute;
+    top: 55px;
+    display: block;
+}
+
+.admin-top-cards-bg .admin-top-card1:hover .ant-ribbon-wrapper .ant-ribbon {
+    position: absolute;
+    top: 55px;
+    display: block;
+}
+
+.admin-top-cards-bg .admin-top-card3:hover .ant-ribbon-wrapper .ant-ribbon {
+    position: absolute;
+    top: 55px;
+    display: block;
+} */
+
+
+

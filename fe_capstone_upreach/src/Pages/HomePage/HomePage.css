@@ -1,0 +1,263 @@
+.contentHomePage{
+	padding: 0;
+}
+
+.coverMain {
+	overflow: hidden;
+}
+.homePageTextTitle {
+	font-size: 50px;
+	font-family: "Volkhov", serif;
+	background: #222222;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin: 0;
+	display: inline;
+}
+
+.homePageTextTitleHighlight {
+	font-size: 50px;
+	font-family: "Volkhov", serif;
+	background: #cd41b5;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin: 0;
+}
+
+.contentSubTitle {
+	color: black;
+	line-height: 35px;
+	font-size: 16px;
+}
+
+.imageSVG svg {
+	position: absolute;
+}
+
+.imageIconApplication svg {
+	z-index: 999;
+}
+
+.row {
+	margin: 0px !important;
+}
+
+.searchBtns {
+	display: flex;
+}
+
+.searchCategoryBtn,
+.searchPlatformBtn {
+	height: 65px;
+	width: 375px;
+	line-height: 10px;
+	background-color: #eceff5;
+	border-radius: 0;
+}
+.searchCategoryBtn :hover{
+	opacity: 100%;
+	cursor: pointer;
+}
+
+.leftButton {
+	width: 43%;
+	border-top-left-radius: 80px 80px;
+	border-bottom-left-radius: 80px 80px;
+}
+
+.rightButton {
+	width: 43%;
+	border-left: 1px solid black;
+	border-top-right-radius: 80px 80px;
+	border-bottom-right-radius: 80px 80px;
+}
+
+.bntSreach{
+	height: 65px;
+	width: 10%;
+	line-height: 10px;
+	background-color: #eceff5;
+	border-radius: 80px;
+}
+
+.bntSreach span{
+	font-weight: 700;
+}
+
+.searchTitle {
+	font-size: 16px;
+	margin-left: 10px;
+	margin-bottom: 16px !important;
+}
+
+.searchDescription {
+	text-align: initial;
+	font-size: 12px;
+	margin-left: 10px;
+}
+
+.iconSearchBtn {
+	background-color: white;
+	align-items: center;
+	width: 65px;
+	border-top-right-radius: 80px 80px;
+	border-bottom-right-radius: 80px 80px;
+}
+
+.iconSearch {
+	margin-top: 16px;
+	margin-left: 12px;
+}
+
+.bntDiscover {
+	height: 50px;
+	margin-left: 120px;
+	color: #cd41b5;
+	padding: 14px;
+	display: flex;
+	width: fit-content;
+	flex-direction: row-reverse;
+}
+
+.cardInfo {
+	height: 200px;
+	background-color: white;
+	border-radius: 30px;
+}
+
+.subTitle {
+	font-size: 40px;
+	background: -webkit-linear-gradient(33deg, #091e3a, #2f80ed, #2d9ee0);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.searching svg {
+	display: none;
+}
+
+.imageSVG {
+	width: 20%;
+}
+.recommendCard {
+	position: absolute;
+	top: 59%;
+	left: 20px;
+}
+
+.ant-dropdown-menu-title-content a {
+	text-decoration: none;
+}
+
+.leftButton .ant-select-selector{
+	height: 100%;
+	border-top-left-radius: 80px 80px !important;
+	border-bottom-left-radius: 80px 80px !important;
+}
+.rightButton .ant-select-selector{
+	height: 100%;
+	border-top-right-radius: 80px 80px !important;
+	border-bottom-right-radius: 80px 80px !important;
+}
+.ant-select-selection-placeholder{
+	padding-left: 6% !important;
+}
+
+.ant-select-selection-overflow{
+	padding-left: 6% !important;
+	max-height: 92%;
+	max-width: 96% !important;
+    overflow: auto;
+}
+.ant-select:hover{
+	opacity: 100% !important;
+	background: white;
+	cursor: pointer;
+}
+
+.ant-select-selection-overflow::-webkit-scrollbar {
+	z-index: 999;
+	border-radius: 100px;
+    width: 8px;
+    background-color: #F5F5F5;
+} 
+.ant-select-selection-overflow::-webkit-scrollbar-thumb {
+	z-index: 999;
+	border-radius: 100px;
+    background-color: gray;
+}
+.ant-select-selection-overflow::-webkit-scrollbar-thumb:hover {
+	cursor: pointer !important;
+}
+.placeholder1{
+	position: relative;
+	top: 0;
+}
+.popupFilter{
+	max-height: 92%;
+	overflow: auto;
+}
+.popupFilter::-webkit-scrollbar {
+	z-index: 999;
+	border-radius: 100px;
+    width: 8px;
+    background-color: #F5F5F5;
+} 
+.popupFilter::-webkit-scrollbar-thumb {
+	z-index: 999;
+	border-radius: 100px;
+    background-color: gray;
+}
+.Upgrade{
+	width: 100%;
+	height: 45px;
+	background: linear-gradient(
+		0.25turn,
+		rgba(151, 150, 240, 0.5),
+		rgba(251, 199, 212, 0.5)
+	);	
+}
+.btnUpgrade{
+	color: #fff;
+	padding: 2px;
+	border-radius: 80px;
+	font-size: 14px;
+	border: 1px solid #000;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.btnAdd{
+	background-color: transparent;
+	border: 0px;
+	color: blue;
+}
+.btnAdd:hover{
+	opacity: 50%;
+}
+.countTime{
+	background-color: #fff;
+	height: 40px;
+	border-radius: 10px;
+}
+.numberCount{
+	color: #000;
+	font-weight: bold;
+}
+
+.popupFilter{
+	height: 250px;
+	width: 50%;
+	background-color: white;
+	border-radius: 10px;
+}
+
+.dropdownSlider{
+	height: 40px;
+	width: auto !important;
+	line-height: 10px;
+	background-color: #eceff5;
+	border-radius: 80px;
+}
+.result-content{
+	background-color: #ececec;
+}

@@ -1,0 +1,50 @@
+.admin-statistic-content {
+    
+    height: 168px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    padding: 20px 25px;
+    border: #e7ebf7 2px solid;
+    --box-shadow: 7px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.admin-statistic-icon-stroke {
+    width: 70px;
+    height: 70px;
+    background-color: #FFDEE7;
+    border-radius: 45px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-statistic-icon-bg {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    z-index: 2;
+    background-color: #FF5986;
+    border-radius: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-statistic-value {
+    font-size: 32px;    
+	font-weight: 600;
+    text-align:start;
+    padding-left: 12px;
+    margin-bottom: 0;
+}
+
+.admin-statistic-title {
+    color: #000;
+    padding-left: 12px;
+    font-size: 16px;
+	font-weight: 600;
+}

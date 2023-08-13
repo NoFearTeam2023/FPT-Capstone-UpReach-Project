@@ -1,0 +1,128 @@
+.heightLogInBtn {
+	height: 40px;
+}
+
+.logInLayout p {
+	margin-bottom: 0 !important;
+}
+
+.logInLayout {
+	width: 100%;
+	text-align: center;
+}
+
+
+
+.logInLayout form {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.logInTitle {
+	font-family: "Volkhov", serif;
+	position: relative;
+	display: inline-block;
+	font-size: 24px;
+	cursor: pointer;
+	background: linear-gradient(45deg, #2196f3, #f44336);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.logInSubTitle {
+	display: flex;
+}
+
+.logInSubTitleContent {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.login-google {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+
+	background-color: #fff;
+	border: #000 1px solid;
+	color: #000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 45px;
+}
+
+.logInSubChar {
+	color: red;
+}
+
+.logInForm {
+	width: 80%;
+	margin-top: 25px;
+}
+
+.logInBtn {
+	margin-top: 25px;
+	background: linear-gradient(45deg, #96cbf0, #fbc7d4);
+	height: 45px;
+	outline: none;
+}
+
+.logInBtn:hover {
+	opacity: 0.7;
+	transition: 0.3 ease;
+}
+
+.logInBtn:active {
+	transform: scale(0.9);
+}
+
+.logInBtnText {
+	font-weight: 600;
+	font-size: 20px;
+	color: #464646;
+	font-family: "regular";
+}
+
+.logInBtn:hover .logInBtnText {
+	color: #464646;
+}
+
+
+.logInWithGoogle {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.logInToForgotPasswordLink {
+	margin-top: 10px;
+	color: #000;
+	width: fit-content;
+}
+
+
+.GoogleIcon {
+	padding: 5px;
+}
+
+.logInToSignUp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+}
+
+.logInToSignUpLink {
+	margin: -3px 0 0 -10px;
+	color: #000;
+}
+
+.loginImage {
+	position: fixed;
+	width: 600px;
+	bottom: 0;
+	right: 0;
+}
