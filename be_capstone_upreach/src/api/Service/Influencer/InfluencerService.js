@@ -112,6 +112,8 @@ async function updatePointReport(clientId, pointReport) {
     }
 }
 
+
+
 async function getAllInfluencerByPublish() {
     try {
         const getAllInfluencerByPublish = "getAllInfluencerByPublish";
@@ -128,6 +130,26 @@ async function getAllInfluencerByPublish() {
         }
     } catch (err) {
         console.log('Lỗi thực thi getAllInfluencerByPublish:', err);
+        throw err;
+    }
+}
+
+async function getAllInfluencerByEmailAndPublish() {
+    try {
+        const getAllInfluencerByEmailAndPublish = "getAllInfluencerByEmailAndPublish";
+        const connection = await pool.connect();
+        const request = connection.request();
+        const result = await request.execute(getAllInfluencerByEmailAndPublish);
+        
+        if(result){
+            const data = common.formatResponseInfluencerToObject(result.recordset)
+            connection.close();
+            return data;
+        }else{
+            return false;
+        }
+    } catch (err) {
+        console.log('Lỗi thực thi getAllInfluencerByEmailAndPublish:', err);
         throw err;
     }
 }
@@ -191,8 +213,6 @@ async function getLastInfluencerTypeListId() {
 async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
-
-
         const profileId = await getLastProfileId()
         const lastProfileId = common.increaseID(profileId.Profile_ID);
         const typeListId = await getLastInfluencerTypeListId()
@@ -368,7 +388,7 @@ async function insertKols(userId, isPublish, dateEdit) {
         return result;
     }
     catch (err) {
-        console.log('Lỗi thực thi updatePointReport:', err);
+        console.log('Lỗi thực thi insertKols:', err);
         throw err;
     }
 }
@@ -399,7 +419,7 @@ async function insertDatatoContentTopic(dataArray) {
         connection.close();
         return result;
     } catch (error) {
-        console.log('Lỗi thực thi insertDatatoContentTopic : ', error);
+        console.log('Lỗi thực thi insertDataToContentTopic : ', error);
         throw error;
     }
 }
@@ -421,4 +441,59 @@ async function getChartDataInfluencer(influencerId){
     }
 }
 
-module.exports = { getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer}
+async function getLastHistoryViewInfluencerId(){
+    try {
+        const getLastHistoryViewInfluencerId = "getLastIdHistoryViewInfluencer";
+        const connection = await pool.connect();
+        const request = connection.request();
+        const result = await request.execute(getLastHistoryViewInfluencerId);
+        connection.close();
+        return result.recordset[0];
+    } catch (err) {
+        console.log('Lỗi thực thi getLastHistoryViewInfluencerId:', err);
+        throw err;
+    }
+}
+
+async function insertHistoryViewInfluencer(clientId,kolsId){
+    try {
+        const insertDataHistoryViewInfluencer = "insertHistoryViewInfluencer";
+        const listHistoryId = await getLastHistoryViewInfluencerId()
+        const lastListHistoryId = common.increaseID(listHistoryId.List_ID);
+
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('listHistoryList', sql.NVarChar, lastListHistoryId)
+        request.input('clientId', sql.NVarChar, clientId)
+        request.input('kolsId', sql.NVarChar, kolsId)
+
+        const result = await request.execute(insertDataHistoryViewInfluencer);
+        connection.close();
+        return result;
+
+    } catch (err) {
+        console.log('Lỗi thực thi insertDataHistoryViewInfluencer : ', err);
+        throw err;
+    }
+}
+
+async function insertAvatarProfile(influencerId, imageAvatar){
+    try {
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('influencerId', sql.NVarChar, influencerId)
+        request.input('imageAvatar', sql.NVarChar, imageAvatar)
+
+        const result = await request.execute(insertAvatarProfile);
+        connection.close();
+        return result;
+
+    } catch (error) {
+        console.log('Lỗi thực thi insertAvatarProfile : ', error);
+        throw error;
+    }
+}
+
+module.exports = {insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer}

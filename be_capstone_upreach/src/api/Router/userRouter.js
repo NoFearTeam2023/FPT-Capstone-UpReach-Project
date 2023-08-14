@@ -21,6 +21,7 @@ router.post("/influ/reportInfluencer", influencerController.reportInfluencer);
 router.post("/influ/dataReportInfluencer", influencerController.dataReportInfluencer);
 router.post("/influ/addInfluencer", influencerController.addInfluencer);
 router.post("/influ/data-chart", influencerController.getDataForChart);
+router.post("/influ/update-avatar", influencerController.updateAvatarInfluencer);
 
 router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient)

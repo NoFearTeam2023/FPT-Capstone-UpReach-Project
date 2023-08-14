@@ -105,16 +105,21 @@ async function reportInfluencer(req, res, next) {
 	try {
 		const { email, clientId, pointReport } = req.body;
 		const updatePointReport = await influService.updatePointReport(clientId, pointReport);
-		if (updatePointReport.rowsAffected) {
-			const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-			const data = common.formatResponseInfluencerToObject(infoInfluencer)
-			return res.status(200).json({
-				message: "Search thành công",
-				data: data
-			});
-		} else {
-			return res.json({ message: "Update Thất bại" });
+		const infoInfluencer = await influService.getAllInfluencerByEmailAndPublish(email);
+		if (!updatePointReport.rowsAffected) {
+			res.json({ status: false, message: "Update Thất bại" });
+		} else{
+			const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,infoInfluencer.influencerId)
+			if(insertHistoryViewInfluencer.rowsAffected){
+				res.status(200).json({
+					message: "Insert To History View Of List Influencer thành công",
+				});
+			}
 		}
+		return res.status(200).json({
+			message: "Search thành công",
+			data: infoInfluencer
+		});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).json({ message: "Lỗi", err });
@@ -134,9 +139,9 @@ async function dataReportInfluencer(req, res, next) {
 	}
 }
 
-
-async function addInfluencer(req, res, next) {
+async function updateAvatarInfluencer(req,res,next){
 	try {
+		const {influencerId} = req.body
 		const image = req.body.image[0]
 		const uploadedImages = [];
 		if (image.thumbUrl) {
@@ -146,6 +151,28 @@ async function addInfluencer(req, res, next) {
 			});
 			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
 		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
+		const updateAvatar = await influService.updateAvatarInfluencer(influencerId,uploadedImages.url);
+		if(updateAvatar.rowsAffected){
+			return res.json({message : "Update Avatar success"})
+		}
+	} catch (error) {
+		console.log(error)
+		return res.json({ status : "False" ,message : "Update Avatar success"})
+	}
+}
+
+
+async function addInfluencer(req, res, next) {
+	try {
+		// const image = req.body.image[0]
+		// const uploadedImages = [];
+		// if (image.thumbUrl) {
+		// 	const img = await cloudinary.uploader.upload(image.thumbUrl, {
+		// 		public_id: image.uid,
+		// 		resource_type: "auto",
+		// 	});
+		// 	uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+		// } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
 		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
 		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
 		const { instagramLink, instagramFollower, facebookLink, facebookFollower, youtubeLink, youtubeFollower, tiktokLink, tiktokFollower } = req.body.socialDetails
@@ -155,7 +182,7 @@ async function addInfluencer(req, res, next) {
 		const user = await userService.getUserByEmail(email);
 		const now = new Date();
 		const dateNow = now.toISOString();
-		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, uploadedImages.url, relationship, costfrom, costTo, followers, typeId)) {
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, costfrom, costTo, followers, typeId)) {
 			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
 		}
 		if (!await addDataToContentTopic(req.body.contentDetails)) {
@@ -169,10 +196,10 @@ async function addInfluencer(req, res, next) {
 			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
 		}
 
-		await influModel.findByIdAndUpdate(idInflu, {
-			avatarImage: uploadedImages.url,
-			nickname: nickname
-		})
+		// await influModel.findByIdAndUpdate(idInflu, {
+		// 	avatarImage: uploadedImages.url,
+		// 	nickname: nickname
+		// })
 		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
 		return res.json({
 			status: 'True',
@@ -309,4 +336,4 @@ async function getIdOfInflu(req, res, next) {
 
 
 // module.exports = router;
-module.exports = { getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu }
+module.exports = { getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu,updateAvatarInfluencer }
