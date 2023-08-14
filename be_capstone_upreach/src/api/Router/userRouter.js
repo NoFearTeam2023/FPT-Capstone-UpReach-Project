@@ -35,6 +35,7 @@ router.post('/editnamelist', listInfluencerController.EditNameList);
 router.post('/deletetablekols', listInfluencerController.DeleteTableKOLs);
 router.post('/addtotablekols', listInfluencerController.AddToTableKOLs);
 router.post('/deletealltable', listInfluencerController.DeleteAllTable);
+router.post('/getstatuslistofkols', listInfluencerController.GetStatusListOfKOLs);
 
 router.post('/createClient', userController.createClient);
 router.post('/createInflu', influencerController.createInflu);

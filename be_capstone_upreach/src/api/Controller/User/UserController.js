@@ -108,7 +108,7 @@ async function confirmRegister(req, res, next) {
                             status: 'True',
                             message: "Them session vao db thanh cong",
                             data: user,
-                            idInMogodb: user.roleId === '3' ? influ._id : client._id   
+                            idClient: infoClient._id
                         });
                     });
 

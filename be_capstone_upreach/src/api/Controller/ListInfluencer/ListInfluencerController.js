@@ -247,7 +247,35 @@ async function DeleteTableKOLs(req,res) {
     })
 }
 
+async function GetStatusListOfKOLs(req,res) {
+    const KOLsID = req.body.KOLsID;
+    const ClientID = req.body.ClientID;
+    sql.connect(config,(err) =>{
+        if(err){
+            console.log("ERR")
+            return;
+        }
+        const request = new sql.Request();
+        request.query(`SELECT ClientLists_ID, Name_list,
+        CASE
+          WHEN (ClientLists_ID in (SELECT ClientLists_ID FROM [dbo].[ListKOLs] WHERE KOLs_ID = '${KOLsID}')) THEN 1
+          WHEN (ClientLists_ID not in (SELECT ClientLists_ID FROM [dbo].[ListKOLs] WHERE KOLs_ID = '${KOLsID}')) THEN 0
+          END  AS [Status]
+        FROM [dbo].[ClientListsKols]
+        WHERE Client_ID = '${ClientID}'`,(err, response) => {
+            if(err){
+                return res.json({
+                    mess: err
+                });;
+            }
+            console.log(response)
+            return data = res.json({
+                data: response.recordset
+            });
+        });
 
+    })
+}
 
 async function AddToTableKOLs(req,res) {
     const ListKOLsID = req.body.ListKOLsID;
@@ -272,4 +300,4 @@ async function AddToTableKOLs(req,res) {
     })
 }
 
-module.exports = {GetAllList,GetAllListByUser,GetListByUserId,AddListClient,GetTableKOLs,DeleteListClient,EditNameList,DeleteTableKOLs,AddToTableKOLs,DeleteAllTable};
+module.exports = {GetAllList,GetAllListByUser,GetListByUserId,AddListClient,GetTableKOLs,DeleteListClient,EditNameList,DeleteTableKOLs,AddToTableKOLs,DeleteAllTable,GetStatusListOfKOLs};
