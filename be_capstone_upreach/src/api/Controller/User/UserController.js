@@ -159,7 +159,7 @@ async function login(req, res, next) {
                     data: {
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             }
 
@@ -178,7 +178,7 @@ async function login(req, res, next) {
                     data: {
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             });
         })(req, res, next);

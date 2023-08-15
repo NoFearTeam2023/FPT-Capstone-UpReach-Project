@@ -142,6 +142,7 @@ async function dataReportInfluencer(req, res, next) {
 async function updateAvatarInfluencer(req,res,next){
 	try {
 		const {profileId} = req.body.influDetail.state.user.Profile_ID
+		const idInflu = req.body.influDetail.state.user;
 		const image = req.body.image[0]
 		const uploadedImages = [];
 		if (image.thumbUrl) {
@@ -155,6 +156,11 @@ async function updateAvatarInfluencer(req,res,next){
 		if(updateAvatar.rowsAffected){
 			return res.json({message : "Update Avatar success"})
 		}
+		await influModel.findByIdAndUpdate(idInflu, {
+			avatarImage: uploadedImages.url,
+			nickname: nickname
+		})
+		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
 	} catch (error) {
 		console.log(error)
 		return res.json({ status : "False" ,message : "Update Avatar success"})
