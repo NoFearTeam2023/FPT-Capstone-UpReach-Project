@@ -4,7 +4,8 @@ const passport = require('passport');
 const { v4: uuidv4 } = require("uuid")
 const cloudinary = require("cloudinary").v2;
 const router = express.Router();
-
+const config = require("../../Config/dbConfig");
+const sql = require("mssql");
 const influService = require("../../Service/Influencer/InfluencerService")
 const clientService = require('../../Service/Client/clientService')
 const userService = require('../../Service/User/UserService')
@@ -163,6 +164,36 @@ async function addInflueToBookingInClient(req, res, next) {
     }
 }
 
+async function bookingJob(req, res, next) {
+  try {
+    const bookingJob = JSON.parse(req.body.bookingJob);
+    console.log(bookingJob);
+    sql.connect(config, (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      const request = new sql.Request();
+      const randomNumber = Math.floor(Math.random() * 10000);
+      const formattedNumber = randomNumber.toString().padStart(4, "0");
+      const bookingId = "CB" + formattedNumber;
+      request.query(`
+      BEGIN
+      INSERT INTO [UpReachDB].[dbo].[ClientBooking]
+      (clientBooking_ID, Job_ID, Client_ID, Start_Date, End_Date, Describes, Status)
+      VALUES ('${bookingId}', '${bookingJob.jobId}', '${bookingJob.clientId}', '${bookingJob.startDate}', '${bookingJob.endDate}', '${bookingJob.describes}', 'Pending')
+      END
+      `);
+      return res.status(201).json({
+        message: "Send booking successful!",
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: "Lỗi ", err });
+  }
+}
 
-// module.exports = router;
-module.exports = { addProfileClient, dataHomePageClient, addInflueToBookingInClient };
+
+
+module.exports = { addProfileClient, dataHomePageClient, addInflueToBookingInClient, bookingJob };

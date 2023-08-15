@@ -18,7 +18,7 @@ const controllerInflu = require("./src/api/Controller/Influencer/InfluencerContr
 const router = require('./src/api/Router/userRouter')
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
 
 app.use(cors());

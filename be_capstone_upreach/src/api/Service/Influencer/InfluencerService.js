@@ -441,6 +441,23 @@ async function getChartDataInfluencer(influencerId){
     }
 }
 
+async function getVersionDataInfluencer(influencerId){
+    try {
+        const getDataVersionInfluencer = "getDataVersion";
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('influencerId', sql.NVarChar, influencerId)
+
+        const result = await request.execute(getDataVersionInfluencer);
+        connection.close();
+        return result.recordset;
+    } catch (error) {
+        console.log('Lỗi thực thi getDataVersion : ', error);
+        throw error;
+    }
+}
+
 async function getLastHistoryViewInfluencerId(){
     try {
         const getLastHistoryViewInfluencerId = "getLastIdHistoryViewInfluencer";
@@ -497,4 +514,4 @@ async function insertAvatarProfile(profileId, imageAvatar){
     }
 }
 
-module.exports = {insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer}
+module.exports = {insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer}
