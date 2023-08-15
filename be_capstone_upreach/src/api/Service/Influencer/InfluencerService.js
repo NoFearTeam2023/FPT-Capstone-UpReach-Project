@@ -478,13 +478,13 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
     }
 }
 
-async function insertAvatarProfile(influencerId, imageAvatar){
+async function insertAvatarProfile(profileId, imageAvatar){
     try {
         const insertAvatarProfile = "updateAvatarInfluencer";
         const connection = await pool.connect();
         const request = connection.request();
 
-        request.input('influencerId', sql.NVarChar, influencerId)
+        request.input('profileId', sql.NVarChar, profileId)
         request.input('imageAvatar', sql.NVarChar, imageAvatar)
 
         const result = await request.execute(insertAvatarProfile);
