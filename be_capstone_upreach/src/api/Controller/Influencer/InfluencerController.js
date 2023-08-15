@@ -141,7 +141,7 @@ async function dataReportInfluencer(req, res, next) {
 
 async function updateAvatarInfluencer(req,res,next){
 	try {
-		const {influencerId} = req.body
+		const {influencerId} = req.body.influDetail.state.user.Profile_ID
 		const image = req.body.image[0]
 		const uploadedImages = [];
 		if (image.thumbUrl) {
@@ -151,7 +151,7 @@ async function updateAvatarInfluencer(req,res,next){
 			});
 			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
 		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
-		const updateAvatar = await influService.updateAvatarInfluencer(influencerId,uploadedImages.url);
+		const updateAvatar = await influService.insertAvatarProfile(influencerId,uploadedImages.url);
 		if(updateAvatar.rowsAffected){
 			return res.json({message : "Update Avatar success"})
 		}

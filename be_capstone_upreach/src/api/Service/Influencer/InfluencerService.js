@@ -480,6 +480,7 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
 
 async function insertAvatarProfile(influencerId, imageAvatar){
     try {
+        const insertAvatarProfile = "updateAvatarInfluencer";
         const connection = await pool.connect();
         const request = connection.request();
 
