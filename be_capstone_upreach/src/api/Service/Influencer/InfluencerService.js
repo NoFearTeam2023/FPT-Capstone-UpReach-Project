@@ -421,4 +421,21 @@ async function getChartDataInfluencer(influencerId){
     }
 }
 
-module.exports = { getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer}
+async function getVersionDataInfluencer(influencerId){
+    try {
+        const getDataVersionInfluencer = "getDataVersion";
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('influencerId', sql.NVarChar, influencerId)
+
+        const result = await request.execute(getDataVersionInfluencer);
+        connection.close();
+        return result.recordset;
+    } catch (error) {
+        console.log('Lỗi thực thi getDataVersion : ', error);
+        throw error;
+    }
+}
+
+module.exports = { getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer}

@@ -48,35 +48,45 @@ function formatResponseInfluencerToArray(data) {
     const kolGroups = {};
 
     data.forEach((item) => {
-    const kolId = item["influencerId"];
-    if (!kolGroups[kolId]) {
-        kolGroups[kolId] = { ...item };
-        kolGroups[kolId]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
-        kolGroups[kolId]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
-        kolGroups[kolId]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
-        kolGroups[kolId]["audienceLocation"] = new Set([item["audienceLocation"]]);
-        kolGroups[kolId]["audienceGender"] = new Set([item["audienceGender"]]);
-        kolGroups[kolId]["AudienceAgeList"] = new Set([item["AudienceAgeList"]]);
-        kolGroups[kolId]["AudienceFollowerList"] = new Set([item["AudienceFollowerList"]]);
-        kolGroups[kolId]["AudienceFollowerMonth"] = new Set([item["AudienceFollowerMonth"]]);
-        kolGroups[kolId]["AudiencerLocation"] = new Set([item["AudiencerLocation"]]);
-        kolGroups[kolId]["Image"] = new Set([item["Image"]]);
-    } else {
-        kolGroups[kolId]["influencerTypeName"].add(item["influencerTypeName"]);
-        kolGroups[kolId]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
-        kolGroups[kolId]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
-        kolGroups[kolId]["audienceLocation"].add(item["audienceLocation"]);
-        kolGroups[kolId]["audienceGender"].add(item["audienceGender"]);
-        kolGroups[kolId]["AudienceAgeList"].add(item["AudienceAgeList"]);
-        kolGroups[kolId]["AudienceFollowerList"].add(item["AudienceFollowerList"]);
-        kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
-        kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
-        kolGroups[kolId]["Image"].add(item["Image"]);
-    }
-    });
+        const kolId = item["influencerId"];
+        if (!kolGroups[kolId]) {
+            kolGroups[kolId] = { ...item };
+            kolGroups[kolId]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
+            kolGroups[kolId]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
+            kolGroups[kolId]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
+            kolGroups[kolId]["audienceLocation"] = new Set([item["audienceLocation"]]);
+            kolGroups[kolId]["audienceGender"] = new Set([item["audienceGender"]]);
+            kolGroups[kolId]["AudienceAgeList"] = new Set([item["AudienceAgeList"]]);
+            kolGroups[kolId]["AudienceFollowerList"] = new Set([item["AudienceFollowerList"]]);
+            kolGroups[kolId]["AudienceFollowerMonth"] = new Set([item["AudienceFollowerMonth"]]);
+            kolGroups[kolId]["AudiencerLocation"] = new Set([item["AudiencerLocation"]]);
+            kolGroups[kolId]["dataImage"] = [];
+
+        } else {
+            kolGroups[kolId]["influencerTypeName"].add(item["influencerTypeName"]);
+            kolGroups[kolId]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
+            kolGroups[kolId]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
+            kolGroups[kolId]["audienceLocation"].add(item["audienceLocation"]);
+            kolGroups[kolId]["audienceGender"].add(item["audienceGender"]);
+            kolGroups[kolId]["AudienceAgeList"].add(item["AudienceAgeList"]);
+            kolGroups[kolId]["AudienceFollowerList"].add(item["AudienceFollowerList"]);
+            kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
+            kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
+            
+
+        }
+        const imageId = item["Image_ID"];
+        const image = item["Image"] 
+        const existingImage = kolGroups[kolId]["dataImage"].find(img => img.imageId === imageId);
+
+        if (!existingImage) {
+            kolGroups[kolId]["dataImage"].push({ imageId, image });
+        }
+        });
 
     for (const kolId in kolGroups) {
     const kolData = kolGroups[kolId];
+    kolData["dataImage"] = Array.from(kolData["dataImage"]);
     kolData["influencerTypeName"] = Array.from(kolData["influencerTypeName"]);
     kolData["influencerContentTopicName"] = Array.from(kolData["influencerContentTopicName"]);
     kolData["influencerContentFormatName"] = Array.from(kolData["influencerContentFormatName"]);
@@ -86,7 +96,6 @@ function formatResponseInfluencerToArray(data) {
     kolData["AudienceFollowerList"] = Array.from(kolData["AudienceFollowerList"]);
     kolData["AudienceFollowerMonth"] = Array.from(kolData["AudienceFollowerMonth"]);
     kolData["AudiencerLocation"] = Array.from(kolData["AudiencerLocation"]);
-    kolData["Image"] = Array.from(kolData["Image"]);
     result.push(kolData);
     }
     

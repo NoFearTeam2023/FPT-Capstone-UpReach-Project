@@ -8,9 +8,6 @@ const common = require('../../../../common/common')
 const { getAllInfluencer } = require("../../Service/Influencer/InfluencerService");
 const router = express.Router();
 
-// router.get("/api/admin/get-approve-report", getApproveReport);
-// router.post("/api/admin/approve-report", postApproveReport);
-
 // auth.initialize(
 //     passport,
 //     (id) => userModels.find((user) => user.userId === id),
@@ -274,21 +271,38 @@ const router = express.Router();
         const jobIdObjects = selectedJobID.recordset;
         for (let jobIdObject of jobIdObjects) {
           const jobId = jobIdObject.JOB_ID;
-          const deleteJobID = await  request.query(`
-        BEGIN
-        DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] 
-        WHERE JOB_ID = '${jobId}'
-        END
-        BEGIN
-        DELETE FROM [UpReachDB].[dbo].[InfluencerJob] 
-        WHERE JOB_ID = '${jobId}'
-        END
-        BEGIN
-        DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
-        WHERE JOB_ID = '${jobId}'
-        END
-        `)
+      
+          const checkQuery = `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE JOB_ID = '${jobId}'`;
+          const checkResult = await request.query(checkQuery);
+      
+          if (checkResult.recordset.length === 0) {
+              const deleteQuery = `
+                  BEGIN
+                      DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] 
+                      WHERE JOB_ID = '${jobId}'
+                  END
+                  BEGIN
+                      DELETE FROM [UpReachDB].[dbo].[InfluencerJob] 
+                      WHERE JOB_ID = '${jobId}'
+                  END
+                  BEGIN
+                      DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
+                      WHERE JOB_ID = '${jobId}'
+                  END
+              `;
+              const deleteJobID = await request.query(deleteQuery);
+              
+          } else {
+            const deleteQuery = `
+                  BEGIN
+                      DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
+                      WHERE JOB_ID = '${jobId}'
+                  END
+              `;
+              const deleteJobID = await request.query(deleteQuery);
+          }
       }
+      
 
         const adminApprove = await  request.query(`
         

@@ -6,18 +6,19 @@ const sql = require("mssql");
 
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
-const influService = require("../../Service/Influencer/InfluencerService");
-const userService = require("../../Service/User/UserService");
+const influService = require("../../Service/Influencer/InfluencerService")
+const userService = require("../../Service/User/UserService")
 const common = require("../../../../common/common");
 const influModel = require("../../Model/MogooseSchema/influModel");
+const router = express.Router();
 const { getUserByEmail } = require("../../Service/User/UserService");
 const { lte } = require("lodash");
-const router = express.Router();
+
 
 auth.initialize(
-  passport,
-  (id) => userModels.find((user) => user.userId === id),
-  (email) => userModels.find((user) => user.userEmail === email)
+	passport,
+	(id) => userModels.find((user) => user.userId === id),
+	(email) => userModels.find((user) => user.userEmail === email)
 );
 
 async function updateInfo(req, res, next) {
@@ -55,7 +56,7 @@ async function updateInfo(req, res, next) {
       }
       influ.Image = uploadedImages;
     }
-
+console.log(influ);
     sql.connect(config, (err) => {
       if (err) {
         console.log(err);
@@ -74,15 +75,12 @@ async function updateInfo(req, res, next) {
           const filteredData = influs.find(
             (item) => item.User_ID === influ.userId
           );
-
-          const randomNumber = Math.floor(Math.random() * 10000); 
-          const formattedNumber = randomNumber.toString().padStart(4, '0'); 
       
           if (filteredData) {
             if (filteredData.isPublish) {
-              const kolsId = 'INF' + formattedNumber;
-              const platformId = 'IPF' + formattedNumber;
-              const profileId = 'IPR' + formattedNumber;
+              const kolsId = 'INF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+              const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+              const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
               await request.query(`
             BEGIN
@@ -117,7 +115,8 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-                const imageId = 'IMG' + formattedNumber;
+              const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                 const imageUrl = imageObject.url;
 
                 const queryText = `
@@ -140,8 +139,9 @@ async function updateInfo(req, res, next) {
               }
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
-                for (let i = 0; i < chart.dataFollower.length; i++) {
-                  const followerListId = 'AFML' + formattedNumber;
+                for (let i = 0; i < chart.dataFollower.length; i++) {   
+              const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
                   const quantity = dataFollowerObject.value;
@@ -161,7 +161,8 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-                  const genderListId = 'AGL' + formattedNumber;
+              const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
                   const quantity = dataGenderObject.value;
@@ -184,7 +185,8 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-                  const ageListId = 'AARL' + formattedNumber;
+              const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
                   const quantity = dataAgeObject.value;
@@ -201,7 +203,8 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-                  const locationListId ='IALL' + formattedNumber;
+              const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
                   const quantity = dataLocationObject.value;
@@ -218,7 +221,8 @@ async function updateInfo(req, res, next) {
               const jobIds = [];
               for (let i = 0; i < booking?.length; i++) {
                 const bookingJob = booking[i];
-                const jobId = 'IJ' + formattedNumber;
+              const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                 jobIds.push(jobId);
 
                 request.input("jobId" + i, sql.NVarChar, jobId);
@@ -250,7 +254,8 @@ async function updateInfo(req, res, next) {
                         `);
 
                 for (let j = 0; j < booking[i].formatContent?.length; j++) {
-                  const formatListId = 'JCFL' + formattedNumber;
+              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
 
                   await request.query(`
                             BEGIN
@@ -264,7 +269,8 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < jobIds?.length; i++) {
                 const jobId = jobIds[i];
-                const jobListId = 'IJL' + formattedNumber;
+              const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
 
                 request.input("jobListId" + i, sql.NVarChar, jobListId);
 
@@ -278,24 +284,6 @@ async function updateInfo(req, res, next) {
                               `);
               }
 
-              for (const jobIdToRemove of idRemoveArray) {
-                await request.query(`
-                DELETE FROM [UpReachDB].[dbo].[InfluencerJobList]
-                WHERE Job_ID = '${jobIdToRemove}'
-              `);
-                await request.query(
-                  `
-                    DELETE FROM [UpReachDB].[dbo].[JobContentFormatList]
-                    WHERE Job_ID = '${jobIdToRemove}'
-                `
-                );
-
-                await request.query(`
-                          DELETE FROM [UpReachDB].[dbo].[InfluencerJob]
-                          WHERE Job_ID = '${jobIdToRemove}'
-                        `);
-              }
-
               //------------------------Update False Report----------------------------------
             } else {
               await request.query(`
@@ -307,7 +295,8 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-                const imageId = 'IMG' + formattedNumber;
+              const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                 const imageUrl = imageObject.url;
 
                 const queryText = `
@@ -393,7 +382,8 @@ async function updateInfo(req, res, next) {
                       `);
 
                       for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
-                        const formatListId = 'JCFL' + formattedNumber;
+              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
             
                         const newRequest = new sql.Request();
                         newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
@@ -414,9 +404,10 @@ async function updateInfo(req, res, next) {
                     //--------------------------Update Job New ------------------------------------
 
                 } else {     
-                  const jobId = 'IJ' + formattedNumber;
-                  const jobListId = 'IJL' + formattedNumber;
-                  console.log(jobId);
+              const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+              const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
+                  
                   request.input("jobId" + i, sql.NVarChar, jobId);
                   request.input("jobName"+ i ,sql.NVarChar,bookingJob.jobName);
                   request.input("platform"+ i ,sql.NVarChar,bookingJob.platform);
@@ -444,7 +435,8 @@ async function updateInfo(req, res, next) {
                               `);   
 
                       for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
-                        const formatListId = 'JCFL' + formattedNumber;
+              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                         console.log(jobId,"format");
                         const newRequest = new sql.Request();
                         newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
@@ -492,7 +484,8 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {
-                  const followerListId = 'AFML' + formattedNumber;
+              const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
                   const quantity = dataFollowerObject.value;
@@ -512,7 +505,8 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-                  const genderListId = 'AGL' + formattedNumber;
+              const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
                   const quantity = dataGenderObject.value;
@@ -535,7 +529,7 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-                  const ageListId = 'AARL' + formattedNumber;
+              const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
                   const quantity = dataAgeObject.value;
@@ -552,7 +546,8 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-                  const locationListId = 'IALL' + formattedNumber;
+              const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
                   const quantity = dataLocationObject.value;
@@ -582,124 +577,82 @@ async function updateInfo(req, res, next) {
 }
 
 async function getAllInfluencer(req, res, next) {
-  try {
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
-    console.log("page " + page);
-    console.log("limit " + limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const result = await influService.getAllInfluencer();
-    if (!result) {
-      return res.json({ message: "Fails " });
-    }
-    const JsonData = {};
-    JsonData.data = result.slice(startIndex, endIndex);
-    JsonData.TotalPage =
-      result.length / 12 > parseInt(result.length / 12)
-        ? parseInt(result.length / 12) + 1
-        : parseInt(result.length / 12);
-    if (endIndex < result.length) {
-      JsonData.next = {
-        page: page + 1,
-        limit: limit,
-      };
-    }
-    if (startIndex > 0) {
-      JsonData.previous = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
-    return res.json({ JsonData: JsonData });
-  } catch (err) {
-    console.log(err);
-    return res.json({ message: "Lỗi ", err });
-  }
+	try {
+		const page = parseInt(req.query.page)
+		const limit = parseInt(req.query.limit)
+		console.log("page " + page)
+		console.log("limit " + limit)
+		const startIndex = (page - 1) * limit
+		const endIndex = page * limit
+		const result = await influService.getAllInfluencer()
+		if (!result) {
+			return res.json({ message: 'Fails ' });
+		}
+		const JsonData = {}
+		JsonData.data = result.slice(startIndex, endIndex)
+		JsonData.TotalPage = result.length / 12 > parseInt(result.length / 12) ? parseInt(result.length / 12) + 1 : parseInt(result.length / 12)
+		if (endIndex < result.length) {
+			JsonData.next = {
+				page: page + 1,
+				limit: limit
+			}
+		}
+		if (startIndex > 0) {
+			JsonData.previous = {
+				page: page - 1,
+				limit: limit
+			}
+		}
+		return res.json({ JsonData: JsonData })
+	} catch (err) {
+		console.log(err);
+		return res.json({ message: "Lỗi ", err });
+	}
 }
 
 async function searchInfluencer(req, res, next) {
-  try {
-    const {
-      clientId,
-      pointSearch,
-      costEstimateFrom,
-      costEstimateTo,
-      ageFrom,
-      ageTo,
-      contentTopic,
-      nameType,
-      contentFormats,
-      audienceGender,
-      audienceLocation,
-      followerFrom,
-      followerTo,
-      postsPerWeekFrom,
-      postsPerWeekTo,
-      engagementTo,
-      engagementFrom,
-      audienceAge,
-    } = req.body;
-    // Update lại điểm khi search thông tin Influencer
-    // const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
-    // if (updatePointSearch.rowsAffected) {
-    // const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
-    // 	return res.status(200).json({
-    // 	message: "Search thành công",
-    // 	data: result
-    // });
-    // } else {
-    // 	return res.json({ message: "Update Thất bại" });
-    // }
-    const result = await influService.searchInfluencer(
-      costEstimateFrom,
-      costEstimateTo,
-      ageFrom,
-      ageTo,
-      contentTopic,
-      nameType,
-      contentFormats,
-      audienceGender,
-      audienceLocation,
-      followerFrom,
-      followerTo,
-      postsPerWeekFrom,
-      postsPerWeekTo,
-      engagementTo,
-      engagementFrom,
-      audienceAge
-    );
-    return res.status(200).json({
-      message: "Search thành công",
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
-  }
+	try {
+		const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
+		// Update lại điểm khi search thông tin Influencer
+		// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
+		// if (updatePointSearch.rowsAffected) {
+		// const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
+		// 	return res.status(200).json({
+		// 	message: "Search thành công",
+		// 	data: result
+		// });
+		// } else {
+		// 	return res.json({ message: "Update Thất bại" });
+		// }
+		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
+		return res.status(200).json({
+			message: "Search thành công",
+			data: result
+		});
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
+	}
 }
 // Trừ điểm khi xem Thông tin của Influencer tại HomePage
 async function reportInfluencer(req, res, next) {
-  try {
-    const { email, clientId, pointReport } = req.body;
-    const updatePointReport = await influService.updatePointReport(
-      clientId,
-      pointReport
-    );
-    if (updatePointReport.rowsAffected) {
-      const infoInfluencer = await influService.getAllInfluencerByEmail(email);
-      const data = common.formatResponseInfluencerToObject(infoInfluencer);
-      return res.status(200).json({
-        message: "Search thành công",
-        data: data,
-      });
-    } else {
-      return res.json({ message: "Update Thất bại" });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Lỗi", err });
-  }
+	try {
+		const { email, clientId, pointReport } = req.body;
+		const updatePointReport = await influService.updatePointReport(clientId, pointReport);
+		if (updatePointReport.rowsAffected) {
+			const infoInfluencer = await influService.getAllInfluencerByEmail(email);
+			const data = common.formatResponseInfluencerToObject(infoInfluencer)
+			return res.status(200).json({
+				message: "Search thành công",
+				data: data
+			});
+		} else {
+			return res.json({ message: "Update Thất bại" });
+		}
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json({ message: "Lỗi", err });
+	}
 }
 
 async function dataReportInfluencer(req, res, next) {
@@ -729,9 +682,7 @@ async function dataReportInfluencer(req, res, next) {
 
       Promise.all(dataPromise).then((results) => {
         results.forEach((result) => {
-          if (result.Image[0] === null) {
-            result.Image.splice(0, 1);
-          }
+          
         });
         return res.json({
           Influencer: results,
@@ -743,268 +694,193 @@ async function dataReportInfluencer(req, res, next) {
   }
 }
 
+
 async function addInfluencer(req, res, next) {
-  try {
-    const image = req.body.image[0];
-    const uploadedImages = [];
-    if (image.thumbUrl) {
-      const img = await cloudinary.uploader.upload(image.thumbUrl, {
-        public_id: image.uid,
-        resource_type: "auto",
-      });
-      uploadedImages.push({
-        userId: image.userId,
-        id: image.uid,
-        url: img.url,
-      });
-    } else
-      uploadedImages.push({
-        userId: image.userId,
-        id: image.uid,
-        url: image.url,
-      });
-    const { nickname, location, gender, age, intro, typeId, relationship } =
-      req.body.informationDetails;
-    const { emailContact, phone, engagement, post, costfrom, costTo } =
-      req.body.overviewDetails;
-    const {
-      instagramLink,
-      instagramFollower,
-      facebookLink,
-      facebookFollower,
-      youtubeLink,
-      youtubeFollower,
-      tiktokLink,
-      tiktokFollower,
-    } = req.body.socialDetails;
-    const idInflu = req.body.idInflu;
-    const followers =
-      instagramFollower + facebookFollower + youtubeFollower + tiktokFollower;
-    const { name, email } = req.body.influencerDetail;
-    const user = await userService.getUserByEmail(email);
-    const now = new Date();
-    const dateNow = now.toISOString();
-    if (
-      !(await addInfluencerProfile(
-        name,
-        nickname,
-        emailContact,
-        age,
-        phone,
-        gender,
-        intro,
-        location,
-        uploadedImages.url,
-        relationship,
-        costfrom,
-        costTo,
-        followers,
-        typeId
-      ))
-    ) {
-      return res.json({
-        status: "False",
-        message: "Insert Data Profile Fails",
-      });
-    }
-    if (!(await addDataToContentTopic(req.body.contentDetails))) {
-      return res.json({
-        status: "False",
-        message: "Insert Data To TopicContent Fails",
-      });
-    }
-    if (
-      !(await addInfluencerPlatformInfomation(
-        facebookLink,
-        instagramLink,
-        tiktokLink,
-        youtubeLink,
-        facebookFollower,
-        instagramFollower,
-        tiktokFollower,
-        youtubeFollower,
-        engagement,
-        post
-      ))
-    ) {
-      return res.json({
-        status: "False",
-        message: "Insert Data PlatformInfomation Fails",
-      });
-    }
+	try {
+		const image = req.body.image[0]
+		const uploadedImages = [];
+		if (image.thumbUrl) {
+			const img = await cloudinary.uploader.upload(image.thumbUrl, {
+				public_id: image.uid,
+				resource_type: "auto",
+			});
+			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
+		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
+		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
+		const { instagramLink, instagramFollower, facebookLink, facebookFollower, youtubeLink, youtubeFollower, tiktokLink, tiktokFollower } = req.body.socialDetails
+		const idInflu = req.body.idInflu;
+		const followers = instagramFollower + facebookFollower + youtubeFollower + tiktokFollower
+		const { name, email } = req.body.influencerDetail
+		const user = await userService.getUserByEmail(email);
+		const now = new Date();
+		const dateNow = now.toISOString();
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, uploadedImages.url, relationship, costfrom, costTo, followers, typeId)) {
+			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
+		}
+		if (!await addDataToContentTopic(req.body.contentDetails)) {
+			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
+		}
+		if (!await addInfluencerPlatformInfomation(facebookLink, instagramLink, tiktokLink, youtubeLink, facebookFollower, instagramFollower, tiktokFollower, youtubeFollower, engagement, post)) {
+			return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
+		}
 
-    if (!(await addInfluencerKols(user.userId, 0, dateNow))) {
-      return res.json({ status: "False", message: "Insert Data Kols Fails" });
-    }
+		if (!await addInfluencerKols(user.userId, 0, dateNow)) {
+			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+		}
 
-    await influModel.findByIdAndUpdate(idInflu, {
-      nickname: nickname,
-    });
-    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-    return res.json({
-      status: "True",
-      message: "Insert Success Influencer",
-    });
-  } catch (err) {
-    // Xử lý lỗi
-    res.json({ status: "False", message: "Lỗi" });
-  }
+		await influModel.findByIdAndUpdate(idInflu, {
+			avatarImage: uploadedImages.url,
+			nickname: nickname
+		})
+		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+		return res.json({
+			status: 'True',
+			message: 'Insert Success Influencer'
+		});
+
+	} catch (err) {
+		// Xử lý lỗi
+		res.json({ status: 'False', message: 'Lỗi' });
+	}
 }
 
-async function addInfluencerProfile(
-  fullName,
-  nickName,
-  email,
-  age,
-  phone,
-  gender,
-  bio,
-  address,
-  avatar,
-  relationship,
-  costEstimateFrom,
-  costEstimateTo,
-  followers,
-  typeId
-) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerProfile =
-      await influService.insertInfluencerProfile(
-        fullName,
-        nickName,
-        email,
-        age,
-        phone,
-        gender,
-        bio,
-        address,
-        avatar,
-        relationship,
-        costEstimateFrom,
-        costEstimateTo,
-        followers,
-        typeId
-      );
-    if (checkAddInfluencerProfile.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
+	try {
+
+		// Thực hiện insert
+		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
+		if (checkAddInfluencerProfile.rowsAffected[0]) {
+			return true;
+		} else {
+			return false;
+		}
+
+	} catch (e) {
+		console.log(e)
+		return false;
+	}
 }
 
 async function addDataToContentTopic(dataArray) {
-  try {
-    const checkAddDataToContentTopic =
-      await influService.insertDatatoContentTopic(dataArray);
-    if (checkAddDataToContentTopic.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+	try {
+		const checkAddDataToContentTopic = await influService.insertDatatoContentTopic(dataArray)
+		if (checkAddDataToContentTopic.rowsAffected[0]) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (error) {
+		console.log(error)
+		return false;
+	}
 }
 
-async function addInfluencerPlatformInfomation(
-  linkFB,
-  linkInsta,
-  linkTiktok,
-  linkYoutube,
-  followFB,
-  followInsta,
-  followTikTok,
-  followYoutube,
-  engagement,
-  postsPerWeek
-) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerPlatformInfomation =
-      await influService.insertInfluencerPlatformInformation(
-        linkFB,
-        linkInsta,
-        linkTiktok,
-        linkYoutube,
-        followFB,
-        followInsta,
-        followTikTok,
-        followYoutube,
-        engagement,
-        postsPerWeek
-      );
-    if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
+async function addInfluencerPlatformInfomation(linkFB, linkInsta, linkTiktok, linkYoutube, followFB, followInsta, followTikTok, followYoutube, engagement, postsPerWeek) {
+	try {
+
+		// Thực hiện insert
+		const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(linkFB, linkInsta, linkTiktok, linkYoutube, followFB, followInsta, followTikTok, followYoutube, engagement, postsPerWeek)
+		if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
+			return true;
+		} else {
+			return false;
+		}
+
+	} catch (e) {
+		console.log(e)
+		return false;
+	}
 }
 
 async function addInfluencerKols(userId, isPublish, dateEdit) {
-  try {
-    // Thực hiện insert
-    const checkAddInfluencerKols = await influService.insertKols(
-      userId,
-      isPublish,
-      dateEdit
-    );
-    if (checkAddInfluencerKols.rowsAffected[0]) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
+	try {
+
+		// Thực hiện insert
+		const checkAddInfluencerKols = await influService.insertKols(userId, isPublish, dateEdit)
+		if (checkAddInfluencerKols.rowsAffected[0]) {
+			return true;
+		} else {
+			return false;
+		}
+
+	} catch (e) {
+		console.log(e)
+		return false;
+	}
 }
 
+
 async function createInflu(req, res, next) {
-  try {
-    const { nickname, email } = req.body;
-    const usernameCheck = await influModel.findOne({ nickname });
-    const emailCheck = await influModel.findOne({ email });
-    if (usernameCheck) {
-      return res.json({ msg: "Nick name already used", status: false });
-    }
-    if (emailCheck) {
-      return res.json({ msg: "Email already used", status: false });
-    }
-    const influ = await influModel.create({
-      email: email,
-      nickname: nickname,
-    });
-    return res.json({ status: true, data: influ });
-  } catch (err) {
-    return res.json({ message: " " + err });
-  }
+	try {
+		const { nickname, email } = req.body;
+		const usernameCheck = await influModel.findOne({ nickname })
+		const emailCheck = await influModel.findOne({ email })
+		if (usernameCheck) {
+			return res.json({ msg: "Nick name already used", status: false });
+		}
+		if (emailCheck) {
+			return res.json({ msg: "Email already used", status: false });
+		}
+		const influ = await influModel.create({
+			email: email,
+			nickname: nickname
+		});
+		return res.json({ status: true, data: influ })
+	}
+	catch (err) {
+		return res.json({ message: ' ' + err });
+	}
 }
 
 async function getDataForChart(req, res, next) {
-  try {
-    const { influencerId } = req.body;
-    const response = await influService.getChartDataInfluencer(influencerId);
-    const result = common.formatChartDataInfluencer(response);
-    if (!response) {
-      return res.json({ message: "Fails " });
-    }
-    return res.status(200).json({
-      message: "get data getAllInfluencer success",
-      data: result,
-    });
-  } catch (error) {
-    return res.json({ message: " " + error });
-  }
+	try {
+		const { influencerId } = req.body
+		const response = await influService.getChartDataInfluencer(influencerId)
+		const result = common.formatChartDataInfluencer(response)
+		if (!response) {
+			return res.json({ message: 'Fails ' });
+		}
+		return res.status(200).json({
+			message: "get data getAllInfluencer success",
+			data: result
+		});
+	} catch (error) {
+		return res.json({ message: ' ' + error });
+	}
+}
+
+async function getIdOfInflu(req, res, next) {
+	try {
+		const { email } = req.body
+		const emailCheck = await influModel.findOne({ email })
+		if (!emailCheck) {
+			return res.json({ msg: "Influencer don't already", status: false });
+		}
+		return res.status(200).json({
+			status: true,
+			data: emailCheck,
+		})
+	} catch (error) {
+		return res.json({ message: ' ' + error });
+	}
+}
+
+async function getDataVersion(req, res, next) {
+	try {
+		const { influencerId } = req.body
+		const response = await influService.getVersionDataInfluencer(influencerId)
+		const result = common.formatChartDataInfluencer(response)
+		if (!response) {
+			return res.json({ message: 'Fails ' });
+		}
+		return res.status(200).json({
+			message: "get data version success",
+			data: result
+		});
+	} catch (error) {
+		return res.json({ message: ' ' + error });
+	}
 }
 
 async function getJobsInfluencer(req, res, next) {
@@ -1264,17 +1140,173 @@ async function getSelectedLocations(request, selectedIds) {
   });
 }
 
+async function getBookingJob(req, res, next) {
+  try {
+    const user = await getUserByEmail(req.query.email);
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      try {
+        const request = new sql.Request();
+        
+        const selectedKOLs = await request.query(
+          `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE isPublish = 1 AND User_ID = '${user.userId}'`
+        );
+
+        if (selectedKOLs.recordset.length > 0) {
+          const jobIdsQueryResult = await request.query(
+            `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`
+          );
+
+          const jobIds = jobIdsQueryResult.recordset;
+          
+          if (jobIds.length > 0) {
+            const bookingJobs = [];
+              for (const job_Id of jobIds) {
+                const jobIdToFind = job_Id.Job_Id;
+                const queryResultJob = await request.query(
+                  `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_Id = '${jobIdToFind}'`
+                );
+                const queryResultClient = await request.query(
+                  `SELECT * FROM [UpReachDB].[dbo].[Clients] WHERE Client_ID = '${queryResultJob?.recordset[0]?.Client_ID}'`
+                );
+                const bookingJob = queryResultJob?.recordset[0];
+                const clientInfo = queryResultClient?.recordset[0];
+  
+                if (bookingJob && clientInfo) {
+                  bookingJob.clientInfo = clientInfo;
+                  bookingJobs.push(bookingJob);
+                }
+              }
+            if (bookingJobs.length > 0) {
+              const selectedJobs = [];
+              for (const bookingJob of bookingJobs) {
+                const jobId = bookingJob?.Job_ID;
+                const queryResultJob = await request.query(
+                  `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobId}'`
+                );
+                selectedJobs.push(queryResultJob?.recordset[0]);
+              }
+
+              const jobsIdBooking = selectedJobs?.map(job => job?.Job_ID);
+
+              const selectedFormats = [];
+              for (const jobIdBooking of jobsIdBooking) {
+                const queryResultFormat = await request.query(
+                  `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdBooking}'`
+                );
+                const formatIds = queryResultFormat?.recordset?.map(format => format?.Format_Id);
+                selectedFormats.push({
+                  Format_Id: formatIds,
+                  Job_Id: jobIdBooking,
+                });
+              }
+             
+              const result = {};
+              selectedJobs.forEach((job) => {
+                result[job?.Job_ID] = {
+                  ...job,
+                  Format_Id:
+                    selectedFormats.find((format) => format?.Job_Id === job?.Job_ID)?.Format_Id || [],
+                };
+              });
+
+              const mergedArray = Object.values(result);
+              for (const mergedItem of mergedArray) {
+                const matchingBookingJob = bookingJobs?.find(bookingJob => bookingJob?.Job_ID === mergedItem?.Job_ID);
+                if (matchingBookingJob) {
+                  Object.assign(mergedItem, matchingBookingJob);
+                }
+              }
+              
+              return res.status(200).json({
+                message: "Get Successfully",
+                data: mergedArray,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        return res.json({ message: " " + error });
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+async function acceptBooking(req, res, next) {
+  try {
+    const bookingDetail = JSON.parse(req.body.booking);
+    
+    console.log(bookingDetail,"accept");
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      const request = new sql.Request();
+      await request.input('status', sql.NVarChar, bookingDetail.status)
+      await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
+      .query(`
+          BEGIN
+          UPDATE [UpReachDB].[dbo].[ClientBooking]
+          SET         
+             Status = @status
+          WHERE clientBooking_ID = @bookingId
+          END
+      `);
+
+          return res.status(201).json({
+            message: "Accept booking successfully!",
+            // data: ,
+          });
+        }
+      );
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+async function rejectBooking(req, res, next) {
+  try {
+    const bookingDetail = JSON.parse(req.body.booking);
+    
+    console.log(bookingDetail,"reject");
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      const request = new sql.Request();
+      await request.input('status', sql.NVarChar, bookingDetail.status)
+      await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
+      .query(`
+          BEGIN
+          UPDATE [UpReachDB].[dbo].[ClientBooking]
+          SET         
+             Status = @status
+          WHERE clientBooking_ID = @bookingId
+          END
+      `);
+
+          return res.status(201).json({
+            message: "Reject booking successfully!",
+            // data: ,
+          });
+        }
+      );
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+
 // module.exports = router;
-module.exports = {
-  getDataForChart,
-  updateInfo,
-  searchInfluencer,
-  getAllInfluencer,
-  reportInfluencer,
-  dataReportInfluencer,
-  addInfluencer,
-  createInflu,
-  getJobsInfluencer,
-  getAudienceInfluencer,
-  getImagesInfluencer,
-};
+module.exports = { getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
