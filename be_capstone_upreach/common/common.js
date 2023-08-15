@@ -72,11 +72,9 @@ function formatResponseInfluencerToArray(data) {
             kolGroups[kolId]["AudienceFollowerList"].add(item["AudienceFollowerList"]);
             kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
             kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
-            
-
         }
         const imageId = item["Image_ID"];
-        const image = item["Image"] 
+        const image = item["Image"];
         const existingImage = kolGroups[kolId]["dataImage"].find(img => img.imageId === imageId);
 
         if (!existingImage) {

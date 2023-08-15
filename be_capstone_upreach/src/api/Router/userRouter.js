@@ -38,6 +38,7 @@ router.get("/influ/get-booking-jobs", influencerController.getBookingJob);
 router.put("/influ/accept-booking", influencerController.acceptBooking);
 router.put("/influ/reject-booking", influencerController.rejectBooking);
 
+router.post("/influ/updateAvatar", influencerController.updateAvatarInfluencer);
 
 router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
