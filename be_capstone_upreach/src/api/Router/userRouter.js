@@ -22,6 +22,8 @@ router.get("/admin/get-influencer-account", adminController.getInfluencerAccount
 router.put("/admin/edit-influ", adminController.editInflu);
 router.put("/admin/lock-influ", adminController.lockInflu);
 router.put("/admin/unlock-influ", adminController.unlockInflu);
+router.get("/admin/get-client-account", adminController.getClientAccount);
+router.put("/admin/edit-client", adminController.editClient);
 
 
 router.put("/influ/update", influencerController.updateInfo);
