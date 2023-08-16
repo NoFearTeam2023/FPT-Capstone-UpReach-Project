@@ -77,7 +77,6 @@ async function confirmRegister(req, res, next) {
             return res.json({ status: 'False', message: "OTP hết hạn" });
         }
         if (otp === userModels.otpData && email === userModels.userEmail && passwordMatch) {
-            result = await userService.insertInfoUser(userModels.userId, role, email, userModels.userPassword);
             // if (role === '3') {
             //     const infoInflue = await createClientOrInflu(email, role);
             //     return res.json({
@@ -86,6 +85,7 @@ async function confirmRegister(req, res, next) {
             //         idInflue: infoInflue._id
             //     });
             // }
+            result = await userService.insertInfoUser(userModels.userId, role, email, userModels.userPassword);
             if (result.rowsAffected) {
                 passport.authenticate("local", async (err, user, info) => {
                     if (err) {
@@ -103,12 +103,12 @@ async function confirmRegister(req, res, next) {
                             console.log('fails add session');
                             return res.json({ status: 'False', message: 'Fails Add Session' });
                         }
-                        const infoClient = await createClientOrInflu(user.email, role)
+                        const infoUser = await createClientOrInflu(user.email, role)
                         return res.status(200).json({
                             status: 'True',
                             message: "Them session vao db thanh cong",
                             data: user,
-                            idClient: infoClient._id
+                            idUser: infoUser._id
                         });
                     });
 
@@ -159,7 +159,7 @@ async function login(req, res, next) {
                     data: {
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             }
 
@@ -178,7 +178,7 @@ async function login(req, res, next) {
                     data: {
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             });
         })(req, res, next);
