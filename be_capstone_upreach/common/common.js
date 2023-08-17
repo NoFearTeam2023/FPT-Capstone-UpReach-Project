@@ -74,11 +74,11 @@ function formatResponseInfluencerToArray(data) {
             kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
         }
         const imageId = item["Image_ID"];
-        const image = item["Image"];
+        const url = item["Image"];
         const existingImage = kolGroups[kolId]["dataImage"].find(img => img.imageId === imageId);
 
         if (!existingImage) {
-            kolGroups[kolId]["dataImage"].push({ imageId, image });
+            kolGroups[kolId]["dataImage"].push({ imageId, url });
         }
         });
 

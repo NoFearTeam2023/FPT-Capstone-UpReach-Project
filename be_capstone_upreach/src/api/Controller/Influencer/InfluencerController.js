@@ -25,8 +25,7 @@ async function updateInfo(req, res, next) {
   try {
     const influ = JSON.parse(req.body.influ);
     const booking = JSON.parse(req.body.booking);
-    console.log(booking);
-
+  
     const chart = JSON.parse(req.body.chart);
 
     const idRemoveArray = JSON.parse(req.body.idRemove);
@@ -34,8 +33,8 @@ async function updateInfo(req, res, next) {
 
     const uploadedImages = [];
 
-    if (influ.Image) {
-      for (const image of influ.Image) {
+    if (influ.dataImage) {
+      for (const image of influ.dataImage) {
         if (image.thumbUrl) {
           const img = await cloudinary.uploader.upload(image.thumbUrl, {
             public_id: image.uid,
@@ -54,9 +53,9 @@ async function updateInfo(req, res, next) {
             url: image.url,
           });
       }
-      influ.Image = uploadedImages;
+      influ.dataImage = uploadedImages;
     }
-console.log(influ);
+
     sql.connect(config, (err) => {
       if (err) {
         console.log(err);
@@ -117,25 +116,18 @@ console.log(influ);
                 const imageObject = uploadedImages[i];
               const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-                const imageUrl = imageObject.url;
+                request.input("imageId" + i, sql.NVarChar, imageId);
+                request.input("profileId" + i, sql.NVarChar,profileId);
+                request.input("imageUrl" + i, sql.NVarChar,imageObject.url);
 
-                const queryText = `
-                  
-                  BEGIN
-                      INSERT INTO [UpReachDB].[dbo].[ImageKOLs] (Image_ID, Profile_ID, Image)
-                      VALUES (@imageId, @profileId, @imageUrl)
-                  END;
-              `;
-                try {
-                  const request = new sql.Request();
-                  request.input("imageId", sql.NVarChar, imageId);
-                  request.input("profileId", sql.NVarChar, profileId);
-                  request.input("imageUrl", sql.NVarChar, imageUrl);
 
-                  const result = await request.query(queryText);
-                } catch (error) {
-                  console.error("Error executing query:", error);
-                }
+                request.query(`
+                BEGIN
+                    INSERT INTO [UpReachDB].[dbo].[ImageKOLs]
+                    (Image_ID, Profile_ID, Image)
+                    VALUES (@imageId${i}, @profileId${i}, @imageUrl${i})
+                END
+                    `);
               }
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
@@ -222,6 +214,7 @@ console.log(influ);
               for (let i = 0; i < booking?.length; i++) {
                 const bookingJob = booking[i];
               const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                 jobIds.push(jobId);
 
@@ -248,23 +241,22 @@ console.log(influ);
                 request.query(`
                           BEGIN
                             INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
-                            (Job_Id, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
+                            (Job_ID, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
                             VALUES (@jobId${i}, @jobName${i}, @platform${i}, @costEstimateFrom${i}, @costEstimateTo${i}, @quantity${i}, @jobLink${i})
                           END
                         `);
 
-                for (let j = 0; j < booking[i].formatContent?.length; j++) {
-              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                request.input("formatListId" + i, sql.NVarChar, formatListId);
+                request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
 
-
-                  await request.query(`
+                request.query(`
                             BEGIN
                               INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
                               (FormatListJob_ID, Job_ID, Format_Id)
-                              VALUES ('${formatListId}', '${jobId}', '${booking[i].formatContent[j]}')
+                              VALUES (@formatListId${i}, @jobId${i}, @formatContent${i})
                             END
                           `);
-                }
+                
               }
 
               for (let i = 0; i < jobIds?.length; i++) {
@@ -278,8 +270,8 @@ console.log(influ);
                           
                           BEGIN
                               INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
-                              (JobList_ID, Job_ID, Profile_ID)
-                              VALUES (@jobListId${i}, '${jobId}', '${profileId}')
+                              (JobList_ID, Job_ID, Profile_ID, isPublish)
+                              VALUES (@jobListId${i}, '${jobId}', '${profileId}', 1)
                               END
                               `);
               }
@@ -297,29 +289,17 @@ console.log(influ);
                 const imageObject = uploadedImages[i];
               const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-                const imageUrl = imageObject.url;
+                request.input("imageId" + i, sql.NVarChar, imageId);
+                request.input("imageUrl" + i, sql.NVarChar, imageObject.url);
+                request.input("profileId" + i, sql.NVarChar, filteredData.Profile_ID);
 
-                const queryText = `
+                request.query(`
                 BEGIN
-                  INSERT INTO [UpReachDB].[dbo].[ImageKOLs] (Image_ID, Profile_ID, Image)
-                  VALUES (@imageId, @profileId, @imageUrl)
+                    INSERT INTO [UpReachDB].[dbo].[ImageKOLs]
+                    (Image_ID, Profile_ID, Image)
+                    VALUES (@imageId${i}, @profileId${i}, @imageUrl${i})
                 END
-              `;
-
-                try {
-                  const request = new sql.Request();
-                  request.input("imageId", sql.NVarChar, imageId);
-                  request.input(
-                    "profileId",
-                    sql.NVarChar,
-                    filteredData.Profile_ID
-                  );
-                  request.input("imageUrl", sql.NVarChar, imageUrl);
-
-                  const result = await request.query(queryText);
-                } catch (error) {
-                  console.error("Error executing query:", error);
-                }
+                    `);
               }
 
               await request.query(`
@@ -366,6 +346,8 @@ console.log(influ);
                   );
                   request.input("quantity" + i, sql.Int, bookingJob.quantity);
                   request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
+                  
+                  request.input("formatContent" + i , sql.NVarChar, bookingJob.formatContent);
 
                   request.query(`
                         BEGIN
@@ -374,38 +356,20 @@ console.log(influ);
                           WHERE Job_ID = @jobId${i}
                         END
                       `);
-
-                      request.query(`
+                  request.query(`
                         BEGIN
-                          DELETE FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${bookingJob.jobId}'
+                          UPDATE [UpReachDB].[dbo].[JobContentFormatList]
+                          SET Format_Id = @formatContent${i}
+                          WHERE Job_ID = @jobId${i}
                         END
                       `);
 
-                      for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
-              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-
-            
-                        const newRequest = new sql.Request();
-                        newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
-                        newRequest.input("jobId" + i, sql.NVarChar, bookingJob?.jobId);
-                        newRequest.input("formatContent" + j , sql.NVarChar, bookingJob?.formatContent[j]);
-            
-                        const formatQuery = `       
-                            BEGIN
-                                INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
-                                (FormatListJob_ID, Job_ID, Format_Id)
-                                VALUES (@formatListId${j}, @jobId${i}, @formatContent${j})
-                            END
-                        `;
-            
-                        await newRequest.query(formatQuery);
-                    }
-
                     //--------------------------Update Job New ------------------------------------
 
-                } else {     
-              const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-              const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  } else {     
+                    const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                    const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                    const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   
                   request.input("jobId" + i, sql.NVarChar, jobId);
@@ -421,7 +385,7 @@ console.log(influ);
                   request.query(`
                         BEGIN
                           INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
-                          (Job_Id, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
+                          (Job_ID, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
                           VALUES (@jobId${i}, @jobName${i}, @platform${i}, @costEstimateFrom${i}, @costEstimateTo${i}, @quantity${i}, @jobLink${i})
                         END
                               `);
@@ -429,29 +393,22 @@ console.log(influ);
                   request.query(`
                         BEGIN
                           INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
-                          (JobList_ID, Job_ID, Profile_ID)
-                          VALUES (@jobListId${i}, @jobId${i}, '${filteredData.Profile_ID}')
+                          (JobList_ID, Job_ID, Profile_ID, isPublish)
+                          VALUES (@jobListId${i}, @jobId${i}, '${filteredData.Profile_ID}', 1)
                         END
                               `);   
 
-                      for (let j = 0; j < bookingJob?.formatContent?.length; j++) {
-              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  request.input("formatListId" + i , sql.NVarChar, formatListId);
+                  request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
+                    
+                  request.query(`
+                        BEGIN
+                        INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
+                        (FormatListJob_ID, Job_ID, Format_Id)
+                        VALUES (@formatListId${i}, @jobId${i}, @formatContent${i})
+                    END
+                              `);  
 
-                        console.log(jobId,"format");
-                        const newRequest = new sql.Request();
-                        newRequest.input("formatListId" + j, sql.NVarChar, formatListId);
-                        newRequest.input("formatContent" + j, sql.NVarChar, bookingJob?.formatContent[j]);
-            
-                        const formatQuery = `
-                            BEGIN
-                                INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
-                                (FormatListJob_ID, Job_ID, Format_Id)
-                                VALUES (@formatListId${j}, '${jobId}', @formatContent${j})
-                            END
-                        `;
-            
-                        await newRequest.query(formatQuery);
-                  }
                 }  
               }
 
@@ -929,38 +886,46 @@ async function getJobsInfluencer(req, res, next) {
         `SELECT Top 1 * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${user.userId}' ORDER BY Date_edit DESC`
       );
       request.query(
-        `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`,
+        `SELECT Job_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}' AND isPublish = 1`,
         async (error, queryResult) => {
           if (error) {
             console.log(error);
             return res.json({ message: " " + err });
           }
           const selectedJobs = [];
+          const statusBookings = [];
+
           const jobIds = queryResult.recordset;
 
           for (const job_Id of jobIds) {
-            const jobIdToFind = job_Id.Job_Id;
+            const jobIdToFind = job_Id.Job_ID;
+
+            const queryResultBooking = await request.query(
+              `SELECT Status FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_ID = '${jobIdToFind}'`
+            );
+            statusBookings.push({status: queryResultBooking?.recordset[0]?.Status});
+          
+
             const queryResultJob = await request.query(
-              `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
+              `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobIdToFind}'`
             );
             selectedJobs.push(queryResultJob?.recordset[0]);
           }
 
           const selectedFormats = [];
           for (const job_Id of jobIds) {
-            const jobIdToFind = job_Id?.Job_Id;
+            const jobIdToFind = job_Id?.Job_ID;
             const queryResultFormat = await request.query(
-              `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`
+              `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}' `
             );
 
             selectedFormats.push({
-              Format_Id: queryResultFormat?.recordset,
-              Job_Id: jobIdToFind,
+              Format_Id: queryResultFormat?.recordset[0]?.Format_Id,
             });
           }
           const selectedJobsListId = [];
           for (const job_Id of jobIds) {
-            const jobIdToFind = job_Id.Job_Id;
+            const jobIdToFind = job_Id.Job_ID;
             const queryResultJobListId = await request.query(
               `SELECT JobList_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Job_ID = '${jobIdToFind}'`
             );
@@ -974,11 +939,9 @@ async function getJobsInfluencer(req, res, next) {
           selectedJobs.forEach((job, index) => {
             result[job?.Job_ID] = {
               ...job,
-              Format_Id:
-                selectedFormats
-                  .find((format) => format?.Job_Id === job?.Job_ID)
-                  ?.Format_Id?.map((item) => item?.Format_Id) || [],
+              Format_Id:selectedFormats[index]?.Format_Id || "",
               JobList_ID: selectedJobsListId[index]?.JobList_ID || "",
+              status: statusBookings[index]?.status || "",
             };
           });
 
@@ -1190,7 +1153,7 @@ async function getBookingJob(req, res, next) {
 
         if (selectedKOLs.recordset.length > 0) {
           const jobIdsQueryResult = await request.query(
-            `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`
+            `SELECT Job_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${selectedKOLs.recordset[0].Profile_ID}'`
           );
 
           const jobIds = jobIdsQueryResult.recordset;
@@ -1198,9 +1161,9 @@ async function getBookingJob(req, res, next) {
           if (jobIds.length > 0) {
             const bookingJobs = [];
               for (const job_Id of jobIds) {
-                const jobIdToFind = job_Id.Job_Id;
+                const jobIdToFind = job_Id.Job_ID;
                 const queryResultJob = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_Id = '${jobIdToFind}'`
+                  `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_ID = '${jobIdToFind}'`
                 );
                 const queryResultClient = await request.query(
                   `SELECT * FROM [UpReachDB].[dbo].[Clients] WHERE Client_ID = '${queryResultJob?.recordset[0]?.Client_ID}'`
@@ -1233,7 +1196,7 @@ async function getBookingJob(req, res, next) {
                 const formatIds = queryResultFormat?.recordset?.map(format => format?.Format_Id);
                 selectedFormats.push({
                   Format_Id: formatIds,
-                  Job_Id: jobIdBooking,
+                  Job_ID: jobIdBooking,
                 });
               }
              
@@ -1242,7 +1205,7 @@ async function getBookingJob(req, res, next) {
                 result[job?.Job_ID] = {
                   ...job,
                   Format_Id:
-                    selectedFormats.find((format) => format?.Job_Id === job?.Job_ID)?.Format_Id || [],
+                    selectedFormats.find((format) => format?.Job_ID === job?.Job_ID)?.Format_Id || [],
                 };
               });
 
@@ -1276,7 +1239,6 @@ async function acceptBooking(req, res, next) {
   try {
     const bookingDetail = JSON.parse(req.body.booking);
     
-    console.log(bookingDetail,"accept");
     sql.connect(config, async (err) => {
       if (err) {
         console.log(err);
@@ -1310,7 +1272,6 @@ async function rejectBooking(req, res, next) {
   try {
     const bookingDetail = JSON.parse(req.body.booking);
     
-    console.log(bookingDetail,"reject");
     sql.connect(config, async (err) => {
       if (err) {
         console.log(err);
