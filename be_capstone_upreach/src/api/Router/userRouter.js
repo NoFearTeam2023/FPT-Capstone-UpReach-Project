@@ -46,6 +46,8 @@ router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
 router.post('/client/addInflueToBooking', clientController.addInflueToBookingInClient);
 router.put("/client/bookingJob", clientController.bookingJob);
+router.get("/client/get-history-booking", clientController.getHistoryBooking);
+router.put("/client/check-done", clientController.checkDone);
 
 
 router.get('/getalllist', listInfluencerController.GetAllList);
