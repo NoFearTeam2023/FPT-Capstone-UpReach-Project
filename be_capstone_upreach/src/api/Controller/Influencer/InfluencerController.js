@@ -574,7 +574,7 @@ async function searchInfluencer(req, res, next) {
 		// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
 		// if (updatePointSearch.rowsAffected) {
 		// const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
-		// 	return res.status(200).json({
+		// 	return res.status(200).8json({
 		// 	message: "Search thành công",
 		// 	data: result
 		// });
@@ -659,6 +659,7 @@ async function dataReportInfluencer(req, res, next) {
 async function updateAvatarInfluencer(req,res,next){
 	try {
 		const {profileId} = req.body.influDetail.state.user.Profile_ID
+		const idInflu = req.body.influDetail.state.user;
 		const image = req.body.image[0]
 		const uploadedImages = [];
 		if (image.thumbUrl) {
@@ -672,6 +673,11 @@ async function updateAvatarInfluencer(req,res,next){
 		if(updateAvatar.rowsAffected){
 			return res.json({message : "Update Avatar success"})
 		}
+		await influModel.findByIdAndUpdate(idInflu, {
+			avatarImage: uploadedImages.url,
+			nickname: nickname
+		})
+		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
 	} catch (error) {
 		console.log(error)
 		return res.json({ status : "False" ,message : "Update Avatar success"})
@@ -826,7 +832,7 @@ async function getDataForChart(req, res, next) {
 			return res.json({ message: 'Fails ' });
 		}
 		return res.status(200).json({
-			message: "get data getAllInfluencer success",
+			message: "get data getDataForChart success",
 			data: result
 		});
 	} catch (error) {

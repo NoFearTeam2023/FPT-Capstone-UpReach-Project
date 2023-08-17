@@ -157,9 +157,10 @@ async function login(req, res, next) {
                 return res.status(200).json({
                     message: "User Đã Đăng Nhập ",
                     data: {
+                        
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             }
 
@@ -174,11 +175,11 @@ async function login(req, res, next) {
                 const infoInfluencer = await userService.getUserInfluencerByEmail(email)
                 const infoClient = await userService.getUserInfluencerByEmail(email)
                 return res.status(200).json({
-                    message: "Them session vao db thanh cong",
+                    message: "Login Success !",
                     data: {
-                        "User": user.roleId === '3' ? infoInfluencer : infoClient
+                        "User": user.roleId === '1' ? userSearch : user.roleId === '3' ? infoInfluencer : infoClient
                     },
-                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
+                    idInMogodb: user.roleId === '3' ? influ._id : client._id
                 });
             });
         })(req, res, next);
@@ -195,7 +196,7 @@ async function logout(req, res, next) {
         const result = await userService.deleteSessionUserById(userId);
         if (result.rowsAffected > 0) {
             req.logout(() => {
-                return res.json({ message: "Xóa session khỏi db thành công" });
+                return res.json({ message: "Đăng Xuất Thành Công " });
             })
         } else if (result.rowsAffected === 0) {
             return res.json({ message: 'User đang không đăng nhập' });
