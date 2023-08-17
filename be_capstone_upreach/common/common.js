@@ -123,6 +123,79 @@ function formatResponseClientToArray(data) {
     return result;
 }
 
+// function formatChartDataInfluencer(data) {
+//     const dataChartGroup = {};
+
+//     _.forEach(data, (item) => {
+//         const influencerId = item["influencerId"];
+
+//         if (!dataChartGroup[influencerId]) {
+//             dataChartGroup[influencerId] = {
+//                 "influencerId": influencerId,
+//                 "dataFollower": [],
+//                 "dataGender": [],
+//                 "dataAge": [],
+//                 "dataLocation": [],
+//                 "dataJob":[]
+//             };
+//         }
+
+//         dataChartGroup[influencerId]["dataFollower"].push({
+//             "monthFollow": item["monthFollowAudiencer"],
+//             "value": item["quantityFollowerAudiencer"]
+//         });
+
+//         dataChartGroup[influencerId]["dataGender"].push({
+//             "sex": item["genderAudiencer"],
+//             "value": item["quantityGenderAudiencer"]
+//         });
+
+//         dataChartGroup[influencerId]["dataAge"].push({
+//             "type": item["ageRange"],
+//             "value": item["quantityAgeRangeAudiencer"]
+//         });
+
+//         dataChartGroup[influencerId]["dataLocation"].push({
+//             "type": item["locationAudiencer"],
+//             "value": item["quantityLocationAudiencer"]
+//         });
+//         dataChartGroup[influencerId]["dataJob"].push({
+//             "jobId": item["idJob"],
+//             "clientId": item["idClient"],
+//             "clientBookingId": item["idClientBooking"],
+//             "jobName": item["nameJob"],
+//             "jobPlatform": item["platformJob"],
+//             "costForm": item["costForm"],
+//             "costTo": item["costTo"],
+//             "quantityNumberWork": item["quantityNumberWork"],
+//             "linkJob": item["linkJob"],
+//             "describes": item["describes"],
+//             "startDate": item["startDate"],
+//             "endDate": item["endDate"],
+//             "statusId": item["statusId"],
+//             "formatid": item["formatid"],
+//             "isPublish": item["isPublish"]
+//         });
+
+//     });
+
+//     const result = _.values(dataChartGroup);
+    
+//     // Loại bỏ các đối tượng trùng lặp trong mảng
+//     _.forEach(result, (item) => {
+//         item["dataFollower"] = _.uniqBy(item["dataFollower"], "monthFollow");
+//         item["dataGender"] = _.uniqBy(item["dataGender"], "sex");
+//         item["dataAge"] = _.uniqBy(item["dataAge"], "type");
+//         item["dataLocation"] = _.uniqBy(item["dataLocation"], "type");
+//         item["dataJob"] = _.uniqBy(item["dataJob"], "jobId");
+//         // Xóa các trường không cần thiết - Dung -> delete item[]
+//         // delete item["monthFollowAudiencer"];
+//         // delete item["quantityFollowerAudiencer"];
+//     });
+
+//     return result;
+// }
+
 function formatChartDataInfluencer(data) {
     const dataChartGroup = {};
 
@@ -136,7 +209,7 @@ function formatChartDataInfluencer(data) {
                 "dataGender": [],
                 "dataAge": [],
                 "dataLocation": [],
-                "dataJob":[]
+                "dataJob": []
             };
         }
 
@@ -159,39 +232,48 @@ function formatChartDataInfluencer(data) {
             "type": item["locationAudiencer"],
             "value": item["quantityLocationAudiencer"]
         });
-        dataChartGroup[influencerId]["dataJob"].push({
-            "jobId": item["idJob"],
-            "jobName": item["nameJob"],
-            "jobPlatform": item["platformJob"],
-            "costForm": item["costForm"],
-            "costTo": item["costTo"],
-            "quantityNumberWork": item["quantityNumberWork"],
-            "linkJob": item["linkJob"],
-            "describes": item["describes"],
-            "startDate": item["startDate"],
-            "endDate": item["endDate"],
-            "statusId": item["statusId"],
-            "formatid": item["formatid"]
-        });
 
+        // Thay đổi ở đây: Gộp các công việc có cùng jobId
+        const jobId = item["idJob"];
+        const existingJob = dataChartGroup[influencerId]["dataJob"].find(job => job["jobId"] === jobId);
+        if (existingJob) {
+            existingJob["clientId"].push(item["idClient"]);
+        } else {
+            dataChartGroup[influencerId]["dataJob"].push({
+                "jobId": jobId,
+                "clientBookingId": item["idClientBooking"],
+                "clientId": [item["idClient"]],
+                "jobName": item["nameJob"],
+                "jobPlatform": item["platformJob"],
+                "costForm": item["costForm"],
+                "costTo": item["costTo"],
+                "quantityNumberWork": item["quantityNumberWork"],
+                "linkJob": item["linkJob"],
+                "describes": item["describes"],
+                "startDate": item["startDate"],
+                "endDate": item["endDate"],
+                "statusId": item["statusId"],
+                "formatid": item["formatid"],
+                "isPublish": item["isPublish"]
+                
+                // Các trường dữ liệu khác như trong mã gốc
+            });
+        }
     });
 
     const result = _.values(dataChartGroup);
-    
-    // Loại bỏ các đối tượng trùng lặp trong mảng
+
     _.forEach(result, (item) => {
         item["dataFollower"] = _.uniqBy(item["dataFollower"], "monthFollow");
         item["dataGender"] = _.uniqBy(item["dataGender"], "sex");
         item["dataAge"] = _.uniqBy(item["dataAge"], "type");
         item["dataLocation"] = _.uniqBy(item["dataLocation"], "type");
         item["dataJob"] = _.uniqBy(item["dataJob"], "jobId");
-        // Xóa các trường không cần thiết - Dung -> delete item[]
-        // delete item["monthFollowAudiencer"];
-        // delete item["quantityFollowerAudiencer"];
     });
-    
+
     return result;
 }
+
 function increaseID(lastId) {
     try{
         const wordChar= lastId.match(/[A-Za-z]+/)[0]; // Tách phần chữ ra khỏi mã

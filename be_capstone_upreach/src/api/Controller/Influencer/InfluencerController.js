@@ -617,7 +617,7 @@ async function searchInfluencer(req, res, next) {
 		// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
 		// if (updatePointSearch.rowsAffected) {
 		// const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
-		// 	return res.status(200).json({
+		// 	return res.status(200).8json({
 		// 	message: "Search thành công",
 		// 	data: result
 		// });
@@ -875,7 +875,7 @@ async function getDataForChart(req, res, next) {
 			return res.json({ message: 'Fails ' });
 		}
 		return res.status(200).json({
-			message: "get data getAllInfluencer success",
+			message: "get data getDataForChart success",
 			data: result
 		});
 	} catch (error) {
