@@ -108,7 +108,7 @@ async function confirmRegister(req, res, next) {
                             status: 'True',
                             message: "Them session vao db thanh cong",
                             data: user,
-                            idUser: infoUser._id
+                            idUser: user.roleId === '1' ? null  : infoUser._id
                         });
                     });
 
@@ -157,7 +157,7 @@ async function login(req, res, next) {
                 return res.status(200).json({
                     message: "User Đã Đăng Nhập ",
                     data: {
-                        
+                        "Admin": user.roleId === '1' ? user : null,
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
                     idInMogodb: user.roleId === '3' ? influ._id : client._id
@@ -177,6 +177,7 @@ async function login(req, res, next) {
                 return res.status(200).json({
                     message: "Login Success !",
                     data: {
+                        "Admin": user.roleId === '1' ? user : null,
                         "User": user.roleId === '1' ? userSearch : user.roleId === '3' ? infoInfluencer : infoClient
                     },
                     idInMogodb: user.roleId === '3' ? influ._id : client._id
