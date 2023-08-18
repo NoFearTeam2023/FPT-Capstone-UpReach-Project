@@ -569,7 +569,7 @@ async function getAllInfluencer(req, res, next) {
 
 async function searchInfluencer(req, res, next) {
 	try {
-		const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
+		const {costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
 		
 		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
 		return res.status(200).json({
@@ -584,43 +584,71 @@ async function searchInfluencer(req, res, next) {
 
 async function searchPoint(req, res, next){
   // Update lại điểm khi search thông tin Influencer
+  try {
     const { clientId, pointSearch} = req.body
 		const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
-		if (updatePointSearch.rowsAffected) {
-		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
+		if (updatePointSearch.rowsAffected[0]) {
 			return res.status(200).json({
-			message: "Search thành công",
-			data: result
+			message: "Update Search Point thành công"
 		});
 		} else {
 			return res.json({ message: "Update Thất bại" });
 		}
+  } catch (error) {
+    return res.json({ message: error });
+  }
+}
+
+async function getAllHistoryReportByClient(req, res, next){
+  try {
+    const {  clientId,  } = req.body;
+    const getData = await influService.getAllHistoryReportByClientId(clientId);
+    return res.status(200).json({
+			message: "Search thành công",
+			data: getData
+		});
+  } catch (error) {
+    return res.json({ message: error });
+  }
 }
 
 // Trừ điểm khi xem Thông tin của Influencer tại HomePage
-async function reportInfluencer(req, res, next) {
-	try {
-		const { email, clientId, pointReport } = req.body;
+async function reportOfInfluencer(req, res, next){
+  try {
+    const {  clientId, pointReport } = req.body;
 		const updatePointReport = await influService.updatePointReport(clientId, pointReport);
-		const infoInfluencer = await influService.getAllInfluencerByEmailAndPublish(email);
-		if (!updatePointReport.rowsAffected) {
-			res.json({ status: false, message: "Update Thất bại" });
-		} else{
-			const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,infoInfluencer.influencerId)
-			if(insertHistoryViewInfluencer.rowsAffected){
-				res.status(200).json({
-					message: "Insert To History View Of List Influencer thành công",
-				});
-			}
-		}
-		return res.status(200).json({
-			message: "Search thành công",
-			data: infoInfluencer
+		if (updatePointReport.rowsAffected[0]) {
+			return res.status(200).json({
+			message: "Update Report Point thành công"
 		});
-	} catch (err) {
-		console.log(err);
-		return res.status(500).json({ message: "Lỗi", err });
-	}
+		} else {
+			return res.json({ message: "Update Thất bại" });
+		}
+  } catch (error) {
+    return res.json({ message: error });
+  }
+}
+
+async function insertDataToHistoryReport(req, res, next){
+  try {
+    const { influencerId, clientId, } = req.body;
+    const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
+    if(checkInfluencerExisted.rowsAffected[0]){
+      const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
+      if(insertHistoryViewInfluencer.rowsAffected[0]){
+        return res.status(200).json({
+          status: "True",
+          message: "Insert To History View Of List Influencer thành công",
+        });
+      } 
+    }
+    else{
+      return res.json({ message: "Insert Thất bại" });
+    }
+  } catch (error) {
+    return res.json({ message: error });
+  }
+  
 }
 
 async function dataReportInfluencer(req, res, next) {
@@ -693,31 +721,22 @@ async function updateAvatarInfluencer(req,res,next){
 
 async function addInfluencer(req, res, next) {
 	try {
-		// const image = req.body.image[0]
-		// const uploadedImages = [];
-		// if (image.thumbUrl) {
-		// 	const img = await cloudinary.uploader.upload(image.thumbUrl, {
-		// 		public_id: image.uid,
-		// 		resource_type: "auto",
-		// 	});
-		// 	uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
-		// } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
+
 		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
 		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
-		const { instagramLink, instagramFollower, facebookLink, facebookFollower, youtubeLink, youtubeFollower, tiktokLink, tiktokFollower } = req.body.socialDetails
 		const idInflu = req.body.idInflu;
-		const followers = instagramFollower + facebookFollower + youtubeFollower + tiktokFollower
 		const { name, email } = req.body.influencerDetail
 		const user = await userService.getUserByEmail(email);
 		const now = new Date();
 		const dateNow = now.toISOString();
-		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, costfrom, costTo, followers, typeId)) {
+    
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, costfrom, costTo, typeId)) {
 			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
 		}
 		if (!await addDataToContentTopic(req.body.contentDetails)) {
 			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
 		}
-		if (!await addInfluencerPlatformInfomation(facebookLink, instagramLink, tiktokLink, youtubeLink, facebookFollower, instagramFollower, tiktokFollower, youtubeFollower, engagement, post)) {
+		if (!await addInfluencerPlatformInfomation(engagement, post)) {
 			return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
 		}
 
@@ -725,10 +744,6 @@ async function addInfluencer(req, res, next) {
 			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
 		}
 
-		// await influModel.findByIdAndUpdate(idInflu, {
-		// 	avatarImage: uploadedImages.url,
-		// 	nickname: nickname
-		// })
 		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
 		return res.json({
 			status: 'True',
@@ -741,11 +756,11 @@ async function addInfluencer(req, res, next) {
 	}
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, typeId) {
 	try {
 
 		// Thực hiện insert
-		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId)
+		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, typeId)
 		if (checkAddInfluencerProfile.rowsAffected[0]) {
 			return true;
 		} else {
@@ -772,11 +787,11 @@ async function addDataToContentTopic(dataArray) {
 	}
 }
 
-async function addInfluencerPlatformInfomation(linkFB, linkInsta, linkTiktok, linkYoutube, followFB, followInsta, followTikTok, followYoutube, engagement, postsPerWeek) {
+async function addInfluencerPlatformInfomation(engagement, postsPerWeek) {
 	try {
 
 		// Thực hiện insert
-		const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(linkFB, linkInsta, linkTiktok, linkYoutube, followFB, followInsta, followTikTok, followYoutube, engagement, postsPerWeek)
+		const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(engagement, postsPerWeek)
 		if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
 			return true;
 		} else {
@@ -1309,4 +1324,4 @@ async function rejectBooking(req, res, next) {
 
 
 // module.exports = router;
-module.exports = {searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateAvatarInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
+module.exports = {getAllHistoryReportByClient,reportOfInfluencer,insertDataToHistoryReport,searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateAvatarInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }

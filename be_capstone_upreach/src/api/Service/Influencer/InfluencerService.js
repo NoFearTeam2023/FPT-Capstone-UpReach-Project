@@ -34,6 +34,21 @@ async function getAllInfluencerByEmail(email) {
         throw err;
     }
 }
+
+async function getAllHistoryReportByClientId(clientId){
+    try {
+        const getAllHistoryReportByClientId = "getAllHistoryReportByClient";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('clientId', sql.NVarChar, clientId);
+        const result = await request.execute(getAllHistoryReportByClientId);
+        connection.close();
+        return result.recordset;
+    } catch (error) {
+        console.log('Lỗi thực thi getAllHistoryReportByClientId:', error);
+        throw error;
+    }
+}
 // contentTopic name is category
 async function searchInfluencer(costEstimateFrom, costEstimateTo,ageFrom, ageTo, contentTopic,nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom,audienceAge){
     try {
@@ -210,7 +225,7 @@ async function getLastInfluencerTypeListId() {
     }
 }
 
-async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, followers, typeId) {
+async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, costEstimateFrom, costEstimateTo, typeId) {
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
         const profileId = await getLastProfileId()
@@ -234,7 +249,6 @@ async function insertInfluencerProfile(fullName, nickName, email, age, phone, ge
         request.input('relationship', sql.NVarChar, relationship);
         request.input('costEstimateFrom', sql.Int, costEstimateFrom);
         request.input('costEstimateTo', sql.Int, costEstimateTo);
-        request.input('followers', sql.Int, followers);
 
         request.input('typeListId', sql.NVarChar, lastTypeListId);
         request.input('typeId', sql.NVarChar, typeId);
@@ -318,7 +332,7 @@ async function getLastAudienceLocationListId() {
     }
 }
 
-async function insertInfluencerPlatformInformation(linkFB, linkInsta, linkTiktok, linkYoutube, followFB, followInsta, followTikTok, followYoutube, engagement, postsPerWeek) {
+async function insertInfluencerPlatformInformation(engagement, postsPerWeek) {
     try {
         const insertInfluencerPlatformInformation = "insertInfluencerPlatformInformation";
         const platformId = await getLastPlatformInformationId()
@@ -328,14 +342,7 @@ async function insertInfluencerPlatformInformation(linkFB, linkInsta, linkTiktok
         const request = connection.request();
 
         request.input('platformId', sql.NVarChar, lastPlatformId);
-        request.input('linkFB', sql.NVarChar, linkFB);
-        request.input('linkInsta', sql.NVarChar, linkInsta);
-        request.input('linkTiktok', sql.NVarChar, linkTiktok);
-        request.input('linkYoutube', sql.NVarChar, linkYoutube);
-        request.input('followFB', sql.Int, followFB);
-        request.input('followInsta', sql.Int, followInsta);
-        request.input('followTikTok', sql.Int, followTikTok);
-        request.input('followYoutube', sql.Int, followYoutube);
+
         request.input('engagement', sql.Float, engagement);
         request.input('postsPerWeek', sql.Float, postsPerWeek);
 
@@ -494,6 +501,23 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
         throw err;
     }
 }
+async function checkInfluencerExistedInHistoryView(influencerId){
+    try {
+        const checkExisted = "getInfluencerIdHistoryReport";
+        const connection = await pool.connect();
+        const request = connection.request();
+
+        request.input('influencerId', sql.NVarChar, influencerId)
+        const result = await request.execute(checkExisted);
+        connection.close();
+        return result;
+
+    } catch (error) {
+        console.log('Lỗi thực thi insertDataHistoryViewInfluencer : ', error);
+        throw error;
+    }
+    
+}
 
 async function insertAvatarProfile(profileId, imageAvatar){
     try {
@@ -514,4 +538,4 @@ async function insertAvatarProfile(profileId, imageAvatar){
     }
 }
 
-module.exports = {insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer}
+module.exports = {getAllHistoryReportByClientId,insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}

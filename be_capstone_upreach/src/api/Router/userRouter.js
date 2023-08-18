@@ -30,7 +30,9 @@ router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
 router.post("/influ/search-minus-point",influencerController.searchPoint);
 router.get("/influ/get",influencerController.getAllInfluencer);
-router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
+router.post("/influ/report-influencer",influencerController.reportOfInfluencer);
+router.post("/influ/get-data-history-report",influencerController.getAllHistoryReportByClient);
+router.post("/influ/insert-data-history-report",influencerController.insertDataToHistoryReport);
 router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);  
 router.post("/influ/addInfluencer", influencerController.addInfluencer);
 router.post("/influ/data-chart", influencerController.getDataForChart);
@@ -40,7 +42,6 @@ router.get("/influ/get-images-influencer", influencerController.getImagesInfluen
 router.get("/influ/get-booking-jobs", influencerController.getBookingJob);
 router.put("/influ/accept-booking", influencerController.acceptBooking);
 router.put("/influ/reject-booking", influencerController.rejectBooking);
-
 router.post("/influ/updateAvatar", influencerController.updateAvatarInfluencer);
 
 router.post('/client/updateClientProfile', clientController.addProfileClient);
