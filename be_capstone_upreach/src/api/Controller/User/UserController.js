@@ -160,6 +160,7 @@ async function login(req, res, next) {
                         "Admin": user.roleId === '1' ? user : null,
                         "User": user.roleId === '3' ? infoInfluencer : infoClient
                     },
+                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
                     idInMogodb: user.roleId === '3' ? influ._id : (user.roleId === '1' ? null : client._id)
                 });
             }
@@ -180,6 +181,7 @@ async function login(req, res, next) {
                         "Admin": user.roleId === '1' ? user : null,
                         "User": user.roleId === '1' ? userSearch : user.roleId === '3' ? infoInfluencer : infoClient
                     },
+                    // idInMogodb: user.roleId === '3' ? influ._id : client._id
                     idInMogodb: user.roleId === '3' ? influ._id : (user.roleId === '1' ? null : client._id)
                 });
             });
