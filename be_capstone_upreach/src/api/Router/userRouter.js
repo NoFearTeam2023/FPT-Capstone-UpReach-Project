@@ -24,6 +24,8 @@ router.put("/admin/lock-influ", adminController.lockInflu);
 router.put("/admin/unlock-influ", adminController.unlockInflu);
 router.get("/admin/get-client-account", adminController.getClientAccount);
 router.put("/admin/edit-client", adminController.editClient);
+router.put("/admin/lock-client", adminController.lockClient);
+router.put("/admin/unlock-client", adminController.unlockClient);
 
 
 router.put("/influ/update", influencerController.updateInfo);
@@ -48,6 +50,7 @@ router.post('/client/addInflueToBooking', clientController.addInflueToBookingInC
 router.put("/client/bookingJob", clientController.bookingJob);
 router.get("/client/get-history-booking", clientController.getHistoryBooking);
 router.put("/client/check-done", clientController.checkDone);
+router.put("/client/send-feedback", clientController.sendFeedback);
 
 
 router.get('/getalllist', listInfluencerController.GetAllList);

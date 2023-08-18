@@ -416,16 +416,16 @@ const router = express.Router();
 
   async function lockInflu(req, res, next) {
     try {
-      const influId = JSON.parse(req.body.influId);
+      const profileId = JSON.parse(req.body.profileId);
       
-      console.log(influId);
+      
       sql.connect(config, async (err) => {
         if (err) {
           console.log(err);
           return res.json({ message: " " + err });
         }
         const request = new sql.Request();
-        await request.input('profileId', sql.NVarChar, influId)
+        await request.input('profileId', sql.NVarChar, profileId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[Profile]
@@ -449,16 +449,16 @@ const router = express.Router();
 
   async function unlockInflu(req, res, next) {
     try {
-      const influId = JSON.parse(req.body.influId);
+      const profileId = JSON.parse(req.body.profileId);
       
-      console.log(influId);
+      
       sql.connect(config, async (err) => {
         if (err) {
           console.log(err);
           return res.json({ message: " " + err });
         }
         const request = new sql.Request();
-        await request.input('profileId', sql.NVarChar, influId)
+        await request.input('profileId', sql.NVarChar, profileId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[Profile]
@@ -483,7 +483,7 @@ const router = express.Router();
   async function getClientAccount(req, res, next) {
     try {
       const clients = await getAllClient();
-      // console.log(clients,"run");
+     ;
           return res.status(200).json({
             message: "Get all client successfully!",
             data: clients
@@ -537,4 +537,69 @@ const router = express.Router();
     }
   }
 
-  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu, getClientAccount, editClient }
+  async function lockClient(req, res, next) {
+    try {
+      const clientId = JSON.parse(req.body.clientId);
+      
+      
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('clientId', sql.NVarChar, clientId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Clients]
+            SET       
+               isAccept = 0
+            WHERE Client_ID = @clientId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Lock Client Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function unlockClient(req, res, next) {
+    try {
+      const clientId = JSON.parse(req.body.clientId);
+      
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('clientId', sql.NVarChar, clientId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Clients]
+            SET       
+               isAccept = 1
+            WHERE Client_ID = @clientId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Unlock Client Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }
