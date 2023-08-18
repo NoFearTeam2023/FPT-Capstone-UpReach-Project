@@ -42,8 +42,9 @@ async function getAllHistoryReportByClientId(clientId){
         const request = connection.request();
         request.input('clientId', sql.NVarChar, clientId);
         const result = await request.execute(getAllHistoryReportByClientId);
+        const data = common.formatResponseHistoryReportToArray(result.recordset)
         connection.close();
-        return result.recordset;
+        return data;
     } catch (error) {
         console.log('Lỗi thực thi getAllHistoryReportByClientId:', error);
         throw error;
