@@ -570,17 +570,7 @@ async function getAllInfluencer(req, res, next) {
 async function searchInfluencer(req, res, next) {
 	try {
 		const { clientId, pointSearch, costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
-		// Update lại điểm khi search thông tin Influencer
-		// const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
-		// if (updatePointSearch.rowsAffected) {
-		// const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
-		// 	return res.status(200).8json({
-		// 	message: "Search thành công",
-		// 	data: result
-		// });
-		// } else {
-		// 	return res.json({ message: "Update Thất bại" });
-		// }
+		
 		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
 		return res.status(200).json({
 			message: "Search thành công",
@@ -591,6 +581,22 @@ async function searchInfluencer(req, res, next) {
 		return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
 	}
 }
+
+async function searchPoint(req, res, next){
+  // Update lại điểm khi search thông tin Influencer
+    const { clientId, pointSearch} = req.body
+		const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
+		if (updatePointSearch.rowsAffected) {
+		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation,followerFrom,followerTo,postsPerWeekFrom,postsPerWeekTo,engagementTo,engagementFrom);
+			return res.status(200).json({
+			message: "Search thành công",
+			data: result
+		});
+		} else {
+			return res.json({ message: "Update Thất bại" });
+		}
+}
+
 // Trừ điểm khi xem Thông tin của Influencer tại HomePage
 async function reportInfluencer(req, res, next) {
 	try {
@@ -1303,4 +1309,4 @@ async function rejectBooking(req, res, next) {
 
 
 // module.exports = router;
-module.exports = { getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateAvatarInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
+module.exports = {searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, reportInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateAvatarInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
