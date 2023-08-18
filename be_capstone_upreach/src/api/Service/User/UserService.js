@@ -4,6 +4,8 @@ const config = require('../../Config/dbConfig');
 const common = require('../../../../common/common')
 const pool = new sql.ConnectionPool(config);
 
+
+// Lất tất cả thông tin user
 async function getAll() {
     const getUsers = "getAllUser";
     pool.connect().then(() => {
@@ -18,7 +20,7 @@ async function getAll() {
         console.log('Lỗi kết nối:', err);
     });
 }
-
+// Lấy tất cả thông tin người dùng bằng ID
 async function getUserById(id) {
     try {
         const searchUserById = "getInfoUserById";
@@ -34,7 +36,7 @@ async function getUserById(id) {
         throw err;
     }
 }
-
+// Lấy tất cả thông tin người dùng bằng Email
 async function getUserByEmail(email) {
     try {
         const searchUserByEmail = "getInfoUserByEmail";
@@ -50,7 +52,7 @@ async function getUserByEmail(email) {
         throw err;
     }
 }
-
+// Lấy tất cả thông tin Influencer bằng Email
 async function getUserInfluencerByEmail(email) {
     try {
         const getUserInfluencerByEmail = "getInfoUserInfluencerByEmail";
@@ -66,7 +68,7 @@ async function getUserInfluencerByEmail(email) {
         throw err;
     }
 }
-
+// Lấy tất cả thông tin Client bằng Email
 async function getUserClientByEmail(email) {
     try {
         const getUserClientByEmail = "getInfoUserClientByEmail";
@@ -104,49 +106,6 @@ async function insertInfoUser(id, role, email, password) {
     try {
         const connection = await pool.connect();
         const insertQuery = "InsertInfoUser";
-        const request = connection.request();
-        request.input('UserId', sql.NVarChar, id);
-        request.input('UserRole', sql.NVarChar, role);
-        request.input('UserEmail', sql.NVarChar, email);
-        request.input('UserPassword', sql.NVarChar, password);
-        const result = await request.execute(insertQuery);
-        connection.close();
-        return result;
-    } catch (err) {
-        console.log('Lỗi thực thi InsertInfoUser:', err);
-        throw err;
-    }
-}
-
-async function insertInfoClient(Client_ID, Remaining_ID, User_ID, Address, FullName, Email_Client, Image_Client, Phone_Client, Brand_Client) {
-
-    try {
-        const connection = await pool.connect();
-        const insertQuery = "insertInfoClient";
-        const request = connection.request();
-        request.input('Client_ID', sql.NVarChar, Client_ID);
-        request.input('Remaining_ID', sql.NVarChar, Remaining_ID);
-        request.input('User_ID', sql.NVarChar, User_ID);
-        request.input('Address', sql.NVarChar, Address);
-        request.input('FullName', sql.NVarChar, FullName);
-        request.input('Email_Client', sql.NVarChar, Email_Client);
-        request.input('Image_Client', sql.NVarChar, Image_Client);
-        request.input('Phone_Client', sql.NVarChar, Phone_Client);
-        request.input('Brand_Client', sql.NVarChar, Brand_Client);
-        const result = await request.execute(insertQuery);
-        connection.close();
-        return result;
-    } catch (err) {
-        console.log('Lỗi thực thi InsertInfoUser:', err);
-        throw err;
-    }
-}
-
-async function insertInfoKols(id, role, email, password) {
-
-    try {
-        const connection = await pool.connect();
-        const insertQuery = "insertInfoKols";
         const request = connection.request();
         request.input('UserId', sql.NVarChar, id);
         request.input('UserRole', sql.NVarChar, role);

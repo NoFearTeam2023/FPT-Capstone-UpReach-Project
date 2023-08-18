@@ -6,6 +6,8 @@ const influService = require("../../Service/Influencer/InfluencerService")
 const userService = require('../../Service/User/UserService')
 const common = require('../../../../common/common')
 const { getAllInfluencer } = require("../../Service/Influencer/InfluencerService");
+const { getAllClient } = require("../../Service/Client/clientService");
+
 const router = express.Router();
 
 // auth.initialize(
@@ -87,43 +89,37 @@ const router = express.Router();
 
 
         const jobIds = await request.query(
-            `SELECT Job_Id FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${approveInfo.Profile_ID}'`,
+            `SELECT Job_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Profile_ID = '${approveInfo.Profile_ID}'`,
             );
 
 
             const selectedJobs = [];
 
-              for (const job_Id of jobIds.recordset) {
-                const jobIdToFind = job_Id.Job_Id;
+              for (const job_ID of jobIds.recordset) {
+                const jobIdToFind = job_ID.Job_ID;
                 const queryResultJob = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_Id = '${jobIdToFind}'`
+                  `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobIdToFind}'`
                 );
                 selectedJobs.push(queryResultJob.recordset[0]);
               }
 
               const selectedFormats = [];
-              for (const job_Id of jobIds.recordset) {
-                const jobIdToFind = job_Id.Job_Id;
-                const queryResultFormat = await request.query(
-                  `
-                  SELECT * FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'
-          `
-                );
-               
-                selectedFormats.push({
-                  Format_Id: queryResultFormat.recordset,
-                  Job_Id: jobIdToFind,
-                });
-              }
+          for (const job_ID of jobIds.recordset) {
+            const jobIdToFind = job_ID?.Job_ID;
+            const queryResultFormat = await request.query(
+              `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}' `
+            );
+
+            selectedFormats.push({
+              Format_Id: queryResultFormat?.recordset[0]?.Format_Id,
+            });
+          }
               const result = {};
 
-              selectedJobs.forEach((job) => {
+              selectedJobs.forEach((job, index) => {
                 result[job?.Job_ID] = {
                   ...job,
-                  Format_Id:
-                    selectedFormats
-                      .find((format) => format?.Job_Id === job?.Job_ID)
-                      ?.Format_Id?.map((item) => item?.Format_Id) || [],
+                  Format_Id:selectedFormats[index]?.Format_Id || "",
                 };
               });
               
@@ -182,35 +178,19 @@ const router = express.Router();
 
         const request = new sql.Request();
        
-
-        const selectedKOLsID = await  request.query(`
+        const selectedUserID = await  request.query(`
         BEGIN
-        SELECT KOLs_ID FROM [UpReachDB].[dbo].[KOLs] 
+        SELECT * FROM [UpReachDB].[dbo].[KOLs] 
         WHERE User_ID = '${userId}' AND isPublish = 1
         END
         `)
 
-        const selectedProfileID = await  request.query(`
-        BEGIN
-        SELECT Profile_ID FROM [UpReachDB].[dbo].[KOLs] 
-        WHERE User_ID = '${userId}' AND isPublish = 1
-        END
-        `)
-        const selectedPlatformID = await  request.query(`
-        BEGIN
-        SELECT Platform_ID FROM [UpReachDB].[dbo].[KOLs] 
-        WHERE User_ID = '${userId}' AND isPublish = 1
-        END
-        `)
-        const kolObject = selectedKOLsID.recordset[0];
-        const kolIdObject = {...kolObject}
-        const kolId = kolIdObject.KOLs_ID;
-        const profileObject = selectedProfileID.recordset[0];
-        const profileIdObject = {...profileObject}
-        const profileId = profileIdObject.Profile_ID;
-        const platformObject = selectedPlatformID.recordset[0];
-        const platformIdObject = {...platformObject}
-        const platformId = platformIdObject.Platform_ID;
+        const userIdObject = selectedUserID.recordset[0];
+        const userObject = {...userIdObject}
+        const kolId = userObject.KOLs_ID;
+        const profileId = userObject.Profile_ID;
+        const platformId = userObject.Platform_ID;
+
         
         await request.query(`
         BEGIN
@@ -282,24 +262,26 @@ const router = express.Router();
                       WHERE JOB_ID = '${jobId}'
                   END
                   BEGIN
-                      DELETE FROM [UpReachDB].[dbo].[InfluencerJob] 
+                      DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
                       WHERE JOB_ID = '${jobId}'
                   END
                   BEGIN
-                      DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
+                      DELETE FROM [UpReachDB].[dbo].[InfluencerJob] 
                       WHERE JOB_ID = '${jobId}'
                   END
               `;
               const deleteJobID = await request.query(deleteQuery);
               
           } else {
-            const deleteQuery = `
+            const updateQuery = `
                   BEGIN
-                      DELETE FROM [UpReachDB].[dbo].[InfluencerJobList] 
-                      WHERE JOB_ID = '${jobId}'
+                      UPDATE [UpReachDB].[dbo].[InfluencerJobList]
+                      SET Profile_ID = '${profilesId}',
+                          isPublish = 0
+                      WHERE Profile_ID = '${profileId}'
                   END
               `;
-              const deleteJobID = await request.query(deleteQuery);
+              const deleteJobID = await request.query(updateQuery);
           }
       }
       
@@ -421,7 +403,7 @@ const router = express.Router();
         `);
   
             return res.status(201).json({
-              message: "Update Successfully",
+              message: "Successfully!",
               // data: ,
             });
           }
@@ -434,16 +416,16 @@ const router = express.Router();
 
   async function lockInflu(req, res, next) {
     try {
-      const influId = JSON.parse(req.body.influId);
+      const profileId = JSON.parse(req.body.profileId);
       
-      console.log(influId);
+      
       sql.connect(config, async (err) => {
         if (err) {
           console.log(err);
           return res.json({ message: " " + err });
         }
         const request = new sql.Request();
-        await request.input('profileId', sql.NVarChar, influId)
+        await request.input('profileId', sql.NVarChar, profileId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[Profile]
@@ -467,16 +449,16 @@ const router = express.Router();
 
   async function unlockInflu(req, res, next) {
     try {
-      const influId = JSON.parse(req.body.influId);
+      const profileId = JSON.parse(req.body.profileId);
       
-      console.log(influId);
+      
       sql.connect(config, async (err) => {
         if (err) {
           console.log(err);
           return res.json({ message: " " + err });
         }
         const request = new sql.Request();
-        await request.input('profileId', sql.NVarChar, influId)
+        await request.input('profileId', sql.NVarChar, profileId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[Profile]
@@ -497,4 +479,127 @@ const router = express.Router();
       return res.json({ message: " " + err });
     }
   }
-  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu }
+
+  async function getClientAccount(req, res, next) {
+    try {
+      const clients = await getAllClient();
+     ;
+          return res.status(200).json({
+            message: "Get all client successfully!",
+            data: clients
+          });
+          
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function editClient(req, res, next) {
+    try {
+      const client = JSON.parse(req.body.client);
+      const clientId = JSON.parse(req.body.clientId);
+
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('fullName', sql.NVarChar, client.fullName)
+        .input('brand', sql.NVarChar, client.brand)
+        .input('email', sql.NVarChar, client.email)
+        .input('phone', sql.NVarChar, client.phone)
+        .input('address', sql.NVarChar, client.address)
+        .input('clientId', sql.NVarChar, clientId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Clients]
+            SET       
+               FullName = @fullName,
+               Brand_Client = @brand,
+               Email_Client = @email,
+               Phone_Client = @phone,
+               Address = @address
+            WHERE Client_ID = @clientId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function lockClient(req, res, next) {
+    try {
+      const clientId = JSON.parse(req.body.clientId);
+      
+      
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('clientId', sql.NVarChar, clientId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Clients]
+            SET       
+               isAccept = 0
+            WHERE Client_ID = @clientId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Lock Client Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function unlockClient(req, res, next) {
+    try {
+      const clientId = JSON.parse(req.body.clientId);
+      
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('clientId', sql.NVarChar, clientId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[Clients]
+            SET       
+               isAccept = 1
+            WHERE Client_ID = @clientId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Unlock Client Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }

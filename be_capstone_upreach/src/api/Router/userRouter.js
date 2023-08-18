@@ -22,12 +22,19 @@ router.get("/admin/get-influencer-account", adminController.getInfluencerAccount
 router.put("/admin/edit-influ", adminController.editInflu);
 router.put("/admin/lock-influ", adminController.lockInflu);
 router.put("/admin/unlock-influ", adminController.unlockInflu);
+router.get("/admin/get-client-account", adminController.getClientAccount);
+router.put("/admin/edit-client", adminController.editClient);
+router.put("/admin/lock-client", adminController.lockClient);
+router.put("/admin/unlock-client", adminController.unlockClient);
 
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
+router.post("/influ/search-minus-point",influencerController.searchPoint);
 router.get("/influ/get",influencerController.getAllInfluencer);
-router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
+router.post("/influ/report-influencer",influencerController.reportOfInfluencer);
+router.post("/influ/get-data-history-report",influencerController.getAllHistoryReportByClient);
+router.post("/influ/insert-data-history-report",influencerController.insertDataToHistoryReport);
 router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);  
 router.post("/influ/addInfluencer", influencerController.addInfluencer);
 router.post("/influ/data-chart", influencerController.getDataForChart);
@@ -37,13 +44,15 @@ router.get("/influ/get-images-influencer", influencerController.getImagesInfluen
 router.get("/influ/get-booking-jobs", influencerController.getBookingJob);
 router.put("/influ/accept-booking", influencerController.acceptBooking);
 router.put("/influ/reject-booking", influencerController.rejectBooking);
-
 router.post("/influ/updateAvatar", influencerController.updateAvatarInfluencer);
 
 router.post('/client/updateClientProfile', clientController.addProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
 router.post('/client/addInflueToBooking', clientController.addInflueToBookingInClient);
 router.put("/client/bookingJob", clientController.bookingJob);
+router.get("/client/get-history-booking", clientController.getHistoryBooking);
+router.put("/client/check-done", clientController.checkDone);
+router.put("/client/send-feedback", clientController.sendFeedback);
 
 
 router.get('/getalllist', listInfluencerController.GetAllList);

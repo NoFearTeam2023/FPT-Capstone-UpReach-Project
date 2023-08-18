@@ -54,7 +54,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api', router)
-
+app.use(async (req, res, next) => {
+    try {
+      await next(); // Tiếp tục xử lý các middleware và tuyến đường
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).send('Something went wrong!');
+    }
+});
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
