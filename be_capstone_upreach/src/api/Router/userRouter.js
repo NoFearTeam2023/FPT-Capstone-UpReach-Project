@@ -28,6 +28,7 @@ router.put("/admin/edit-client", adminController.editClient);
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
+router.post("/influ/search-minus-point",influencerController.searchPoint);
 router.get("/influ/get",influencerController.getAllInfluencer);
 router.post("/influ/reportInfluencer",influencerController.reportInfluencer);
 router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);  
