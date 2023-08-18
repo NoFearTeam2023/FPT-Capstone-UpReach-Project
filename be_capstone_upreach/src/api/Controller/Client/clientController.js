@@ -232,7 +232,7 @@ async function addInflueToBookingInClient(req, res, next) {
 async function bookingJob(req, res, next) {
   try {
     const bookingJob = JSON.parse(req.body.bookingJob);
-    console.log(bookingJob);
+    
     sql.connect(config, (err) => {
       if (err) {
         console.log(err);
@@ -347,7 +347,38 @@ async function checkDone(req, res, next) {
     }
   }
 
-
+  async function sendFeedback(req, res, next) {
+    try {
+      const bookingDetail = JSON.parse(req.body.booking);
+      
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('feedback', sql.NVarChar, JSON.stringify(bookingDetail.feedback))
+        await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
+        .query(`
+            BEGIN
+            UPDATE [UpReachDB].[dbo].[ClientBooking]
+            SET         
+            Feedback = @feedback
+            WHERE clientBooking_ID = @bookingId
+            END
+        `);
+  
+            return res.status(201).json({
+              message: "Send feedback successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
 
 module.exports = {
   addProfileClient,
@@ -356,4 +387,5 @@ module.exports = {
   bookingJob,
   getHistoryBooking,
   checkDone,
+  sendFeedback
 };

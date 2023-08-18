@@ -73,12 +73,12 @@ function formatResponseInfluencerToArray(data) {
             kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
             kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
         }
-        const imageId = item["Image_ID"];
+        const uid = item["Image_ID"];
         const url = item["Image"];
-        const existingImage = kolGroups[kolId]["dataImage"].find(img => img.imageId === imageId);
+        const existingImage = kolGroups[kolId]["dataImage"].find(img => img.uid === uid);
 
         if (!existingImage) {
-            kolGroups[kolId]["dataImage"].push({ imageId, url });
+            kolGroups[kolId]["dataImage"].push({ uid, url });
         }
         });
 
