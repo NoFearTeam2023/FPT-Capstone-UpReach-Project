@@ -723,21 +723,18 @@ async function addInfluencer(req, res, next) {
 	try {
 
 		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
-		const { emailContact, phone, engagement, post, costfrom, costTo } = req.body.overviewDetails
+		const { emailContact, phone } = req.body.overviewDetails
 		const idInflu = req.body.idInflu;
 		const { name, email } = req.body.influencerDetail
 		const user = await userService.getUserByEmail(email);
 		const now = new Date();
 		const dateNow = now.toISOString();
     
-		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, costfrom, costTo, typeId)) {
+		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, typeId)) {
 			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
 		}
 		if (!await addDataToContentTopic(req.body.contentDetails)) {
 			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
-		}
-		if (!await addInfluencerPlatformInfomation(engagement, post)) {
-			return res.json({ status: 'False', message: 'Insert Data PlatformInfomation Fails' });
 		}
 
 		if (!await addInfluencerKols(user.userId, 0, dateNow)) {
@@ -756,11 +753,11 @@ async function addInfluencer(req, res, next) {
 	}
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
 	try {
 
 		// Thực hiện insert
-		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, costEstimateFrom, costEstimateTo, typeId)
+		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId)
 		if (checkAddInfluencerProfile.rowsAffected[0]) {
 			return true;
 		} else {
@@ -787,22 +784,7 @@ async function addDataToContentTopic(dataArray) {
 	}
 }
 
-async function addInfluencerPlatformInfomation(engagement, postsPerWeek) {
-	try {
 
-		// Thực hiện insert
-		const checkAddInfluencerPlatformInfomation = await influService.insertInfluencerPlatformInformation(engagement, postsPerWeek)
-		if (checkAddInfluencerPlatformInfomation.rowsAffected[0]) {
-			return true;
-		} else {
-			return false;
-		}
-
-	} catch (e) {
-		console.log(e)
-		return false;
-	}
-}
 
 async function addInfluencerKols(userId, isPublish, dateEdit) {
 	try {
