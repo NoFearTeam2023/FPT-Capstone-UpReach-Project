@@ -601,7 +601,7 @@ async function searchPoint(req, res, next){
 
 async function getAllHistoryReportByClient(req, res, next){
   try {
-    const {  clientId,  } = req.body;
+    const {  clientId  } = req.body;
     const getData = await influService.getAllHistoryReportByClientId(clientId);
     return res.status(200).json({
 			message: "Search thành công",

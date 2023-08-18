@@ -30,8 +30,8 @@ router.put("/admin/unlock-client", adminController.unlockClient);
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
-router.post("/influ/search-minus-point",influencerController.searchPoint);
 router.get("/influ/get",influencerController.getAllInfluencer);
+router.post("/influ/search-minus-point",influencerController.searchPoint);
 router.post("/influ/report-influencer",influencerController.reportOfInfluencer);
 router.post("/influ/get-data-history-report",influencerController.getAllHistoryReportByClient);
 router.post("/influ/insert-data-history-report",influencerController.insertDataToHistoryReport);
