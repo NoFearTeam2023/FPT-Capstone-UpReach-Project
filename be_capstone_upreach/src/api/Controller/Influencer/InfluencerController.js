@@ -25,12 +25,11 @@ async function updateInfo(req, res, next) {
   try {
     const influ = JSON.parse(req.body.influ);
     const booking = JSON.parse(req.body.booking);
-  
     const chart = JSON.parse(req.body.chart);
-
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
-
+    const topics = JSON.parse(req.body.topics);
+    const type = JSON.parse(req.body.type);
     const uploadedImages = [];
 
     if (influ.dataImage) {
@@ -81,7 +80,7 @@ async function updateInfo(req, res, next) {
               const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-              await request.query(`
+            await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[PlatformInformation]
             (Platform_ID, Follow_FB, Interaction_FB, Follow_Insta, Interaction_Insta, Follow_Youtube, Interaction_Youtube, Follow_Tiktok, Interaction_Tiktok, Engagement, Postsperweek)
@@ -96,6 +95,14 @@ async function updateInfo(req, res, next) {
             VALUES ('${profileId}', N'${influ.influencerfullName}', N'${influ.influencerNickName}', '${influ.influencerEmail}', '${influ.influencerAge}', '${influ.influencerPhone}', '${influ.influencerGender}', N'${influ.influencerBio}', N'${influ.influencerAddress}', '1',N'${influ.influencerRelationship}', '${influ.influencerCostEstimateFrom}', '${influ.influencerCostEstimateTo}', '${influ.influencerFollowers}')
             END
             `);
+
+            // await request.query(`
+            // BEGIN
+            // INSERT INTO [UpReachDB].[dbo].[Profile]
+            // (Profile_ID, fullName, NickName, Email, Age, Phone, Gender, Bio, Address, isAccepted,Relationship, CostEstimateFrom, CostEstimateTo, Followers)
+            // VALUES ('${profileId}', N'${influ.influencerfullName}', N'${influ.influencerNickName}', '${influ.influencerEmail}', '${influ.influencerAge}', '${influ.influencerPhone}', '${influ.influencerGender}', N'${influ.influencerBio}', N'${influ.influencerAddress}', '1',N'${influ.influencerRelationship}', '${influ.influencerCostEstimateFrom}', '${influ.influencerCostEstimateTo}', '${influ.influencerFollowers}')
+            // END
+            // `);
 
               await request.query(`
               BEGIN
@@ -129,7 +136,7 @@ async function updateInfo(req, res, next) {
                 END
                     `);
               }
-
+              
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {   
               const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
@@ -523,6 +530,7 @@ async function updateInfo(req, res, next) {
           return res.status(201).json({
             message: "Update Successfully",
             date: editDate, 
+            // sideBar: 
           });
         }
       );
@@ -897,7 +905,7 @@ async function getJobsInfluencer(req, res, next) {
           }
           const selectedJobs = [];
           const statusBookings = [];
-
+console.log(queryResult);
           const jobIds = queryResult.recordset;
 
           for (const job_Id of jobIds) {
@@ -1303,6 +1311,23 @@ async function rejectBooking(req, res, next) {
     return res.json({ message: " " + err });
   }
 }
+
+// async function getSideBarInfluencerByEmail(req, res, next) {
+// 	try {
+// 		const { influencerId } = req.body
+// 		const response = await influService.getSideBarInfluencerByEmail(influencerId)
+// 		const result = common.formatChartDataInfluencer(response)
+// 		if (!response) {
+// 			return res.json({ message: 'Fails ' });
+// 		}
+// 		return res.status(200).json({
+// 			message: "get data sidebar success",
+// 			data: result
+// 		});
+// 	} catch (error) {
+// 		return res.json({ message: ' ' + error });
+// 	}
+// }
 
 
 // module.exports = router;

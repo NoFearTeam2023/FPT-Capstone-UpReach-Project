@@ -35,6 +35,21 @@ async function getAllInfluencerByEmail(email) {
     }
 }
 
+async function getSideBarInfluencerByEmail(email) {
+    try {
+        const getSideBarInfluencerByEmail = "getSideBarInfluencerByEmail";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('email', sql.NVarChar, email);
+        const result = await request.execute(getSideBarInfluencerByEmail);
+        connection.close();
+        return result.recordset;
+    } catch (err) {
+        console.log('Lỗi thực thi getSideBarInfluencerByEmail:', err);
+        throw err;
+    }
+}
+
 async function getAllHistoryReportByClientId(clientId){
     try {
         const getAllHistoryReportByClientId = "getAllHistoryReportByClient";
@@ -536,4 +551,4 @@ async function insertAvatarProfile(profileId, imageAvatar){
     }
 }
 
-module.exports = {getAllHistoryReportByClientId,insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}
+module.exports = {getAllHistoryReportByClientId,insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView, getSideBarInfluencerByEmail}
