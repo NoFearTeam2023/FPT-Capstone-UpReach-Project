@@ -5,7 +5,8 @@ const influencerController = require('../Controller/Influencer/InfluencerControl
 const clientController = require('../Controller/Client/clientController')
 const userController = require('../Controller/User/UserController')
 const listInfluencerController = require('../Controller/ListInfluencer/ListInfluencerController')
-const adminController = require('../Controller/Admin/AdminController')
+const adminController = require('../Controller/Admin/AdminController');
+const { addMessage, getAllMessage } = require('../Controller/Message/messageController');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -73,6 +74,11 @@ router.post('/getdatachartageaudi', listInfluencerController.GetAudienceDataAge)
 router.post('/createClient', userController.createClient);
 router.post('/createInflu', influencerController.createInflu);
 router.post('/influ/getIdInfluencer', influencerController.getIdOfInflu);
+
+//Message
+router.post("/message/addmess", addMessage);
+router.post("/message/getmess", getAllMessage);
+
 
 
 module.exports = router 
