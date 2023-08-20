@@ -37,10 +37,10 @@ async function addProfileClient(req, res, next) {
 
     const {
       location,
-      fullname,
+      fullName,
       emailContact,
-      phonenumber,
-      brandname,
+      phoneNumber,
+      brandName,
       idClient,
     } = req.body;
 
@@ -56,11 +56,11 @@ async function addProfileClient(req, res, next) {
       !(await InsertClient(
         user.userId,
         location,
-        fullname,
+        fullName,
         emailContact,
-        uploadedImages.url,
-        phonenumber,
-        brandname
+        uploadedImages[0].url,
+        phoneNumber,
+        brandName
       ))
     ) {
       return res.json({ status: "False", message: "Insert Client Fails" });
@@ -72,13 +72,13 @@ async function addProfileClient(req, res, next) {
 
     await clientModel.findByIdAndUpdate(idClient, {
       avatarImage: uploadedImages.url,
-      username: fullname,
+      username: fullName,
     });
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: "True",
       message: "Insert Success Client",
-      dataImage: uploadedImages,
+      dataImage: uploadedImages[0].url,
     });
   } catch (err) {
     // Xử lý lỗi
