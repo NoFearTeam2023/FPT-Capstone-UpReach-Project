@@ -25,12 +25,9 @@ async function updateInfo(req, res, next) {
   try {
     const influ = JSON.parse(req.body.influ);
     const booking = JSON.parse(req.body.booking);
-  
     const chart = JSON.parse(req.body.chart);
-
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
-
     const uploadedImages = [];
 
     if (influ.dataImage) {
@@ -81,7 +78,7 @@ async function updateInfo(req, res, next) {
               const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-              await request.query(`
+            await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[PlatformInformation]
             (Platform_ID, Follow_FB, Interaction_FB, Follow_Insta, Interaction_Insta, Follow_Youtube, Interaction_Youtube, Follow_Tiktok, Interaction_Tiktok, Engagement, Postsperweek)
@@ -129,7 +126,7 @@ async function updateInfo(req, res, next) {
                 END
                     `);
               }
-
+              
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {   
               const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
@@ -238,7 +235,7 @@ async function updateInfo(req, res, next) {
                 request.input("quantity" + i, sql.Int, bookingJob.quantity);
                 request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
 
-                request.query(`
+                await request.query(`
                           BEGIN
                             INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
                             (Job_ID, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
@@ -249,7 +246,7 @@ async function updateInfo(req, res, next) {
                 request.input("formatListId" + i, sql.NVarChar, formatListId);
                 request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
 
-                request.query(`
+                await request.query(`
                             BEGIN
                               INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
                               (FormatListJob_ID, Job_ID, Format_Id)
@@ -258,15 +255,15 @@ async function updateInfo(req, res, next) {
                           `);
                 
               }
+            
 
               for (let i = 0; i < jobIds?.length; i++) {
                 const jobId = jobIds[i];
               const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-
                 request.input("jobListId" + i, sql.NVarChar, jobListId);
 
-                request.query(`
+                await request.query(`
                           
                           BEGIN
                               INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
@@ -382,7 +379,7 @@ async function updateInfo(req, res, next) {
 
                   request.input("jobListId" + i, sql.NVarChar, jobListId);
 
-                  request.query(`
+                  await request.query(`
                         BEGIN
                           INSERT INTO [UpReachDB].[dbo].[InfluencerJob]
                           (Job_ID, Name_Job, Platform_Job, CostEstimate_From_Job, CostEstimate_To_Job, Quantity, Link)
@@ -390,7 +387,7 @@ async function updateInfo(req, res, next) {
                         END
                               `);
 
-                  request.query(`
+                  await request.query(`
                         BEGIN
                           INSERT INTO [UpReachDB].[dbo].[InfluencerJobList]
                           (JobList_ID, Job_ID, Profile_ID, isPublish)
@@ -401,7 +398,7 @@ async function updateInfo(req, res, next) {
                   request.input("formatListId" + i , sql.NVarChar, formatListId);
                   request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
                     
-                  request.query(`
+                  await request.query(`
                         BEGIN
                         INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
                         (FormatListJob_ID, Job_ID, Format_Id)
@@ -523,6 +520,7 @@ async function updateInfo(req, res, next) {
           return res.status(201).json({
             message: "Update Successfully",
             date: editDate, 
+            // sideBar: 
           });
         }
       );
