@@ -134,11 +134,21 @@ function formatDataHistoryReports(data) {
         clientGroup[clients]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
         clientGroup[clients]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
         clientGroup[clients]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
+        clientGroup[clients]["dataImage"] = [];
     } else {
         clientGroup[clients]["influencerTypeName"].add(item["influencerTypeName"]);
         clientGroup[clients]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
         clientGroup[clients]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
     }
+
+    // Add dataImage to the clientGroup
+    const existingImageIds = clientGroup[clients]["dataImage"].map(image => image.imageId);
+        if (!existingImageIds.includes(item["Image_ID"])) {
+            clientGroup[clients]["dataImage"].push({
+                "imageId": item["Image_ID"],
+                "image": item["Image"]
+            });
+        }
     });
 
     for (const  clientId in clientGroup) {
@@ -151,7 +161,6 @@ function formatDataHistoryReports(data) {
     
     return result;
 }
-
 
 function formatChartDataInfluencer(data) {
     const dataChartGroup = {};
