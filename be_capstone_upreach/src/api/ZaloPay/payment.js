@@ -66,8 +66,8 @@ const order = {
     app_time: Date.now(), // miliseconds
     item: JSON.stringify(items),
     embed_data: JSON.stringify(embed_data),
-    amount: 1000,
-    description: `Lazada - Payment for the order #${transID}`,
+    amount: 299000,
+    description: ` Upgrade Business Plan`,
     bank_code: "zalopayapp",
 };
 

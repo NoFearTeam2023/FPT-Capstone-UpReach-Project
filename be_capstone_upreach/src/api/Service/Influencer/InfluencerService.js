@@ -371,7 +371,7 @@ async function insertKols(userId, isPublish, dateEdit) {
         const kolsId = await getLastKOLsId()
         const lastKolsId = common.increaseID(kolsId.KOLs_ID);
         const platformId = await getLastPlatformInformationId()
-        const lastPlatformId = common.increaseID(platformId.Platform_ID);
+        const lastPlatformId = platformId.Platform_ID;
         const profileId = await getLastProfileId()
         const lastProfileId = profileId.Profile_ID;
 

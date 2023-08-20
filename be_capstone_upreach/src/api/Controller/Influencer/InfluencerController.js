@@ -633,8 +633,6 @@ async function insertDataToHistoryReport(req, res, next){
   try {
     const { influencerId, clientId } = req.body;
     const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
-    const check = checkInfluencerExisted.recordset
-    console.log(check)
     if(!checkInfluencerExisted.recordset.length > 0){
       const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
       if(insertHistoryViewInfluencer.rowsAffected[0]){
@@ -650,7 +648,6 @@ async function insertDataToHistoryReport(req, res, next){
   } catch (error) {
     return res.json({ message: error });
   }
-  
 }
 
 async function dataReportInfluencer(req, res, next) {
