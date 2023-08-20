@@ -315,7 +315,7 @@ const router = express.Router();
          DELETE FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${profileId}';
          END`)
         } else {
-          console.log(23123,kolsId);
+          // console.log(23123,kolsId);
           await request.query(`
           BEGIN
           UPDATE [UpReachDB].[dbo].[KOLs]
