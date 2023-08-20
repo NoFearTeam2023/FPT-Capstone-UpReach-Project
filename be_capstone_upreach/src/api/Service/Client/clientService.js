@@ -159,9 +159,39 @@ async function insertClient(
         connection.close();
         return result;
     } catch (err) {
-        console.log('Lỗi thực thi getLastIdPointRemained:', err);
+        console.log('Lỗi thực thi insertClient:', err);
         throw err;
     }
 }
 
-module.exports = {getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}
+async function updateClient(
+    clientId,
+    address,
+    fullName,
+    emailClient,
+    imageClient,
+    phoneClient,
+    brandClient
+    ){
+    try {
+        const updateClient = "updateClient";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('clientId', sql.NVarChar, clientId );
+        request.input('address', sql.NVarChar, address );
+        request.input('fullName', sql.NVarChar, fullName );
+        request.input('emailClient', sql.NVarChar, emailClient );
+        request.input('imageClient', sql.NVarChar, imageClient );
+        request.input('phoneClient', sql.NVarChar, phoneClient );
+        request.input('brandClient', sql.NVarChar, brandClient );
+        const result = await request.execute(updateClient);
+        
+        connection.close();
+        return result;
+    } catch (err) {
+        console.log('Lỗi thực thi updateClient:', err);
+        throw err;
+    }
+}
+
+module.exports = {updateClient,getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}

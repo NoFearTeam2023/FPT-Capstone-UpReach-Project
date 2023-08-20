@@ -44,16 +44,17 @@ router.get("/influ/get-images-influencer", influencerController.getImagesInfluen
 router.get("/influ/get-booking-jobs", influencerController.getBookingJob);
 router.put("/influ/accept-booking", influencerController.acceptBooking);
 router.put("/influ/reject-booking", influencerController.rejectBooking);
-router.post("/influ/updateAvatar", influencerController.updateAvatarInfluencer);
+router.post("/influ/updateInfluencer", influencerController.updateInfluencer);
 
-router.post('/client/updateClientProfile', clientController.addProfileClient);
+router.post('/client/add-client-profile', clientController.addProfileClient);
+router.post('/client/update-client-profile', clientController.updateProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
 router.post('/client/addInflueToBooking', clientController.addInflueToBookingInClient);
 router.put("/client/bookingJob", clientController.bookingJob);
 router.get("/client/get-history-booking", clientController.getHistoryBooking);
 router.put("/client/check-done", clientController.checkDone);
 router.put("/client/send-feedback", clientController.sendFeedback);
-
+router.post("/client/check-existed",clientController.getClientExisted)
 
 router.get('/getalllist', listInfluencerController.GetAllList);
 router.post('/getalllistbyuser', listInfluencerController.GetAllListByUser);

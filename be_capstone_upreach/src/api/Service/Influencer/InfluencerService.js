@@ -517,23 +517,23 @@ async function checkInfluencerExistedInHistoryView(influencerId){
     
 }
 
-async function insertAvatarProfile(profileId, imageAvatar){
+async function updateInfluencer(profileId, imageAvatar){
     try {
-        const insertAvatarProfile = "updateAvatarInfluencer";
+        const updateDataInfluencer = "updateInfluencer";
         const connection = await pool.connect();
         const request = connection.request();
 
-        request.input('profileId', sql.NVarChar, profileId)
+        request.input('emailInfluencer', sql.NVarChar, profileId)
         request.input('imageAvatar', sql.NVarChar, imageAvatar)
 
-        const result = await request.execute(insertAvatarProfile);
+        const result = await request.execute(updateDataInfluencer);
         connection.close();
         return result;
 
     } catch (error) {
-        console.log('Lỗi thực thi insertAvatarProfile : ', error);
+        console.log('Lỗi thực thi updateProfile : ', error);
         throw error;
     }
 }
 
-module.exports = {getAllHistoryReportByClientId,insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}
+module.exports = {getAllHistoryReportByClientId,updateInfluencer,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}
