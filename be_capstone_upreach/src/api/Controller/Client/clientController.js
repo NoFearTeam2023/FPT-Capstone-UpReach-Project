@@ -214,7 +214,7 @@ async function addInflueToBookingInClient(req, res, next) {
     if (isInflueInArray(client, influe._id)) {
       return res.json({
         msg: "Influenecer have already in the Client booking array",
-        status: false,
+        status: true,
       });
     } else {
       client.booking.push(influe._id);
@@ -269,7 +269,7 @@ async function getHistoryBooking(req, res, next) {
         return res.json({ message: " " + err });
       }
       const request = new sql.Request();
-      
+
       const selectedClients = await request.query(
         `SELECT * FROM [UpReachDB].[dbo].[Clients] WHERE User_ID = '${user.userId}'`
       );
@@ -279,34 +279,34 @@ async function getHistoryBooking(req, res, next) {
       const mergedBookings = [];
       if (queryResultBooking.recordset.length > 0) {
         for (const booking of queryResultBooking.recordset) {
-                const jobIdToFind = booking.Job_ID;
-                const queryResultJob = await request.query(
-                    `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobIdToFind}'`)
-                const queryResultKol = await request.query(
-                `SELECT Profile_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Job_ID = '${jobIdToFind}'`)
-                const queryResultFormat = await request.query(
-                    `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`)
+          const jobIdToFind = booking.Job_ID;
+          const queryResultJob = await request.query(
+            `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobIdToFind}'`)
+          const queryResultKol = await request.query(
+            `SELECT Profile_ID FROM [UpReachDB].[dbo].[InfluencerJobList] WHERE Job_ID = '${jobIdToFind}'`)
+          const queryResultFormat = await request.query(
+            `SELECT Format_Id FROM [UpReachDB].[dbo].[JobContentFormatList] WHERE Job_ID = '${jobIdToFind}'`)
 
-                const profileId = queryResultKol.recordset[0].Profile_ID;
-                const formatId = queryResultFormat.recordset[0].Format_Id;
-        const queryResultProfile = await request.query(
+          const profileId = queryResultKol.recordset[0].Profile_ID;
+          const formatId = queryResultFormat.recordset[0].Format_Id;
+          const queryResultProfile = await request.query(
             `SELECT fullName FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${profileId}'`);
-            
-                const mergedObject = {
-                    booking: booking,
-                    kolName: queryResultProfile.recordset[0].fullName,
-                    job: queryResultJob.recordset[0],
-                    formatId: formatId
-                  };
-              
-                  mergedBookings.push(mergedObject);
-            }
+
+          const mergedObject = {
+            booking: booking,
+            kolName: queryResultProfile.recordset[0].fullName,
+            job: queryResultJob.recordset[0],
+            formatId: formatId
+          };
+
+          mergedBookings.push(mergedObject);
+        }
       }
-          return res.status(200).json({
-            message: "Get history booking successful!",
-            data: mergedBookings,
-          });
-        
+      return res.status(200).json({
+        message: "Get history booking successful!",
+        data: mergedBookings,
+      });
+
     });
   } catch (err) {
     console.log(err);
@@ -315,17 +315,17 @@ async function getHistoryBooking(req, res, next) {
 }
 
 async function checkDone(req, res, next) {
-    try {
-      const bookingDetail = JSON.parse(req.body.booking);
-      
-      sql.connect(config, async (err) => {
-        if (err) {
-          console.log(err);
-          return res.json({ message: " " + err });
-        }
-        const request = new sql.Request();
-        await request.input('status', sql.NVarChar, bookingDetail.status)
-        await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
+  try {
+    const bookingDetail = JSON.parse(req.body.booking);
+
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      const request = new sql.Request();
+      await request.input('status', sql.NVarChar, bookingDetail.status)
+      await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[ClientBooking]
@@ -334,18 +334,18 @@ async function checkDone(req, res, next) {
             WHERE clientBooking_ID = @bookingId
             END
         `);
-  
-            return res.status(201).json({
-              message: "Check done booking successfully!",
-              // data: ,
-            });
-          }
-        );
-    } catch (err) {
-      console.log(err);
-      return res.json({ message: " " + err });
+
+      return res.status(201).json({
+        message: "Check done booking successfully!",
+        // data: ,
+      });
     }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
   }
+}
 
   async function sendFeedback(req, res, next) {
     try {
