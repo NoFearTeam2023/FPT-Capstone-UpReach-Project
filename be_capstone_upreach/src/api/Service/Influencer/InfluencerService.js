@@ -226,7 +226,7 @@ async function getLastInfluencerTypeListId() {
     }
 }
 
-async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, typeId) {
+async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
         const profileId = await getLastProfileId()
@@ -330,7 +330,7 @@ async function getLastAudienceLocationListId() {
     }
 }
 
-async function insertInfluencerPlatformInformation(engagement, postsPerWeek) {
+async function insertInfluencerPlatformInformation() {
     try {
         const insertInfluencerPlatformInformation = "insertInfluencerPlatformInformation";
         const platformId = await getLastPlatformInformationId()
@@ -340,9 +340,6 @@ async function insertInfluencerPlatformInformation(engagement, postsPerWeek) {
         const request = connection.request();
 
         request.input('platformId', sql.NVarChar, lastPlatformId);
-
-        request.input('engagement', sql.Float, engagement);
-        request.input('postsPerWeek', sql.Float, postsPerWeek);
 
         const result = await request.execute(insertInfluencerPlatformInformation);
         connection.close();
@@ -370,11 +367,11 @@ async function getLastKOLsId() {
 async function insertKols(userId, isPublish, dateEdit) {
     try {
         const insertKols = "insertKols";
-
+        await insertInfluencerPlatformInformation()
         const kolsId = await getLastKOLsId()
         const lastKolsId = common.increaseID(kolsId.KOLs_ID);
         const platformId = await getLastPlatformInformationId()
-        const lastPlatformId = platformId.Platform_ID;
+        const lastPlatformId = common.increaseID(platformId.Platform_ID);
         const profileId = await getLastProfileId()
         const lastProfileId = profileId.Profile_ID;
 
