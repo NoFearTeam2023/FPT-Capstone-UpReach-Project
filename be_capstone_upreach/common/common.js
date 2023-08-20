@@ -123,66 +123,34 @@ function formatResponseClientToArray(data) {
     return result;
 }
 
-function formatResponseHistoryReportToArray(data) {
+function formatDataHistoryReports(data) {
     const result = [];
-    const kolGroups = {};
+    const clientGroup = {};
 
     data.forEach((item) => {
-        const kolId = item["influencerId"];
-        if (!kolGroups[kolId]) {
-            kolGroups[kolId] = { ...item };
-            kolGroups[kolId]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
-            kolGroups[kolId]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
-            kolGroups[kolId]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
-            kolGroups[kolId]["audienceLocation"] = new Set([item["audienceLocation"]]);
-            kolGroups[kolId]["audienceGender"] = new Set([item["audienceGender"]]);
-            kolGroups[kolId]["AudienceAgeList"] = new Set([item["AudienceAgeList"]]);
-            kolGroups[kolId]["AudienceFollowerList"] = new Set([item["AudienceFollowerList"]]);
-            kolGroups[kolId]["AudienceFollowerMonth"] = new Set([item["AudienceFollowerMonth"]]);
-            kolGroups[kolId]["AudiencerLocation"] = new Set([item["AudiencerLocation"]]);
-            kolGroups[kolId]["kolsId"] = new Set([item["kolsId"]]);
-            kolGroups[kolId]["dataImage"] = [];
+    const clients = item["kolsId"];
+    if (!clientGroup[clients]) {
+        clientGroup[clients] = { ...item };
+        clientGroup[clients]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
+        clientGroup[clients]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
+        clientGroup[clients]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
+    } else {
+        clientGroup[clients]["influencerTypeName"].add(item["influencerTypeName"]);
+        clientGroup[clients]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
+        clientGroup[clients]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
+    }
+    });
 
-        } else {
-            kolGroups[kolId]["influencerTypeName"].add(item["influencerTypeName"]);
-            kolGroups[kolId]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
-            kolGroups[kolId]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
-            kolGroups[kolId]["audienceLocation"].add(item["audienceLocation"]);
-            kolGroups[kolId]["audienceGender"].add(item["audienceGender"]);
-            kolGroups[kolId]["AudienceAgeList"].add(item["AudienceAgeList"]);
-            kolGroups[kolId]["AudienceFollowerList"].add(item["AudienceFollowerList"]);
-            kolGroups[kolId]["AudienceFollowerMonth"].add(item["AudienceFollowerMonth"]);
-            kolGroups[kolId]["AudiencerLocation"].add(item["AudiencerLocation"]);
-            kolGroups[kolId]["kolsId"].add(item["kolsId"]);
-        }
-        const uid = item["Image_ID"];
-        const url = item["Image"];
-        const existingImage = kolGroups[kolId]["dataImage"].find(img => img.uid === uid);
-
-        if (!existingImage) {
-            kolGroups[kolId]["dataImage"].push({ uid, url });
-        }
-        });
-
-    for (const kolId in kolGroups) {
-    const kolData = kolGroups[kolId];
-    kolData["dataImage"] = Array.from(kolData["dataImage"]);
-    kolData["influencerTypeName"] = Array.from(kolData["influencerTypeName"]);
-    kolData["influencerContentTopicName"] = Array.from(kolData["influencerContentTopicName"]);
-    kolData["influencerContentFormatName"] = Array.from(kolData["influencerContentFormatName"]);
-    kolData["audienceLocation"] = Array.from(kolData["audienceLocation"]);
-    kolData["audienceGender"] = Array.from(kolData["audienceGender"]);
-    kolData["AudienceAgeList"] = Array.from(kolData["AudienceAgeList"]);
-    kolData["AudienceFollowerList"] = Array.from(kolData["AudienceFollowerList"]);
-    kolData["AudienceFollowerMonth"] = Array.from(kolData["AudienceFollowerMonth"]);
-    kolData["AudiencerLocation"] = Array.from(kolData["AudiencerLocation"]);
-    kolData["kolsId"] = Array.from(kolData["kolsId"]);
-    result.push(kolData);
+    for (const  clientId in clientGroup) {
+    const clientData = clientGroup[clientId];
+    clientData["influencerTypeName"] = Array.from(clientData["influencerTypeName"]);
+    clientData["influencerContentTopicName"] = Array.from(clientData["influencerContentTopicName"]);
+    clientData["influencerContentFormatName"] = Array.from(clientData["influencerContentFormatName"]);
+    result.push(clientData);
     }
     
     return result;
 }
-
 
 
 // function formatChartDataInfluencer(data) {
@@ -356,4 +324,4 @@ function increaseID(lastId) {
 }
 
 
-module.exports = {formatResponseHistoryReportToArray,formatChartDataInfluencer,formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}
+module.exports = {formatDataHistoryReports,formatChartDataInfluencer,formatResponseInfluencerToObject,formatResponseUserToObject,formatResponseInfluencerToArray,formatResponseClientToArray,formatResponseClientToObject,increaseID}

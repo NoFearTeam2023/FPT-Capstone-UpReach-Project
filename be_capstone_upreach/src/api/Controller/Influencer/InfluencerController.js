@@ -601,9 +601,9 @@ async function searchPoint(req, res, next){
 
 async function getAllHistoryReportByClient(req, res, next){
   try {
-    const {  clientId,  } = req.body;
+    const {  clientId  } = req.body;
     const getData = await influService.getAllHistoryReportByClientId(clientId);
-    return res.status(200).json({
+    return res.json({
 			message: "Search thành công",
 			data: getData
 		});
@@ -631,9 +631,11 @@ async function reportOfInfluencer(req, res, next){
 
 async function insertDataToHistoryReport(req, res, next){
   try {
-    const { influencerId, clientId, } = req.body;
+    const { influencerId, clientId } = req.body;
     const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
-    if(checkInfluencerExisted.rowsAffected[0]){
+    const check = checkInfluencerExisted.recordset
+    console.log(check)
+    if(!checkInfluencerExisted.recordset.length > 0){
       const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
       if(insertHistoryViewInfluencer.rowsAffected[0]){
         return res.status(200).json({
