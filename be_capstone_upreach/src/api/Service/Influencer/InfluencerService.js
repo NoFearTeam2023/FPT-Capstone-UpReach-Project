@@ -330,7 +330,7 @@ async function getLastAudienceLocationListId() {
     }
 }
 
-async function insertInfluencerPlatformInformation(engagement, postsPerWeek) {
+async function insertInfluencerPlatformInformation() {
     try {
         const insertInfluencerPlatformInformation = "insertInfluencerPlatformInformation";
         const platformId = await getLastPlatformInformationId()
@@ -340,9 +340,6 @@ async function insertInfluencerPlatformInformation(engagement, postsPerWeek) {
         const request = connection.request();
 
         request.input('platformId', sql.NVarChar, lastPlatformId);
-
-        request.input('engagement', sql.Float, engagement);
-        request.input('postsPerWeek', sql.Float, postsPerWeek);
 
         const result = await request.execute(insertInfluencerPlatformInformation);
         connection.close();
@@ -370,7 +367,7 @@ async function getLastKOLsId() {
 async function insertKols(userId, isPublish, dateEdit) {
     try {
         const insertKols = "insertKols";
-
+        await insertInfluencerPlatformInformation()
         const kolsId = await getLastKOLsId()
         const lastKolsId = common.increaseID(kolsId.KOLs_ID);
         const platformId = await getLastPlatformInformationId()
@@ -517,23 +514,23 @@ async function checkInfluencerExistedInHistoryView(influencerId){
     
 }
 
-async function insertAvatarProfile(profileId, imageAvatar){
+async function updateInfluencer(profileId, imageAvatar){
     try {
-        const insertAvatarProfile = "updateAvatarInfluencer";
+        const updateDataInfluencer = "updateInfluencer";
         const connection = await pool.connect();
         const request = connection.request();
 
-        request.input('profileId', sql.NVarChar, profileId)
+        request.input('emailInfluencer', sql.NVarChar, profileId)
         request.input('imageAvatar', sql.NVarChar, imageAvatar)
 
-        const result = await request.execute(insertAvatarProfile);
+        const result = await request.execute(updateDataInfluencer);
         connection.close();
         return result;
 
     } catch (error) {
-        console.log('Lỗi thực thi insertAvatarProfile : ', error);
+        console.log('Lỗi thực thi updateProfile : ', error);
         throw error;
     }
 }
 
-module.exports = {getAllHistoryReportByClientId,insertAvatarProfile,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}
+module.exports = {getAllHistoryReportByClientId,updateInfluencer,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}

@@ -134,11 +134,21 @@ function formatDataHistoryReports(data) {
         clientGroup[clients]["influencerTypeName"] = new Set([item["influencerTypeName"]]);
         clientGroup[clients]["influencerContentTopicName"] = new Set([item["influencerContentTopicName"]]);
         clientGroup[clients]["influencerContentFormatName"] = new Set([item["influencerContentFormatName"]]);
+        clientGroup[clients]["dataImage"] = [];
     } else {
         clientGroup[clients]["influencerTypeName"].add(item["influencerTypeName"]);
         clientGroup[clients]["influencerContentTopicName"].add(item["influencerContentTopicName"]);
         clientGroup[clients]["influencerContentFormatName"].add(item["influencerContentFormatName"]);
     }
+
+    // Add dataImage to the clientGroup
+    const existingImageIds = clientGroup[clients]["dataImage"].map(image => image.imageId);
+        if (!existingImageIds.includes(item["Image_ID"])) {
+            clientGroup[clients]["dataImage"].push({
+                "imageId": item["Image_ID"],
+                "image": item["Image"]
+            });
+        }
     });
 
     for (const  clientId in clientGroup) {
@@ -151,80 +161,6 @@ function formatDataHistoryReports(data) {
     
     return result;
 }
-
-
-// function formatChartDataInfluencer(data) {
-//     const dataChartGroup = {};
-
-//     _.forEach(data, (item) => {
-//         const influencerId = item["influencerId"];
-
-//         if (!dataChartGroup[influencerId]) {
-//             dataChartGroup[influencerId] = {
-//                 "influencerId": influencerId,
-//                 "dataFollower": [],
-//                 "dataGender": [],
-//                 "dataAge": [],
-//                 "dataLocation": [],
-//                 "dataJob":[]
-//             };
-//         }
-
-//         dataChartGroup[influencerId]["dataFollower"].push({
-//             "monthFollow": item["monthFollowAudiencer"],
-//             "value": item["quantityFollowerAudiencer"]
-//         });
-
-//         dataChartGroup[influencerId]["dataGender"].push({
-//             "sex": item["genderAudiencer"],
-//             "value": item["quantityGenderAudiencer"]
-//         });
-
-//         dataChartGroup[influencerId]["dataAge"].push({
-//             "type": item["ageRange"],
-//             "value": item["quantityAgeRangeAudiencer"]
-//         });
-
-//         dataChartGroup[influencerId]["dataLocation"].push({
-//             "type": item["locationAudiencer"],
-//             "value": item["quantityLocationAudiencer"]
-//         });
-//         dataChartGroup[influencerId]["dataJob"].push({
-//             "jobId": item["idJob"],
-//             "clientId": item["idClient"],
-//             "clientBookingId": item["idClientBooking"],
-//             "jobName": item["nameJob"],
-//             "jobPlatform": item["platformJob"],
-//             "costForm": item["costForm"],
-//             "costTo": item["costTo"],
-//             "quantityNumberWork": item["quantityNumberWork"],
-//             "linkJob": item["linkJob"],
-//             "describes": item["describes"],
-//             "startDate": item["startDate"],
-//             "endDate": item["endDate"],
-//             "statusId": item["statusId"],
-//             "formatid": item["formatid"],
-//             "isPublish": item["isPublish"]
-//         });
-
-//     });
-
-//     const result = _.values(dataChartGroup);
-    
-//     // Loại bỏ các đối tượng trùng lặp trong mảng
-//     _.forEach(result, (item) => {
-//         item["dataFollower"] = _.uniqBy(item["dataFollower"], "monthFollow");
-//         item["dataGender"] = _.uniqBy(item["dataGender"], "sex");
-//         item["dataAge"] = _.uniqBy(item["dataAge"], "type");
-//         item["dataLocation"] = _.uniqBy(item["dataLocation"], "type");
-//         item["dataJob"] = _.uniqBy(item["dataJob"], "jobId");
-//         // Xóa các trường không cần thiết - Dung -> delete item[]
-//         // delete item["monthFollowAudiencer"];
-//         // delete item["quantityFollowerAudiencer"];
-//     });
-
-//     return result;
-// }
 
 function formatChartDataInfluencer(data) {
     const dataChartGroup = {};

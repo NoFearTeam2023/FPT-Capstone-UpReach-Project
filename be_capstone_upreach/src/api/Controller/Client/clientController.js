@@ -37,10 +37,10 @@ async function addProfileClient(req, res, next) {
 
     const {
       location,
-      fullname,
+      fullName,
       emailContact,
-      phonenumber,
-      brandname,
+      phoneNumber,
+      brandName,
       idClient,
     } = req.body;
 
@@ -56,11 +56,11 @@ async function addProfileClient(req, res, next) {
       !(await InsertClient(
         user.userId,
         location,
-        fullname,
+        fullName,
         emailContact,
-        uploadedImages.url,
-        phonenumber,
-        brandname
+        uploadedImages[0].url,
+        phoneNumber,
+        brandName
       ))
     ) {
       return res.json({ status: "False", message: "Insert Client Fails" });
@@ -71,14 +71,71 @@ async function addProfileClient(req, res, next) {
     }
 
     await clientModel.findByIdAndUpdate(idClient, {
-      avatarImage: uploadedImages.url,
-      username: fullname,
+      avatarImage: uploadedImages[0].url,
+      username: fullName,
     });
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: "True",
       message: "Insert Success Client",
-      dataImage: uploadedImages,
+      dataImage: uploadedImages[0].url,
+    });
+  } catch (err) {
+    // Xử lý lỗi
+    console.error(err);
+    res.json({ status: "False", message: "Lỗi" });
+  }
+}
+
+async function updateProfileClient(req, res, next) {
+  try {
+    const image = req.body.image[0];
+    const uploadedImages = [];
+    if (image.thumbUrl) {
+      const img = await cloudinary.uploader.upload(image.thumbUrl, {
+        public_id: image.uid,
+        resource_type: "auto",
+      });
+      uploadedImages.push({
+        userId: image.userId,
+        id: image.uid,
+        url: img.url,
+      });
+    } else
+      uploadedImages.push({
+        userId: image.userId,
+        id: image.uid,
+        url: image.url,
+      });
+
+    const {
+      location,
+      fullName,
+      emailContact,
+      phoneNumber,
+      brandName,
+      idClient,
+    } = req.body;
+
+    const {  Client_ID } = req.body.clientDetail;
+    if (
+      !(await UpdateClient(
+        Client_ID,location,fullName,emailContact,uploadedImages[0].url,phoneNumber,brandName
+      ))
+    ) {
+      return res.json({ status: "False", message: "Insert Client Fails" });
+    }
+
+
+    await clientModel.findByIdAndUpdate(idClient, {
+      avatarImage: uploadedImages[0].url,
+      username: fullName,
+    });
+    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+    return res.json({
+      status: "True",
+      message: "Insert Success Client",
+      dataImage: uploadedImages[0].url,
     });
   } catch (err) {
     // Xử lý lỗi
@@ -134,6 +191,20 @@ async function InsertInvoice() {
       return false;
     }
   } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+async function UpdateClient(clientId,address,fullName,emailClient,imageClient,phoneClient,brandClient){
+  try {
+    const checkUpdateClient = await clientService.updateClient(clientId,address,fullName,emailClient,imageClient,phoneClient,brandClient)
+    if (checkUpdateClient.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
     console.log(e);
     return false;
   }
@@ -380,7 +451,25 @@ async function checkDone(req, res, next) {
     }
   }
 
+async function getClientExisted(req, res, next){
+    try {
+      // return res.json({data : req.body})
+        const {email} = req.body
+        const response = await clientService.getClientByEmail(email);
+        if(response){
+          return res.json({ status : "True", message : "Client Existed "})
+        }
+        return res.json({ status : "False", message : "Client Not Existed "})
+
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+}
+
 module.exports = {
+  updateProfileClient,
+  getClientExisted,
   addProfileClient,
   dataHomePageClient,
   addInflueToBookingInClient,

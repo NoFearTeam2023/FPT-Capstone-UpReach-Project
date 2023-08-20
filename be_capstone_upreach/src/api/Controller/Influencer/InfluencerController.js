@@ -690,10 +690,11 @@ async function dataReportInfluencer(req, res, next) {
   }
 }
 
-async function updateAvatarInfluencer(req,res,next){
+async function updateInfluencer(req,res,next){
 	try {
-		const {profileId} = req.body.influDetail.state.user.Profile_ID
-		const idInflu = req.body.influDetail.state.user;
+    // return res.json({data : req.body.influencerDetail})
+		const {email} = req.body.influencerDetail
+		const idInflu = req.body.influencerDetail;
 		const image = req.body.image[0]
 		const uploadedImages = [];
 		if (image.thumbUrl) {
@@ -703,18 +704,18 @@ async function updateAvatarInfluencer(req,res,next){
 			});
 			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
 		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
-		const updateAvatar = await influService.insertAvatarProfile(profileId,uploadedImages.url);
-		if(updateAvatar.rowsAffected){
+		const updateAvatar = await influService.updateInfluencer(email,uploadedImages[0].url);
+		if(updateAvatar.rowsAffected[0]){
 			return res.json({message : "Update Avatar success"})
 		}
 		await influModel.findByIdAndUpdate(idInflu, {
-			avatarImage: uploadedImages.url,
+			avatarImage: uploadedImages[0].url,
 			nickname: nickname
 		})
 		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
 	} catch (error) {
 		console.log(error)
-		return res.json({ status : "False" ,message : "Update Avatar success"})
+		return res.json({ status : "False" ,message : "Update Avatar Fail"})
 	}
 }
 
@@ -1306,4 +1307,4 @@ async function rejectBooking(req, res, next) {
 
 
 // module.exports = router;
-module.exports = {getAllHistoryReportByClient,reportOfInfluencer,insertDataToHistoryReport,searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateAvatarInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
+module.exports = {getAllHistoryReportByClient,reportOfInfluencer,insertDataToHistoryReport,searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
