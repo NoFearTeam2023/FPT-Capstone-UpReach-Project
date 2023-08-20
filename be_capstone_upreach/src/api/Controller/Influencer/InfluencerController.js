@@ -637,15 +637,19 @@ async function insertDataToHistoryReport(req, res, next){
     console.log(check)
     if(!checkInfluencerExisted.recordset.length > 0){
       const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
-      if(insertHistoryViewInfluencer.rowsAffected[0]){
+      if(insertHistoryViewInfluencer){
         return res.status(200).json({
           status: "True",
           message: "Insert To History View Of List Influencer thành công",
         });
-      } 
+      }
+      return res.status(200).json({
+        status: "False",
+        message: "Insert To History View Of List Influencer Thất bại",
+      });
     }
     else{
-      return res.json({ message: "Insert Thất bại" });
+      return res.json({status: "False", message: "Id Đã tồn tại " });
     }
   } catch (error) {
     return res.json({ message: error });
