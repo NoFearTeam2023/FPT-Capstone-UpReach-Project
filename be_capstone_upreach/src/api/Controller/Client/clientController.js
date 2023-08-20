@@ -178,17 +178,17 @@ async function InsertClient(
 }
 
 async function dataHomePageClient(req, res, next) {
-  try {
-    const { userId, email, role } = req.body;
-    if (role === "2") {
-      const infoClient = await clientService.getClientByEmail(email);
-      const infoInfluencer = await influService.getAllInfluencerByPublish();
-      return res.json({ Client: infoClient, Influencer: infoInfluencer });
+    try {
+        const { userId, email, role } = req.body
+        if (role === '2') {
+            const infoClient = await clientService.getClientByEmail(email);
+            const infoInfluencer = await influService.getAllInfluencerByPublish();
+            return res.json({ Client: infoClient, data: infoInfluencer })
+        }
+        return res.json({ message: "Bạn không có quyền truy cập vào" })
+    } catch (error) {
+        return res.json({ message: ' ' + error });
     }
-    return res.json({ message: "Bạn không có quyền truy cập vào" });
-  } catch (error) {
-    return res.json({ message: " " + error });
-  }
 }
 
 // Check if an influe is already in the Client booking array

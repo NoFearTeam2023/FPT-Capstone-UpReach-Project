@@ -42,7 +42,7 @@ async function getAllHistoryReportByClientId(clientId){
         const request = connection.request();
         request.input('clientId', sql.NVarChar, clientId);
         const result = await request.execute(getAllHistoryReportByClientId);
-        const data = common.formatResponseHistoryReportToArray(result.recordset)
+        const data = common.formatDataHistoryReports(result.recordset)
         connection.close();
         return data;
     } catch (error) {
@@ -479,14 +479,14 @@ async function getLastHistoryViewInfluencerId(){
 
 async function insertHistoryViewInfluencer(clientId,kolsId){
     try {
-        const insertDataHistoryViewInfluencer = "insertHistoryViewInfluencer";
+        const insertDataHistoryViewInfluencer = "insertInfluencerToHistoryReport";
         const listHistoryId = await getLastHistoryViewInfluencerId()
         const lastListHistoryId = common.increaseID(listHistoryId.List_ID);
 
         const connection = await pool.connect();
         const request = connection.request();
 
-        request.input('listHistoryList', sql.NVarChar, lastListHistoryId)
+        request.input('listId', sql.NVarChar, lastListHistoryId)
         request.input('clientId', sql.NVarChar, clientId)
         request.input('kolsId', sql.NVarChar, kolsId)
 
