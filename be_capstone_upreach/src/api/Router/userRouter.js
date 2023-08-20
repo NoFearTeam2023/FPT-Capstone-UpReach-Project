@@ -66,6 +66,8 @@ router.post('/deletetablekols', listInfluencerController.DeleteTableKOLs);
 router.post('/addtotablekols', listInfluencerController.AddToTableKOLs);
 router.post('/deletealltable', listInfluencerController.DeleteAllTable);
 router.post('/getstatuslistofkols', listInfluencerController.GetStatusListOfKOLs);
+router.post('/getdatachartgenderaudi', listInfluencerController.GetAudienceDataGender);
+router.post('/getdatachartageaudi', listInfluencerController.GetAudienceDataAge);
 
 //Api for MongoDB
 router.post('/createClient', userController.createClient);
@@ -73,4 +75,4 @@ router.post('/createInflu', influencerController.createInflu);
 router.post('/influ/getIdInfluencer', influencerController.getIdOfInflu);
 
 
-module.exports = router
+module.exports = router 
