@@ -28,8 +28,6 @@ async function updateInfo(req, res, next) {
     const chart = JSON.parse(req.body.chart);
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
-    const topics = JSON.parse(req.body.topics);
-    const type = JSON.parse(req.body.type);
     const uploadedImages = [];
 
     if (influ.dataImage) {

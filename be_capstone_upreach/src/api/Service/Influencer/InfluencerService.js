@@ -226,7 +226,7 @@ async function getLastInfluencerTypeListId() {
     }
 }
 
-async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address,avatar, relationship, typeId) {
+async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
         const profileId = await getLastProfileId()
