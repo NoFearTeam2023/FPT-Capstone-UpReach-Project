@@ -150,6 +150,46 @@ async function getAllInfluencerByPublish() {
     }
 }
 
+async function getTopInfluencer() {
+    try {
+        const getTopInfluencer = "getTopInfluencer";
+        const connection = await pool.connect();
+        const request = connection.request();
+        const result = await request.execute(getTopInfluencer);
+        
+        if(result){
+            const data = (result.recordset)
+            connection.close();
+            return data;
+        }else{
+            return false;
+        }
+    } catch (err) {
+        console.log('Lỗi thực thi getTopInfluencer:', err);
+        throw err;
+    }
+}
+
+async function getProfileInfluencerByPublish() {
+    try {
+        const getProfileInfluencerByPublish = "getProfileInfluencerByPublish";
+        const connection = await pool.connect();
+        const request = connection.request();
+        const result = await request.execute(getProfileInfluencerByPublish);
+        
+        if(result){
+            const data = (result.recordset)
+            connection.close();
+            return data;
+        }else{
+            return false;
+        }
+    } catch (err) {
+        console.log('Lỗi thực thi getProfileInfluencerByPublish:', err);
+        throw err;
+    }
+}
+
 async function getAllInfluencerByEmailAndPublish() {
     try {
         const getAllInfluencerByEmailAndPublish = "getAllInfluencerByEmailAndPublish";
@@ -408,7 +448,7 @@ async function insertDatatoContentTopic(dataArray) {
         for (const value of dataArray) {
             const contentTopicsIdList = await getLastInfluencerContentTopicsListsId();
             const lastContentTopicsId = common.increaseID(contentTopicsIdList.ContentTopicsId);
-            console.log("Topic_ID ", lastContentTopicsId);
+            // console.log("Topic_ID ", lastContentTopicsId);
             await pool.connect();
             const request = connection.request();
             request.input('contentTopicsId', sql.NVarChar, lastContentTopicsId);
@@ -540,4 +580,4 @@ async function updateInfluencer(profileId, imageAvatar){
     }
 }
 
-module.exports = {getAllHistoryReportByClientId,updateInfluencer,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView}
+module.exports = {getAllHistoryReportByClientId,updateInfluencer,insertHistoryViewInfluencer,getAllInfluencerByEmailAndPublish, getAllInfluencer, searchInfluencer, getAllInfluencerByEmail, updatePointSearch, updatePointReport, getAllInfluencerByPublish, insertInfluencerPlatformInformation, insertInfluencerProfile, insertKols, insertDatatoContentTopic ,getChartDataInfluencer, getVersionDataInfluencer,checkInfluencerExistedInHistoryView, getTopInfluencer, getProfileInfluencerByPublish}

@@ -29,7 +29,6 @@ async function updateInfo(req, res, next) {
     const idRemoveArray = JSON.parse(req.body.idRemove);
     const editDate = JSON.parse(req.body.editDate);
     const uploadedImages = [];
-
     if (influ.dataImage) {
       for (const image of influ.dataImage) {
         if (image.thumbUrl) {
@@ -275,6 +274,13 @@ async function updateInfo(req, res, next) {
 
               //------------------------Update False Report----------------------------------
             } else {
+              await request.query(`
+              BEGIN
+                UPDATE [UpReachDB].[dbo].[KOLs]
+                SET Date_edit = '${editDate}'
+                WHERE Profile_ID = '${filteredData.Profile_ID}'
+              END
+            `);
               await request.query(`
             BEGIN
                 DELETE FROM [UpReachDB].[dbo].[ImageKOLs]
@@ -631,6 +637,8 @@ async function insertDataToHistoryReport(req, res, next){
   try {
     const { influencerId, clientId } = req.body;
     const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
+    const check = checkInfluencerExisted.recordset
+    // console.log(check)
     if(!checkInfluencerExisted.recordset.length > 0){
       const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
       if(insertHistoryViewInfluencer){
@@ -739,7 +747,7 @@ async function addInfluencer(req, res, next) {
 			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
 		}
 
-		if (!await addInfluencerKols(user.userId, 0, dateNow)) {
+		if (!await addInfluencerKols(user.userId, 0, null)) {
 			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
 		}
 

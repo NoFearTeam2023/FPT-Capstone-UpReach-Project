@@ -317,7 +317,7 @@ async function bookingJob(req, res, next) {
       BEGIN
       INSERT INTO [UpReachDB].[dbo].[ClientBooking]
       (clientBooking_ID, Job_ID, Client_ID, Start_Date, End_Date, Describes, Status)
-      VALUES ('${bookingId}', '${bookingJob.jobId}', '${bookingJob.clientId}', '${bookingJob.startDate}', '${bookingJob.endDate}', '${bookingJob.describes}', 'Pending')
+      VALUES ('${bookingId}', '${bookingJob.jobId}', '${bookingJob.clientId}', '${bookingJob.startDate}', '${bookingJob.endDate}', N'${bookingJob.describes}', 'Pending')
       END
       `);
       return res.status(201).json({
