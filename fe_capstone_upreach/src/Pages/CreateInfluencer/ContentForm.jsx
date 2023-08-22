@@ -6,7 +6,7 @@ const ContentForm = ({ onFinish, setContentFormDetails, contentDetails }) => {
   const [modal, contextHolder] = Modal.useModal();
   const { CheckableTag } = Tag;
   const tagsData1 = [
-    "Sport & Fitness",
+    "Sport/Fitness",
     "Business",
     "Baby",
     "Education",
@@ -29,7 +29,8 @@ const ContentForm = ({ onFinish, setContentFormDetails, contentDetails }) => {
     "Pet",
     "Dance",
   ];
-  const [selectedTags, setSelectedTags] = useState(contentDetails);
+  const nonNullContentDetails = contentDetails.filter(tag => tag !== null);
+  const [selectedTags, setSelectedTags] = useState(nonNullContentDetails);
   const handleChange = (tag, checked) => {
     const nextSelectedTags = checked
       ? [...selectedTags, tag]

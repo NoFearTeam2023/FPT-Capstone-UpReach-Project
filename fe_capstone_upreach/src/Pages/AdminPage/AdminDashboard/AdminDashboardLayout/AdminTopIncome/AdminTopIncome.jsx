@@ -1,88 +1,95 @@
 import React from "react";
 import "./AdminTopIncome.css";
+import RecentIncomeCard from "../../../../../Components/RecentIncomeCard/RecentIncomeCard";
+import { Table, Tag, Avatar, Button } from "antd";
+import { useNavigate } from "react-router-dom";
+import default_img from "../../../../../Assets/Image/Default/DefaultImg.jpg";
+const AdminTopIncome = ({ listClient }) => {
+  const navigate = useNavigate();
 
-import { Table } from "antd";
-const AdminTopIncome = () => {
   const tags = [
     {
+      title: "Avatar",
+      dataIndex: "image",
+      width: "10%",
+      render: (_) => {
+        return (
+          <Avatar
+            src={
+              <img
+                src={_ || default_img}
+                alt="avatar"
+                onError={(e) => {
+                  e.target.src = default_img;
+                }}
+              />
+            }
+            size={45}
+          />
+        );
+      },
+    },
+    {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: "fullName",
+      width: "41%",
     },
     {
       title: "Package",
-      dataIndex: "package",
+      dataIndex: "plan",
+      width: "15%",
+      render: (_) => {
+        return (
+          <Tag
+            color={
+              _ === "Gold"
+                ? "gold"
+                : _ === "Business"
+                ? "magenta"
+                : _ === "Starter"
+                ? "purple"
+                : "green"
+            }
+          >
+            {_}
+          </Tag>
+        );
+      },
     },
     {
-      title: "Price",
-      dataIndex: "price",
+      title: "Report",
+      dataIndex: "pointReport",
+      width: "17%",
     },
     {
-      title: "Date",
-      dataIndex: "date",
+      title: "Search",
+      dataIndex: "pointSearch",
+      width: "17%",
     },
   ];
-  const data = [
-    {
-      key: "1",
-      name: "Le Quang Hieu",
-      package: "Upgrade Business",
-      price: "$79",
-      date: "02 Day ago",
-    },
-    {
-      key: "2",
-      name: "Minh",
-      package: "Upgrade Gold",
-      price: "$149",
-      date: "03 Day ago",
-    },
-    {
-      key: "3",
-      name: "Huy",
-      package: "Upgrade Starter",
-      price: "$49",
-      date: "04 Day ago",
-    },
-    {
-      key: "4",
-      name: "Huy",
-      package: "Upgrade Starter",
-      price: "$49",
-      date: "04 Day ago",
-    },
-    {
-      key: "5",
-      name: "Huy",
-      package: "Upgrade Starter",
-      price: "$49",
-      date: "04 Day ago",
-    },
-    {
-      key: "6",
-      name: "Huy",
-      package: "Upgrade Starter",
-      price: "$49",
-      date: "04 Day ago",
-    },
-    {
-      key: "7",
-      name: "Huy",
-      package: "Upgrade Starter",
-      price: "$49",
-      date: "04 Day ago",
-    },
-  ];
+
   return (
     <>
       <div className="admin-top-income-bg">
         <div className="admin-top-income-title">
-          <p className="admin-top-income-sub-title">RECENT INCOME</p>
-          <p className="admin-top-income-view-all">View all</p>
+          <p className="admin-top-income-sub-title">Package Plan</p>
+          <div className="admin-top-income-view-all">
+            <Button
+              type="link"
+              className="admin-top-income-btn"
+              onClick={() => {
+                navigate("/admin/upgrade-management");
+              }}
+            >
+              View all
+            </Button>
+          </div>
         </div>
         <div className="admin-top-income-contents">
+          {/* <RecentIncomeCard /> */}
           <Table
             columns={tags}
-            dataSource={data}
+            dataSource={listClient}
             pagination={{
               pageSize: 3,
             }}

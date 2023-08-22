@@ -1,0 +1,92 @@
+.influ-booking-modal {
+	background-color: #fff;
+	height: 650px;
+	border-radius: 30px;
+	display: flex;
+    flex-direction: column;
+    padding: 22px;
+}
+
+.influ-booking-modal .booking-modal-title {
+    height: fit-content;
+    width: 100%;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.influ-booking-modal .booking-modal-content {  
+    width: 100%;
+    height: 570px;
+    padding: 0 25px;
+}
+
+.influ-booking-modal .booking-modal-content p {
+    color: #000;
+    font-size: 14px;
+}
+
+.influ-booking-modal .content-header{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    font-size: 19px;
+    color: blue;
+    justify-content: space-evenly;
+}
+
+.influ-booking-modal .content-line {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    padding: 2px 10px;
+}
+
+.influ-booking-modal .line-title {
+    width: 30%;
+    height: fit-content;
+}
+
+.influ-booking-modal .line-content{
+    width: 70%;
+    height: fit-content;
+}
+
+.influ-booking-modal .content-line-des {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    padding: 2px 10px;
+}
+
+.influ-booking-modal .line-title-des {
+    width: 30%;
+    height: 80px;
+}
+
+.influ-booking-modal .line-content-des {
+    width: 70%;
+    height: 80px;
+}
+
+.influ-booking-modal .content-body{
+    width: 100%;
+    height: 410px;
+    display: flex;
+    flex-direction: column;
+    font-size: 19px;
+    color: blue;
+    justify-content: space-evenly;
+}
+
+.influ-booking-modal .content-footer{
+    width: 100%;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.influ-booking-modal .ant-btn {
+    height: 42px;
+}

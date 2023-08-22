@@ -1,0 +1,181 @@
+.version-influ-side-bar-container {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	align-content: space-between;
+}
+
+.version-influ-side-bar-container p {
+	margin-bottom: 0 !important;
+}
+
+.version-influ-side-bar-container .influ-side-bar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 300px;
+	flex-direction: column;
+	border-bottom: #ccc 1px solid;
+	padding: 18px 10px;
+}
+.version-influ-side-bar-container .profile-avatar {
+	width: 130px;
+	height: 130px;
+	border-radius: 50%;
+}
+
+.version-influ-side-bar-container .profile-name {
+	font-weight: 600;
+}
+
+.version-influ-side-bar-container .badge-block {
+	height: fit-content;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.version-influ-side-bar-container .badge-text {
+	cursor: pointer;
+	font-size: 14px;
+	width: fit-content;
+	padding: 2px 8px;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.version-influ-side-bar-container .profile-btn {
+	background-color: #2195f382;
+	margin-bottom: 5px;
+}
+
+.version-influ-side-bar-container .profile-socials {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+	height: 26px;
+}
+
+.version-influ-side-bar-container .profile-social {
+	display: flex;
+	width: 80px;
+	height: 26px;
+	align-items: center;
+}
+
+.version-influ-side-bar-container .influ-side-bar-body {
+	width: 100%;
+	height: fit-content;
+	padding: 20px;
+}
+
+.version-influ-side-bar-container .profile-description {
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.version-influ-side-bar-container .profile-contents {
+	width: 100%;
+	height: fit-content;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.version-influ-side-bar-container .profile-contents p {
+	font-size: 14px;
+}
+
+.version-influ-side-bar-container .profile-content {
+	width: 100%;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.version-influ-side-bar-container .profile-topics {
+	display: flex;
+	flex-wrap: wrap;
+	height: fit-content;
+	width: 100%;
+}
+
+.version-influ-side-bar-container .profile-topic {
+	margin-bottom: 8px;
+	margin-right: 10px;
+	background-color: #ccc;
+	width: fit-content;
+	height: fit-content;
+	display: grid;
+	align-items: center;
+	justify-content: center;
+	border-radius: 5px;
+	font-size: 14px;
+	padding: 2px;
+}
+
+.version-influ-side-bar-container .profile-location {
+	display: flex;
+	align-items: center;
+}
+
+.version-influ-side-bar-container .profile-gender {
+	display: flex;
+}
+
+.version-influ-side-bar-container .profile-age {
+	display: flex;
+}
+
+.version-influ-side-bar-container .profile-marriage-status {
+	display: flex;
+	align-items: center;
+}
+
+.version-influ-side-bar-container .profile-biography {
+	margin-top: 10px;
+}
+
+.version-influ-side-bar-container .profile-biography-title {
+	font-weight: 600;
+}
+
+.version-influ-side-bar-container .influ-side-bar-footer {
+	height: fit-content;
+	padding-bottom: 10px;
+}
+
+.version-influ-side-bar-container .footer-content {
+	padding: 15px 30px 15px 30px;
+}
+
+.version-influ-side-bar-container .profile-contact {
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.version-influ-side-bar-container .contact-info {
+	padding: 15px 25px;
+	width: fit-content;
+	min-width: 250px;
+	position: relative;
+}
+
+.version-influ-side-bar-container .contact-email,
+.contact-phone {
+	display: flex;
+	align-items: center;
+}
+
+
+.version-influ-side-bar-container .lock-info {
+	opacity: 1;
+}
+
+.version-influ-side-bar-container .feedback-btn {
+	width: 100%;
+	text-align: center;
+}

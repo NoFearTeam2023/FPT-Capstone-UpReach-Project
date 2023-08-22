@@ -1,27 +1,25 @@
-*{
-    padding: 0;
-    margin: 0;
-    font-family: unset;
-}
-.sub-title{
+.verify-background .sub-title {
     padding-left: 40px;
     margin-bottom: 4%;
 }
-.form-holder {
+
+.verify-background .form-holder {
     margin: 10% auto;
-    width: 500px;
+    width: 600px;
     min-width: 400px;
 }
-.verify-background{
+
+.verify-background .verify-background {
     padding: 60px;
     height: 100vh;
     background: linear-gradient(45deg, #96cbf0, #fbc7d4);
     position: relative;
 }
-.verify-custom-bg{
+
+.verify-background .verify-custom-bg {
     background-color: #fff;
-    width: 40vw;
-    height: 60vh;
+    width: 50vw;
+    height: 70vh;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -31,4 +29,33 @@
     box-shadow: 0 8px 50px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 
+}
+
+.verify-background .verify-custom-bg .form-holder .form .form-otp {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    margin: 20px 0;
+}
+
+.otp-filed {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 1px solid #eee;
+    width: 75px;
+    height: 80px;
+    margin: 5px;
+    text-align: center;
+    font-weight: 300;
+}
+
+.form-otp .ant-input-number-handler-wrap {
+    display: none;
+}
+
+.form-otp .ant-input-number-input-wrap {
+    text-align: center;
+    height: 100%;
+    padding: 15px 10px;
+    font-size: 30px;
 }

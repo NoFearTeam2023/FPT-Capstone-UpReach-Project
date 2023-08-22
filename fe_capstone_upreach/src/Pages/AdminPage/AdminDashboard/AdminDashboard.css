@@ -2,18 +2,19 @@
     width: 100%;
 	font-size: 24px;
 	font-weight: bold;
-	margin-top: 60px;
 	background-color: #F8F9FF;
 	display: flex;
 }
 
 .dashboard-page-bg .dashboard-page-sidebar {
     width: 13%;
-    height: 900px;
+    height: 100vh;
 }
 
 
 .dashboard-page-bg .dashboard-page-content {
     width: 87%;
-    height: 900px;
+    height: 100vh;
+    padding-top: 60px ;
+    overflow: hidden;
 }

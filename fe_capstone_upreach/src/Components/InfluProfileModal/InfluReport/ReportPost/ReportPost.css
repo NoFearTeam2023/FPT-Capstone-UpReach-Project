@@ -2,6 +2,32 @@
 	width: 100%;
 	height: 100%;
 	background-color: #fff;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	padding: 10px 25px;
 	border-bottom-right-radius: 20px;
+}
+.report-post-layout:hover::-webkit-scrollbar-thumb {
+	z-index: 2;
+	visibility: visible;
+}
+
+.report-post-layout::-webkit-scrollbar {
+	width: 8px;
+}
+
+.report-post-layout::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 5px;
+}
+
+.report-post-layout::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: #bdbdbd;
+	z-index: 1;
+	visibility: hidden;
+}
+
+.report-post-layout::-webkit-scrollbar-thumb:hover {
+	background: #858585;
 }

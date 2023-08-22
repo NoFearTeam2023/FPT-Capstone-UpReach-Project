@@ -2,8 +2,12 @@ import React from "react";
 import "./InfluencerBookingLayout.css";
 import InfluencerBookingCard from "../../../../Components/InfluencerBookingCard/InfluencerBookingCard";
 import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Space } from "antd";
+import { Dropdown, Space, Modal } from "antd";
+import axios from "axios";
+import { useUserStore } from "../../../../Stores/user";
+
 const InfluencerBookingLayout = () => {
+  const [user] = useUserStore((state) => [state.user]);
   const [sortOption, setSortOption] = React.useState("Choose Option");
   const items = [
     {
@@ -43,49 +47,14 @@ const InfluencerBookingLayout = () => {
       key: "2",
     },
   ];
-  const [bookingList, setBookingList] = React.useState([
-    {
-      name: "Hieu",
-      brandName: "NoFear",
-      platform: "Facebook",
-      content: "Picture",
-      cost: 1000000,
-      status: "Processing",
-      createdDate: "10/07/2023",
-    },
-    {
-      name: "Minh",
-      brandName: "NoFear",
-      platform: "Instagram",
-      content: "Video",
-      cost: 10000000,
-      status: "Processing",
-      createdDate: "11/07/2023",
-    },
-    {
-      name: "Huy",
-      brandName: "NoFear",
-      platform: "Facebook",
-      content: "Picture",
-      cost: 11000000,
-      status: "Processing",
-      createdDate: "12/07/2023",
-    },
-    {
-      name: "Khoa",
-      brandName: "NoFear",
-      platform: "Facebook",
-      content: "Picture",
-      cost: 100000,
-      status: "Processing",
-      createdDate: "07/07/2023",
-    },
-  ]);
+  const [bookingList, setBookingList] = React.useState([]);
+
   const hanldeSort = (bookingList) => {
+    let sortedList = [...bookingList];
     if (sortOption === "Name") {
-      return bookingList.sort((a, b) => {
-        const nameA = a.name.toUpperCase();
-        const nameB = b.name.toUpperCase();
+      return sortedList.sort((a, b) => {
+        const nameA = a?.clientName.toUpperCase();
+        const nameB = b?.clientName.toUpperCase();
 
         if (nameA < nameB) {
           return -1;
@@ -96,18 +65,57 @@ const InfluencerBookingLayout = () => {
         return 0;
       });
     } else if (sortOption === "Date") {
-      return bookingList.sort((a, b) => {
-        const dateA = new Date(a.createdDate);
-        const dateB = new Date(b.createdDate);
-
-        return dateB - dateA;
+      return sortedList.sort((a, b) => {
+        const dateA = new Date(a.startDate);
+        const dateB = new Date(b.startDate);
+        return dateA - dateB;
       });
-    } else if (sortOption === "Cost") {
-      return bookingList.sort((a, b) => {
-        return a.cost - b.cost;
-      });
-    } else return bookingList;
+    }
+    // else if (sortOption === "Cost") {
+    //   return bookingList.sort((a, b) => {
+    //     return a.cost - b.cost;
+    //   });
+    // }
+    else return bookingList;
   };
+
+  React.useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/influ/get-booking-jobs", {
+        params: {
+          email: user.email,
+        },
+      })
+      .then((response) => {
+        const bookingDataArray = response.data.data;
+        console.log(response.data.data);
+        const bookingJobList = bookingDataArray?.map((data) => ({
+          bookingId: data?.clientBooking_ID,
+          jobId: data?.Job_ID,
+          brandName: data?.clientInfo?.Brand_Client,
+          clientName: data?.clientInfo?.FullName,
+          jobName: data?.Name_Job,
+          platform: data?.Platform_Job,
+          jobLink: data?.Link,
+          quantity: data?.Quantity,
+          costEstimateFrom: data?.CostEstimate_From_Job,
+          costEstimateTo: data?.CostEstimate_To_Job,
+          formatContent: data?.Format_Id,
+          describes: data?.Describes,
+          startDate: data?.Start_Date,
+          endDate: data?.End_Date,
+          status: data?.Status,
+        }));
+        setBookingList(bookingJobList);
+      })
+      .catch((error) => {
+        console.error(
+          "Error while fetching previewBooking information:",
+          error
+        );
+      });
+  }, []);
+
   return (
     <>
       <div className="influencer-booking-layout">
@@ -126,13 +134,13 @@ const InfluencerBookingLayout = () => {
           </div>
         </div>
         <div className="influencer-booking-sub-title">
-          <p style={{ width: "14.6%" }}>Name</p>
           <p style={{ width: "18.8%" }}>Brand Name</p>
           <p style={{ width: "12.1%" }}>Platform</p>
-          <p style={{ width: "13.1%" }}>Content</p>
-          <p style={{ width: "14%" }}>Cost estimate</p>
-          <p style={{ width: "12.4%" }}>Status</p>
-          <p style={{ width: "15%" }}>Created Date</p>
+          <p style={{ width: "14.5%" }}>Content</p>
+          <p style={{ width: "12.9%" }}>Quantities</p>
+          <p style={{ width: "12%" }}>Status</p>
+          <p style={{ width: "15%" }}>Start Date</p>
+          <p style={{ width: "15%" }}>End Date</p>
         </div>
         <div className="influencer-booking-list">
           {hanldeSort(bookingList)?.map((booking, index) => (

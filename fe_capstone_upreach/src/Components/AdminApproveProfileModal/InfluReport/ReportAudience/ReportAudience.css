@@ -1,0 +1,86 @@
+.report-audience-layout {
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #fff;
+	padding: 50px 0px 50px 60px;
+	display: flex;
+	border-bottom-right-radius: 20px;
+}
+
+.report-audience-layout:hover::-webkit-scrollbar-thumb {
+	z-index: 2;
+	visibility: visible;
+}
+
+.report-audience-layout::-webkit-scrollbar {
+	width: 8px;
+}
+
+.report-audience-layout::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 5px;
+}
+
+.report-audience-layout::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: #bdbdbd;
+	z-index: 1;
+	visibility: hidden;
+}
+
+.report-audience-layout::-webkit-scrollbar-thumb:hover {
+	background: #858585;
+}
+
+.report-audience-layout .report-audience-bg {
+	width: 90%;
+	height: 300px;
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: #ccc 1px solid;
+	border-radius: 20px;
+	margin-bottom: 50px;
+}
+
+.report-audience-layout .audience-follower-chart,
+.report-audience-layout .audience-gender-chart {
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.audience-follower-chart .follower-chart {
+	width: 100%;
+	height: 90%;
+}
+
+.audience-gender-chart .gender-chart {
+	width: fit-content;
+	height: 230px;
+	display: flex;
+	flex-direction: column;
+}
+
+.audience-age-chart,
+.audience-location-chart {
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.audience-age-chart .age-chart,
+.audience-location-chart .location-chart {
+	width: 100%;
+	height: 90%;
+}

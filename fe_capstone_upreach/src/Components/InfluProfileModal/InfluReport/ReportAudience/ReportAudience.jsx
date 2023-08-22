@@ -1,50 +1,45 @@
 import "./ReportAudience.css";
 import { Row, Col } from "antd";
 import { Line, Pie, Bar } from "@ant-design/plots";
+import ApiAudienceAndJobInfluencer from "../../../../Api/ApiAudienceAndJobInfluencer";
+import React, { useState, useEffect } from "react";
 
-const ReportAudience = () => {
-  const dataFollower = [
-    {
-      year: "2018",
-      value: 3,
-    },
-    {
-      year: "2019",
-      value: 4,
-    },
-    {
-      year: "2020",
-      value: 5,
-    },
-    {
-      year: "2021",
-      value: 4,
-    },
-    {
-      year: "2022",
-      value: 6,
-    },
-    {
-      year: "2023",
-      value: 18,
-    },
-  ];
+const ReportAudience = ({ influInfo }) => {
+  const [data, setData] = useState();
+  //====================== Get Data Back End Of Audience Chart ======================
+  const fetchDataForChart = async (IdInflu) => {
+    try {
+      const response = await ApiAudienceAndJobInfluencer.getDataForChart(
+        IdInflu
+      );
+
+      setData(response);
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
+  //=================================================================================
+  // console.log(data);
+  useEffect(() => {
+    fetchDataForChart(influInfo);
+  }, []);
+  const dataFollower =
+    data?.data[0]?.dataFollower === undefined
+      ? []
+      : data?.data[0]?.dataFollower;
   const configFollower = {
     data: dataFollower,
-    xField: "year",
+    xField: "monthFollow",
     yField: "value",
   };
 
-  const dataGender = [
-    {
-      sex: "Male",
-      value: 45,
-    },
-    {
-      sex: "Female",
-      value: 55,
-    },
-  ];
+  const dataGender =
+    data?.data[0]?.dataGender === undefined ||
+    data?.data[0]?.dataGender?.sex === null ||
+    data?.data[0]?.dataGender?.value === null
+      ? []
+      : data?.data[0]?.dataGender;
+
   const configGender = {
     data: dataGender,
     angleField: "value",
@@ -60,35 +55,12 @@ const ReportAudience = () => {
     },
   };
 
-  const dataAge = [
-    {
-      type: "18-",
-      sales: 38,
-    },
-    {
-      type: "18-24",
-      sales: 52,
-    },
-    {
-      type: "25-34",
-      sales: 61,
-    },
-    {
-      type: "35-44",
-      sales: 145,
-    },
-    {
-      type: "45-54",
-      sales: 48,
-    },
-    {
-      type: "55+",
-      sales: 38,
-    },
-  ];
+  const dataAge =
+    data?.data[0]?.dataAge === undefined ? [] : data?.data[0]?.dataAge;
+
   const configAge = {
     data: dataAge,
-    xField: "sales",
+    xField: "value",
     yField: "type",
     meta: {
       type: {
@@ -102,35 +74,13 @@ const ReportAudience = () => {
     maxBarWidth: 16,
   };
 
-  const dataLocation = [
-    {
-      type: "TP.HCM",
-      sales: 38,
-    },
-    {
-      type: "Ha Noi",
-      sales: 52,
-    },
-    {
-      type: "Da Nang",
-      sales: 61,
-    },
-    {
-      type: "Hue",
-      sales: 14,
-    },
-    {
-      type: "Can Tho",
-      sales: 48,
-    },
-    {
-      type: "Quang Binh",
-      sales: 38,
-    },
-  ];
+  const dataLocation =
+    data?.data[0]?.dataLocation === undefined
+      ? []
+      : data?.data[0]?.dataLocation;
   const configLocation = {
     data: dataLocation,
-    xField: "sales",
+    xField: "value",
     yField: "type",
     meta: {
       type: {

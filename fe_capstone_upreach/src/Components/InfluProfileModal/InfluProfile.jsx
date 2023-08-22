@@ -12,7 +12,7 @@ const InfluProfile = ({ profileInflu }) => {
         </div>
         <div className="cover-influ-image-report">
           <div className="influ-image">
-            <InfluImage />
+            <InfluImage influInfo={profileInflu} />
           </div>
           <div className="influ-report">
             <InfluReport influInfo={profileInflu} />

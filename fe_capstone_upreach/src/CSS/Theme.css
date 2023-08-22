@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Volkhov:wght@700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100&family=Volkhov:wght@700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
 
+*{
+	font-family: 'Montserrat', sans-serif;
+}
 .margin-left-110 {
 	margin-left: 110px;
 }
@@ -47,7 +51,7 @@
 	font-size: 24px;
 	font-weight: bold;
 	margin-top: 60px;
-	padding: 100px 50px;
+	padding: 65px 50px;
 }
 
 .contentHomePage {
@@ -101,4 +105,11 @@ select::-ms-expand {
 
 p {
 	margin-bottom: 0 !important;
+}
+
+.ant-modal-confirm-content{
+	font-size: 22px !important;
+}
+.ant-modal-confirm-title{
+	font-size: 22px !important;
 }

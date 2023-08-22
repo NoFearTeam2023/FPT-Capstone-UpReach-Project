@@ -39,7 +39,7 @@
 }
 
 .shadowBox{
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
 }
 
 .selectFilterAudiance{
@@ -68,4 +68,12 @@
 .filterSearch{
 	padding: 15px;
 	border-radius: 15px;
+}
+
+.ant-space{
+	margin-bottom: 0 !important;
+}
+
+.active-filter{
+	background: #e0ffe0 !important;
 }

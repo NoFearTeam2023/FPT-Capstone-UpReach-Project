@@ -1,0 +1,52 @@
+.influ-version-profile {
+	background-color: #eaeaea;
+	height: 900px;
+	border-radius: 30px;
+	display: flex;
+}
+.influ-version-profile .influ-side-bar {
+	width: 24%;
+	height: 900px;
+	background-color: #fff;
+	border-radius: 30px 0 0 30px;
+}
+
+.influ-version-profile .cover-influ-image-report {
+	width: 76%;
+	height: 900px;
+	display: flex;
+	flex-direction: column;
+}
+
+.influ-version-profile .influ-report {
+	width: 100%;
+	height: 600px;
+}
+
+.influ-version-profile .admin-approve-report-btn {
+	width: 90px;
+    height: 35px;
+    position: absolute;
+	top: 310px;
+	right: 30px;
+    border-radius: 3px;
+    border: none;
+    background-color: #1677ff;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.438);
+}
+
+.influ-version-profile .admin-approve-report-btn:active {
+	opacity: 0.8;
+}
+
+.influ-version-profile .admin-approve-report-btn:hover {
+    font-size: 15px;
+}
+
+.influ-version-profile .influ-image {
+	width: 100%;
+	height: 300px;
+}
