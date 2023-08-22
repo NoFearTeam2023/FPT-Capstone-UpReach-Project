@@ -654,5 +654,30 @@ const router = express.Router();
     }
   }
 
+  async function editPackage(req, res, next) {
+    try {
+      const package = JSON.parse(req.body?.package);
+      const clientId = JSON.parse(req.body?.clientId);
+      console.log(package,1);
+      console.log(clientId,2);
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+  
+            return res.status(201).json({
+              message: "Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
 
-  module.exports = {getTotalList, getTotalBooking, getApproveReport, postApproveReport, getInfluencerAccount,getTopInfluencer,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }
+
+  module.exports = {editPackage,getTotalList, getTotalBooking, getApproveReport, postApproveReport, getInfluencerAccount,getTopInfluencer,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }

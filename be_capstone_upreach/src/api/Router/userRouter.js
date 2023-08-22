@@ -30,6 +30,7 @@ router.put("/admin/lock-client", adminController.lockClient);
 router.put("/admin/unlock-client", adminController.unlockClient);
 router.get("/admin/get-total-booking", adminController.getTotalBooking);
 router.get("/admin/get-total-list", adminController.getTotalList);
+router.put("/admin/edit-package", adminController.editPackage);
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
