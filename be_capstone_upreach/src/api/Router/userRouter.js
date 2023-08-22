@@ -35,13 +35,13 @@ router.get("/admin/get-total-booking", adminController.getTotalBooking);
 router.get("/admin/get-total-list", adminController.getTotalList);
 
 router.put("/influ/update", influencerController.updateInfo);
-router.post("/influ/search",influencerController.searchInfluencer);
-router.get("/influ/get",influencerController.getAllInfluencer);
-router.post("/influ/search-minus-point",influencerController.searchPoint);
-router.post("/influ/report-influencer",influencerController.reportOfInfluencer);
-router.post("/influ/get-data-history-report",influencerController.getAllHistoryReportByClient);
-router.post("/influ/insert-data-history-report",influencerController.insertDataToHistoryReport);
-router.post("/influ/dataReportInfluencer",influencerController.dataReportInfluencer);  
+router.post("/influ/search", influencerController.searchInfluencer);
+router.get("/influ/get", influencerController.getAllInfluencer);
+router.post("/influ/search-minus-point", influencerController.searchPoint);
+router.post("/influ/report-influencer", influencerController.reportOfInfluencer);
+router.post("/influ/get-data-history-report", influencerController.getAllHistoryReportByClient);
+router.post("/influ/insert-data-history-report", influencerController.insertDataToHistoryReport);
+router.post("/influ/dataReportInfluencer", influencerController.dataReportInfluencer);
 router.post("/influ/addInfluencer", influencerController.addInfluencer);
 router.post("/influ/data-chart", influencerController.getDataForChart);
 router.post("/influ/data-version", influencerController.getDataVersion);
@@ -84,6 +84,8 @@ router.post('/getdatachartageaudi', listInfluencerController.GetAudienceDataAge)
 router.post('/createClient', userController.createClient);
 router.post('/createInflu', influencerController.createInflu);
 router.post('/influ/getIdInfluencer', influencerController.getIdOfInflu);
+router.post('/client/getAllInflueOfClient', clientController.getAllInflueOfClientBooking);
+router.post('/influ/getAllClientHaveInflue', influencerController.getClientsByInflue);
 
 //Message
 router.post("/message/addmess", addMessage);
