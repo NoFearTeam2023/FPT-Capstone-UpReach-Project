@@ -269,6 +269,15 @@ const isInflueInArray = (client, idInflue) => {
   );
 };
 
+async function getDataClient(req,res,next){
+  try {
+    const { email } = req.body
+    const infoClient = await clientService.getClientByEmail(email);
+    return res.json({ Client: infoClient, data: infoInfluencer })
+} catch (error) {
+    return res.json({ message: ' ' + error });
+}
+}
 // Add Influe to booking in client array
 async function addInflueToBookingInClient(req, res, next) {
   try {
@@ -317,7 +326,7 @@ async function bookingJob(req, res, next) {
       BEGIN
       INSERT INTO [UpReachDB].[dbo].[ClientBooking]
       (clientBooking_ID, Job_ID, Client_ID, Start_Date, End_Date, Describes, Status)
-      VALUES ('${bookingId}', '${bookingJob.jobId}', '${bookingJob.clientId}', '${bookingJob.startDate}', '${bookingJob.endDate}', '${bookingJob.describes}', 'Pending')
+      VALUES ('${bookingId}', '${bookingJob.jobId}', '${bookingJob.clientId}', '${bookingJob.startDate}', '${bookingJob.endDate}', N'${bookingJob.describes}', 'Pending')
       END
       `);
       return res.status(201).json({
@@ -466,8 +475,44 @@ async function getClientExisted(req, res, next){
       return res.json({ message: " " + err });
     }
 }
+async function getDataClientToCheckPassword(req,res,next){
+  try {
+    const {email, password} = req.body
+    const response = await userService.getUserClientByEmail(email)
+    const passwordMatch = await bcrypt.compare(password, response.userPassword);
+    if(response){
+      if(passwordMatch){
+        return res.json({ status : "True", message : "Password match !"})
+      }
+      return res.json({ status : "False", message : "Password not match !"})
+    }
+    return res.json({ status : "False", message : "Client Not Existed "})
+  } catch (error) {
+    console.log(err);
+      return res.json({ message: " " + err });
+  }
+}
+
+async function updatePasswordClient(req,res,next){
+  try {
+    const {email,password} = req.body
+    const response = await userService.updatePasswordUser(email,password)
+    if(response.rowsAffected[0]){
+      return res.json({ status : "True", message : "Update Success !!! "})
+    }
+    return res.json({ status : "False", message : "Update Fails !!! "})
+  } catch (error) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+
 
 module.exports = {
+  getDataClient,
+  updatePasswordClient,
+  getDataClientToCheckPassword,
   updateProfileClient,
   getClientExisted,
   addProfileClient,

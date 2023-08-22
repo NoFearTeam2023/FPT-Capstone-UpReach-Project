@@ -101,6 +101,22 @@ async function getDataForUser(email) {
     }
 }
 
+async function updatePasswordUser(email,password){
+    try {
+        const updatePasswordUser = "updatePassword";
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('emailUser', sql.NVarChar, email);
+        request.input('newPassword', sql.NVarChar, password);
+        const result = await request.execute(updatePasswordUser);
+        connection.close();
+        return result;
+    } catch (error) {
+        console.log('Lỗi thực thi updatePasswordUser:', err);
+        throw error;
+    }
+}
+
 async function insertInfoUser(id, role, email, password) {
 
     try {
@@ -192,4 +208,4 @@ async function getSessionUserById(userId) {
 
 
 
-module.exports = { getAll, getUserById, getUserByEmail, getUserInfluencerByEmail, getUserClientByEmail, getDataForUser, getSessionUserById, insertInfoUser, insertSessionUser, deleteSessionUser, deleteSessionUserById };
+module.exports = { updatePasswordUser, getAll, getUserById, getUserByEmail, getUserInfluencerByEmail, getUserClientByEmail, getDataForUser, getSessionUserById, insertInfoUser, insertSessionUser, deleteSessionUser, deleteSessionUserById };

@@ -20,6 +20,7 @@ router.post('/logout', userController.logout);
 router.get("/admin/get-approve-report", adminController.getApproveReport);
 router.post("/admin/approve-report", adminController.postApproveReport);
 router.get("/admin/get-influencer-account", adminController.getInfluencerAccount);
+router.get("/admin/get-top-influencer", adminController.getTopInfluencer);
 router.put("/admin/edit-influ", adminController.editInflu);
 router.put("/admin/lock-influ", adminController.lockInflu);
 router.put("/admin/unlock-influ", adminController.unlockInflu);
@@ -27,7 +28,8 @@ router.get("/admin/get-client-account", adminController.getClientAccount);
 router.put("/admin/edit-client", adminController.editClient);
 router.put("/admin/lock-client", adminController.lockClient);
 router.put("/admin/unlock-client", adminController.unlockClient);
-
+router.get("/admin/get-total-booking", adminController.getTotalBooking);
+router.get("/admin/get-total-list", adminController.getTotalList);
 
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search",influencerController.searchInfluencer);
@@ -48,6 +50,7 @@ router.put("/influ/reject-booking", influencerController.rejectBooking);
 router.post("/influ/updateInfluencer", influencerController.updateInfluencer);
 
 router.post('/client/add-client-profile', clientController.addProfileClient);
+router.post('/client/client-data', clientController.getDataClient);
 router.post('/client/update-client-profile', clientController.updateProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
 router.post('/client/addInflueToBooking', clientController.addInflueToBookingInClient);
@@ -56,6 +59,9 @@ router.get("/client/get-history-booking", clientController.getHistoryBooking);
 router.put("/client/check-done", clientController.checkDone);
 router.put("/client/send-feedback", clientController.sendFeedback);
 router.post("/client/check-existed",clientController.getClientExisted)
+router.post("/client/check-passsword",clientController.getDataClientToCheckPassword)
+router.post("/client/update-password",clientController.updatePasswordClient)
+
 
 router.get('/getalllist', listInfluencerController.GetAllList);
 router.post('/getalllistbyuser', listInfluencerController.GetAllListByUser);
