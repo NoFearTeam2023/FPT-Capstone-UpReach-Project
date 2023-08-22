@@ -249,17 +249,17 @@ async function InsertClient(
 }
 
 async function dataHomePageClient(req, res, next) {
-    try {
-        const { userId, email, role } = req.body
-        if (role === '2') {
-            const infoClient = await clientService.getClientByEmail(email);
-            const infoInfluencer = await influService.getAllInfluencerByPublish();
-            return res.json({ Client: infoClient, data: infoInfluencer })
-        }
-        return res.json({ message: "Bạn không có quyền truy cập vào" })
-    } catch (error) {
-        return res.json({ message: ' ' + error });
+  try {
+    const { userId, email, role } = req.body
+    if (role === '2') {
+      const infoClient = await clientService.getClientByEmail(email);
+      const infoInfluencer = await influService.getAllInfluencerByPublish();
+      return res.json({ Client: infoClient, data: infoInfluencer })
     }
+    return res.json({ message: "Bạn không có quyền truy cập vào" })
+  } catch (error) {
+    return res.json({ message: ' ' + error });
+  }
 }
 
 // Check if an influe is already in the Client booking array
@@ -269,6 +269,15 @@ const isInflueInArray = (client, idInflue) => {
   );
 };
 
+async function getDataClient(req,res,next){
+  try {
+    const { email } = req.body
+    const infoClient = await clientService.getClientByEmail(email);
+    return res.json({ Client: infoClient, data: infoInfluencer })
+} catch (error) {
+    return res.json({ message: ' ' + error });
+}
+}
 // Add Influe to booking in client array
 async function addInflueToBookingInClient(req, res, next) {
   try {
@@ -303,7 +312,7 @@ async function addInflueToBookingInClient(req, res, next) {
 async function bookingJob(req, res, next) {
   try {
     const bookingJob = JSON.parse(req.body.bookingJob);
-    
+
     sql.connect(config, (err) => {
       if (err) {
         console.log(err);
@@ -418,18 +427,18 @@ async function checkDone(req, res, next) {
   }
 }
 
-  async function sendFeedback(req, res, next) {
-    try {
-      const bookingDetail = JSON.parse(req.body.booking);
-      
-      sql.connect(config, async (err) => {
-        if (err) {
-          console.log(err);
-          return res.json({ message: " " + err });
-        }
-        const request = new sql.Request();
-        await request.input('feedback', sql.NVarChar, JSON.stringify(bookingDetail.feedback))
-        await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
+async function sendFeedback(req, res, next) {
+  try {
+    const bookingDetail = JSON.parse(req.body.booking);
+
+    sql.connect(config, async (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ message: " " + err });
+      }
+      const request = new sql.Request();
+      await request.input('feedback', sql.NVarChar, JSON.stringify(bookingDetail.feedback))
+      await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
         .query(`
             BEGIN
             UPDATE [UpReachDB].[dbo].[ClientBooking]
@@ -438,18 +447,53 @@ async function checkDone(req, res, next) {
             WHERE clientBooking_ID = @bookingId
             END
         `);
-  
-            return res.status(201).json({
-              message: "Send feedback successfully!",
-              // data: ,
-            });
-          }
-        );
-    } catch (err) {
-      console.log(err);
-      return res.json({ message: " " + err });
+
+      return res.status(201).json({
+        message: "Send feedback successfully!",
+        // data: ,
+      });
     }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
   }
+}
+
+// Get information about a client have booked
+async function getAllInflueOfClientBooking(req, res, next) {
+  try {
+    const { _idClient } = req.body;
+    const client = await clientModel.findById(_idClient).populate("booking");
+    if (!client) {
+      return res.json({ msg: "Client don't already", status: false });
+    }
+
+    const InfoClient = {
+      username: client.username,
+      email: client.email,
+      avatarImage: client.avatarImage,
+      booking: []
+    };
+
+    client.booking.forEach(influe => {
+      InfoClient.booking.push({
+        _id: influe._id,
+        nickname: influe.nickname,
+        email: influe.email,
+        avatarImage: influe.avatarImage
+      })
+    });
+
+    return res.status(200).json({
+      status: true,
+      data: InfoClient,
+    });
+
+  } catch (error) {
+    return res.json({ message: " " + error });
+  }
+}
 
 async function getClientExisted(req, res, next){
     try {
@@ -466,8 +510,44 @@ async function getClientExisted(req, res, next){
       return res.json({ message: " " + err });
     }
 }
+async function getDataClientToCheckPassword(req,res,next){
+  try {
+    const {email, password} = req.body
+    const response = await userService.getUserClientByEmail(email)
+    const passwordMatch = await bcrypt.compare(password, response.userPassword);
+    if(response){
+      if(passwordMatch){
+        return res.json({ status : "True", message : "Password match !"})
+      }
+      return res.json({ status : "False", message : "Password not match !"})
+    }
+    return res.json({ status : "False", message : "Client Not Existed "})
+  } catch (error) {
+    console.log(err);
+      return res.json({ message: " " + err });
+  }
+}
+
+async function updatePasswordClient(req,res,next){
+  try {
+    const {email,password} = req.body
+    const response = await userService.updatePasswordUser(email,password)
+    if(response.rowsAffected[0]){
+      return res.json({ status : "True", message : "Update Success !!! "})
+    }
+    return res.json({ status : "False", message : "Update Fails !!! "})
+  } catch (error) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+
 
 module.exports = {
+  getDataClient,
+  updatePasswordClient,
+  getDataClientToCheckPassword,
   updateProfileClient,
   getClientExisted,
   addProfileClient,
@@ -476,5 +556,6 @@ module.exports = {
   bookingJob,
   getHistoryBooking,
   checkDone,
-  sendFeedback
+  sendFeedback,
+  getAllInflueOfClientBooking
 };

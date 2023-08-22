@@ -518,8 +518,12 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
     try {
         const insertDataHistoryViewInfluencer = "insertInfluencerToHistoryReport";
         const listHistoryId = await getLastHistoryViewInfluencerId()
-        const lastListHistoryId = common.increaseID(listHistoryId.List_ID);
-
+        var lastListHistoryId
+        if(!listHistoryId){
+            lastListHistoryId = 'HVIF001'
+        }else{
+            lastListHistoryId = common.increaseID(listHistoryId.List_ID);
+        }
         const connection = await pool.connect();
         const request = connection.request();
 
@@ -529,7 +533,10 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
 
         const result = await request.execute(insertDataHistoryViewInfluencer);
         connection.close();
-        return result;
+        if(result.rowsAffected[0]){
+            return true;
+        }
+        return false;
 
     } catch (err) {
         console.log('Lỗi thực thi insertDataHistoryViewInfluencer : ', err);
