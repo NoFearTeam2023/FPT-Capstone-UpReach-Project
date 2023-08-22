@@ -6,6 +6,7 @@ const influService = require("../../Service/Influencer/InfluencerService")
 const userService = require('../../Service/User/UserService')
 const common = require('../../../../common/common')
 const { getAllInfluencer } = require("../../Service/Influencer/InfluencerService");
+
 const { getAllClient } = require("../../Service/Client/clientService");
 
 const router = express.Router();
@@ -174,7 +175,8 @@ const router = express.Router();
        WHERE User_ID = '${userId}'
        END
        `)
-       console.log(userId, checkInflu.recordset);
+
+      //  console.log(userId, checkInflu.recordset);
        if(checkInflu.recordset.some((item)=>item.isPublish)){
 
          const selectedUserID = await  request.query(`
@@ -338,42 +340,28 @@ const router = express.Router();
 
   async function getInfluencerAccount(req, res, next) {
     try {
-      const users = await getAllInfluencer();
-      const userIds = users.map((item)=>item?.userId)
-      const uniqueIds = [...new Set(userIds)];
-      sql.connect(config, async (err) => {
-        if (err) {
-          console.log(err);
-          return res.json({ message: " " + err });
-        }
-        
-        const request = new sql.Request();
-        const influsInfo = []
-        for (let userId of uniqueIds) {
-
-          const influInfo = await  request.query(`
-          SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE User_ID = '${userId}' AND isPublish = 1
-          `)
-          influsInfo?.push(influInfo?.recordset[0])
-         
-      }
-      
-      const profileInfos = []
-
-      for(let influInfo of influsInfo ) {
-        
-        const profileInfo = await  request.query(`
-        SELECT * FROM [UpReachDB].[dbo].[Profile] WHERE Profile_ID = '${influInfo?.Profile_ID}' 
-        `)
-        profileInfos.push(profileInfo?.recordset[0])
-
-          }
+      const profileInfluencers = await influService.getProfileInfluencerByPublish();
           return res.status(200).json({
-            message: "Get approve report successfully!",
-            data: profileInfos
+            message: "Get influencer information successfully!",
+            data: profileInfluencers
           });
           
-      });
+   
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function getTopInfluencer(req, res, next) {
+    try {
+      const topInfluencers = await influService.getTopInfluencer();
+          return res.status(200).json({
+            message: "Get influencer information successfully!",
+            data: topInfluencers
+          });
+          
+   
     } catch (err) {
       console.log(err);
       return res.json({ message: " " + err });
@@ -495,7 +483,7 @@ const router = express.Router();
   async function getClientAccount(req, res, next) {
     try {
       const clients = await getAllClient();
-     ;
+     
           return res.status(200).json({
             message: "Get all client successfully!",
             data: clients
@@ -614,4 +602,57 @@ const router = express.Router();
     }
   }
 
-  module.exports = { getApproveReport, postApproveReport, getInfluencerAccount,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }
+  async function getTotalBooking(req, res, next) {
+    try {
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        const bookings = await request.query(`
+            BEGIN
+            SELECT * FROM [UpReachDB].[dbo].[ClientBooking]
+            END
+        `);
+        // console.log(bookings.recordset,"run");
+            return res.status(201).json({
+              message: "Get total booking Successfully!",
+              data: bookings.recordset
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+  async function getTotalList(req, res, next) {
+    try {
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        const lists = await request.query(`
+            BEGIN
+            SELECT * FROM [UpReachDB].[dbo].[ClientListsKols]
+            END
+        `);
+        // console.log(lists.recordset,"run");
+            return res.status(201).json({
+              message: "Get total list Successfully!",
+              data: lists.recordset
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+
+  module.exports = {getTotalList, getTotalBooking, getApproveReport, postApproveReport, getInfluencerAccount,getTopInfluencer,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }
