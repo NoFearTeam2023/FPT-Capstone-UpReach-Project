@@ -50,6 +50,7 @@ router.put("/influ/reject-booking", influencerController.rejectBooking);
 router.post("/influ/updateInfluencer", influencerController.updateInfluencer);
 
 router.post('/client/add-client-profile', clientController.addProfileClient);
+router.post('/client/client-data', clientController.getDataClient);
 router.post('/client/update-client-profile', clientController.updateProfileClient);
 router.post('/client/homePage', clientController.dataHomePageClient);
 router.post('/client/addInflueToBooking', clientController.addInflueToBookingInClient);
@@ -58,6 +59,9 @@ router.get("/client/get-history-booking", clientController.getHistoryBooking);
 router.put("/client/check-done", clientController.checkDone);
 router.put("/client/send-feedback", clientController.sendFeedback);
 router.post("/client/check-existed",clientController.getClientExisted)
+router.post("/client/check-passsword",clientController.getDataClientToCheckPassword)
+router.post("/client/update-password",clientController.updatePasswordClient)
+
 
 router.get('/getalllist', listInfluencerController.GetAllList);
 router.post('/getalllistbyuser', listInfluencerController.GetAllListByUser);
