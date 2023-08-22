@@ -199,12 +199,12 @@ function formatDataHistoryReports(data) {
     }
 
     // Add dataImage to the clientGroup
-    const existingImageIds = clientGroup[clients]["dataImage"].map(image => image.imageId);
-        if (!existingImageIds.includes(item["Image_ID"])) {
-            clientGroup[clients]["dataImage"].push({
-                "imageId": item["Image_ID"],
-                "image": item["Image"]
-            });
+    const uid = item["Image_ID"];
+        const url = item["Image"];
+        const existingImage = clientGroup[clients]["dataImage"].find(img => img.uid === uid);
+
+        if (!existingImage) {
+            clientGroup[clients]["dataImage"].push({ uid, url });
         }
     });
 
