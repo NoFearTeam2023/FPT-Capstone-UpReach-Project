@@ -13,7 +13,7 @@ const common = require("../../../../common/common");
 const clientModel = require("../../Model/MogooseSchema/clientModel");
 const influModel = require("../../Model/MogooseSchema/influModel");
 const { getUserByEmail } = require("../../Service/User/UserService");
-
+const { createZaloPayOrder } = require('../../ZaloPay/payment');
 async function addProfileClient(req, res, next) {
   try {
     const image = req.body.image[0];
@@ -475,44 +475,70 @@ async function getClientExisted(req, res, next){
       return res.json({ message: " " + err });
     }
 }
-async function getDataClientToCheckPassword(req,res,next){
+async function getDataToCheckPassword(req,res,next){
   try {
-    const {email, password} = req.body
-    const response = await userService.getUserClientByEmail(email)
-    const passwordMatch = await bcrypt.compare(password, response.userPassword);
+    // return res.json({data :req.body})
+    const {userDetail, oldPassword } = req.body
+    const email = userDetail.email
+    const roleUser = userDetail.roleId
+    var response
+    if(roleUser === '3'){
+       response = await userService.getUserInfluencerByEmail(email)
+    }
+    else{
+       response = await userService.getUserClientByEmail(email)
+    }
+    
+    const passwordMatch = await bcrypt.compare(oldPassword, response.userPassword);
     if(response){
       if(passwordMatch){
-        return res.json({ status : "True", message : "Password match !"})
+        return res.json({ status : "True", message : "Old Password match !"})
       }
-      return res.json({ status : "False", message : "Password not match !"})
+      return res.json({ status : "False", message : "Old Password not match !"})
     }
-    return res.json({ status : "False", message : "Client Not Existed "})
+    return res.json({ status : "False", message : "Users Not Existed "})
   } catch (error) {
-    console.log(err);
-      return res.json({ message: " " + err });
+    console.log(error);
+      return res.json({ message: " " + error });
   }
 }
 
-async function updatePasswordClient(req,res,next){
+async function updatePassword(req,res,next){
   try {
-    const {email,password} = req.body
-    const response = await userService.updatePasswordUser(email,password)
+    const {userDetail,  newPassword } = req.body
+    const email = userDetail.email
+    
+    const response = await userService.updatePasswordUser(email,newPassword)
     if(response.rowsAffected[0]){
       return res.json({ status : "True", message : "Update Success !!! "})
     }
     return res.json({ status : "False", message : "Update Fails !!! "})
   } catch (error) {
-    console.log(err);
-    return res.json({ message: " " + err });
+    console.log(error);
+    return res.json({ message: " " + error });
   }
+}
+
+function updatePlanPackage(req, res) {
+  const { description, amount } = req.body;
+
+  createZaloPayOrder(description, amount)
+      .then(response => {
+          res.send(response.data);
+      })
+      .catch(error => {
+          console.error(error);
+          res.status(500).send('An error occurred');
+      });
 }
 
 
 
 module.exports = {
+  updatePlanPackage,
   getDataClient,
-  updatePasswordClient,
-  getDataClientToCheckPassword,
+  updatePassword,
+  getDataToCheckPassword,
   updateProfileClient,
   getClientExisted,
   addProfileClient,

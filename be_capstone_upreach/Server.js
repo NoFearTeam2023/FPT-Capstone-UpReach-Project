@@ -13,7 +13,7 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose")
-
+const { createZaloPayOrder } = require('./src/api/ZaloPay/payment');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const router = require('./src/api/Router/userRouter')
 
@@ -55,7 +55,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api', router)
-
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
