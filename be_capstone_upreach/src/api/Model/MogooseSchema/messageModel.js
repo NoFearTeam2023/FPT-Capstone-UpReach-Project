@@ -8,8 +8,13 @@ const MessageSchema = mongoose.Schema(
         users: Array,
         sender: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            refPath: "senderType",
             required: true,
+        },
+        senderType: {
+            type: String,
+            required: true,
+            enum: ["Client", "Influe"], // Use the correct enum values based on your models
         },
     },
     {

@@ -13,12 +13,13 @@ const influModel = require("../../Model/MogooseSchema/influModel");
 const router = express.Router();
 const { getUserByEmail } = require("../../Service/User/UserService");
 const { lte } = require("lodash");
+const clientModel = require("../../Model/MogooseSchema/clientModel");
 
 
 auth.initialize(
-	passport,
-	(id) => userModels.find((user) => user.userId === id),
-	(email) => userModels.find((user) => user.userEmail === email)
+  passport,
+  (id) => userModels.find((user) => user.userId === id),
+  (email) => userModels.find((user) => user.userEmail === email)
 );
 
 async function updateInfo(req, res, next) {
@@ -70,14 +71,14 @@ async function updateInfo(req, res, next) {
           const filteredData = influs.find(
             (item) => item.User_ID === influ.userId
           );
-      
+
           if (filteredData) {
             if (filteredData.isPublish) {
               const kolsId = 'INF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-            await request.query(`
+              await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[PlatformInformation]
             (Platform_ID, Follow_FB, Interaction_FB, Follow_Insta, Interaction_Insta, Follow_Youtube, Interaction_Youtube, Follow_Tiktok, Interaction_Tiktok, Engagement, Postsperweek)
@@ -110,11 +111,11 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-              const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                 request.input("imageId" + i, sql.NVarChar, imageId);
-                request.input("profileId" + i, sql.NVarChar,profileId);
-                request.input("imageUrl" + i, sql.NVarChar,imageObject.url);
+                request.input("profileId" + i, sql.NVarChar, profileId);
+                request.input("imageUrl" + i, sql.NVarChar, imageObject.url);
 
 
                 request.query(`
@@ -125,11 +126,11 @@ async function updateInfo(req, res, next) {
                 END
                     `);
               }
-              
+
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
-                for (let i = 0; i < chart.dataFollower.length; i++) {   
-              const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                  
+                for (let i = 0; i < chart.dataFollower.length; i++) {
+                  const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
                   const quantity = dataFollowerObject.value;
@@ -149,7 +150,7 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-              const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
@@ -173,7 +174,7 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-              const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
@@ -191,7 +192,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-              const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
@@ -209,8 +210,8 @@ async function updateInfo(req, res, next) {
               const jobIds = [];
               for (let i = 0; i < booking?.length; i++) {
                 const bookingJob = booking[i];
-              const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-              const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                 jobIds.push(jobId);
 
@@ -252,13 +253,13 @@ async function updateInfo(req, res, next) {
                               VALUES (@formatListId${i}, @jobId${i}, @formatContent${i})
                             END
                           `);
-                
+
               }
-            
+
 
               for (let i = 0; i < jobIds?.length; i++) {
                 const jobId = jobIds[i];
-              const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                 request.input("jobListId" + i, sql.NVarChar, jobListId);
 
@@ -290,7 +291,7 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-              const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                 request.input("imageId" + i, sql.NVarChar, imageId);
                 request.input("imageUrl" + i, sql.NVarChar, imageObject.url);
@@ -329,10 +330,10 @@ async function updateInfo(req, res, next) {
                 WHERE Profile_ID = '${filteredData.Profile_ID}'
             END
             `);
-              
-            for (let i = 0; i < booking.length; i++) {
-              const bookingJob = booking[i];
-                    //--------------------------Update Job Exist ------------------------------------
+
+              for (let i = 0; i < booking.length; i++) {
+                const bookingJob = booking[i];
+                //--------------------------Update Job Exist ------------------------------------
                 if (bookingJob?.jobId) {
                   request.input("jobId" + i, sql.NVarChar, bookingJob.jobId);
                   request.input("jobName" + i, sql.NVarChar, bookingJob.jobName);
@@ -349,8 +350,8 @@ async function updateInfo(req, res, next) {
                   );
                   request.input("quantity" + i, sql.Int, bookingJob.quantity);
                   request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
-                  
-                  request.input("formatContent" + i , sql.NVarChar, bookingJob.formatContent);
+
+                  request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
 
                   request.query(`
                         BEGIN
@@ -367,21 +368,21 @@ async function updateInfo(req, res, next) {
                         END
                       `);
 
-                    //--------------------------Update Job New ------------------------------------
+                  //--------------------------Update Job New ------------------------------------
 
-                  } else {     
-                    const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                    const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                    const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                } else {
+                  const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
-                  
+
                   request.input("jobId" + i, sql.NVarChar, jobId);
-                  request.input("jobName"+ i ,sql.NVarChar,bookingJob.jobName);
-                  request.input("platform"+ i ,sql.NVarChar,bookingJob.platform);
-                  request.input("costEstimateFrom"+ i ,sql.Int,bookingJob.costEstimateFrom);
-                  request.input("costEstimateTo"+ i ,sql.Int,bookingJob.costEstimateTo);
-                  request.input("quantity"+ i , sql.Int, bookingJob.quantity);
-                  request.input("jobLink"+ i ,sql.NVarChar, bookingJob.jobLink);
+                  request.input("jobName" + i, sql.NVarChar, bookingJob.jobName);
+                  request.input("platform" + i, sql.NVarChar, bookingJob.platform);
+                  request.input("costEstimateFrom" + i, sql.Int, bookingJob.costEstimateFrom);
+                  request.input("costEstimateTo" + i, sql.Int, bookingJob.costEstimateTo);
+                  request.input("quantity" + i, sql.Int, bookingJob.quantity);
+                  request.input("jobLink" + i, sql.NVarChar, bookingJob.jobLink);
 
                   request.input("jobListId" + i, sql.NVarChar, jobListId);
 
@@ -399,20 +400,20 @@ async function updateInfo(req, res, next) {
                           (JobList_ID, Job_ID, Profile_ID, isPublish)
                           VALUES (@jobListId${i}, @jobId${i}, '${filteredData.Profile_ID}', 1)
                         END
-                              `);   
+                              `);
 
-                  request.input("formatListId" + i , sql.NVarChar, formatListId);
+                  request.input("formatListId" + i, sql.NVarChar, formatListId);
                   request.input("formatContent" + i, sql.NVarChar, bookingJob.formatContent);
-                    
+
                   await request.query(`
                         BEGIN
                         INSERT INTO [UpReachDB].[dbo].[JobContentFormatList]
                         (FormatListJob_ID, Job_ID, Format_Id)
                         VALUES (@formatListId${i}, @jobId${i}, @formatContent${i})
                     END
-                              `);  
+                              `);
 
-                }  
+                }
               }
 
               for (const jobIdToRemove of idRemoveArray) {
@@ -444,7 +445,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {
-              const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
@@ -465,7 +466,7 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-              const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
@@ -489,7 +490,7 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-              const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
                   const quantity = dataAgeObject.value;
@@ -506,7 +507,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-              const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
 
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
@@ -525,7 +526,7 @@ async function updateInfo(req, res, next) {
 
           return res.status(201).json({
             message: "Update Successfully",
-            date: editDate, 
+            date: editDate,
             // sideBar: 
           });
         }
@@ -538,110 +539,110 @@ async function updateInfo(req, res, next) {
 }
 
 async function getAllInfluencer(req, res, next) {
-	try {
-		const page = parseInt(req.query.page)
-		const limit = parseInt(req.query.limit)
-		console.log("page " + page)
-		console.log("limit " + limit)
-		const startIndex = (page - 1) * limit
-		const endIndex = page * limit
-		const result = await influService.getAllInfluencer()
-		if (!result) {
-			return res.json({ message: 'Fails ' });
-		}
-		const JsonData = {}
-		JsonData.data = result.slice(startIndex, endIndex)
-		JsonData.TotalPage = result.length / 12 > parseInt(result.length / 12) ? parseInt(result.length / 12) + 1 : parseInt(result.length / 12)
-		if (endIndex < result.length) {
-			JsonData.next = {
-				page: page + 1,
-				limit: limit
-			}
-		}
-		if (startIndex > 0) {
-			JsonData.previous = {
-				page: page - 1,
-				limit: limit
-			}
-		}
-		return res.json({ JsonData: JsonData })
-	} catch (err) {
-		console.log(err);
-		return res.json({ message: "Lỗi ", err });
-	}
+  try {
+    const page = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
+    console.log("page " + page)
+    console.log("limit " + limit)
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
+    const result = await influService.getAllInfluencer()
+    if (!result) {
+      return res.json({ message: 'Fails ' });
+    }
+    const JsonData = {}
+    JsonData.data = result.slice(startIndex, endIndex)
+    JsonData.TotalPage = result.length / 12 > parseInt(result.length / 12) ? parseInt(result.length / 12) + 1 : parseInt(result.length / 12)
+    if (endIndex < result.length) {
+      JsonData.next = {
+        page: page + 1,
+        limit: limit
+      }
+    }
+    if (startIndex > 0) {
+      JsonData.previous = {
+        page: page - 1,
+        limit: limit
+      }
+    }
+    return res.json({ JsonData: JsonData })
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: "Lỗi ", err });
+  }
 }
 
 async function searchInfluencer(req, res, next) {
-	try {
-		const {costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
-		
-		const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
-		return res.status(200).json({
-			message: "Search thành công",
-			data: result
-		});
-	} catch (err) {
-		console.log(err);
-		return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
-	}
+  try {
+    const { costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge } = req.body;
+
+    const result = await influService.searchInfluencer(costEstimateFrom, costEstimateTo, ageFrom, ageTo, contentTopic, nameType, contentFormats, audienceGender, audienceLocation, followerFrom, followerTo, postsPerWeekFrom, postsPerWeekTo, engagementTo, engagementFrom, audienceAge);
+    return res.status(200).json({
+      message: "Search thành công",
+      data: result
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Lỗi", err }); // Sending an error response with status 500
+  }
 }
 
-async function searchPoint(req, res, next){
+async function searchPoint(req, res, next) {
   // Update lại điểm khi search thông tin Influencer
   try {
-    const { clientId, pointSearch} = req.body
-		const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
-		if (updatePointSearch.rowsAffected[0]) {
-			return res.status(200).json({
-			message: "Update Search Point thành công"
-		});
-		} else {
-			return res.json({ message: "Update Thất bại" });
-		}
+    const { clientId, pointSearch } = req.body
+    const updatePointSearch = await influService.updatePointSearch(clientId, pointSearch);
+    if (updatePointSearch.rowsAffected[0]) {
+      return res.status(200).json({
+        message: "Update Search Point thành công"
+      });
+    } else {
+      return res.json({ message: "Update Thất bại" });
+    }
   } catch (error) {
     return res.json({ message: error });
   }
 }
 
-async function getAllHistoryReportByClient(req, res, next){
+async function getAllHistoryReportByClient(req, res, next) {
   try {
-    const {  clientId  } = req.body;
+    const { clientId } = req.body;
     const getData = await influService.getAllHistoryReportByClientId(clientId);
     return res.json({
-			message: "Search thành công",
-			data: getData
-		});
+      message: "Search thành công",
+      data: getData
+    });
   } catch (error) {
     return res.json({ message: error });
   }
 }
 
 // Trừ điểm khi xem Thông tin của Influencer tại HomePage
-async function reportOfInfluencer(req, res, next){
+async function reportOfInfluencer(req, res, next) {
   try {
-    const {  clientId, pointReport } = req.body;
-		const updatePointReport = await influService.updatePointReport(clientId, pointReport);
-		if (updatePointReport.rowsAffected[0]) {
-			return res.status(200).json({
-			message: "Update Report Point thành công"
-		});
-		} else {
-			return res.json({ message: "Update Thất bại" });
-		}
+    const { clientId, pointReport } = req.body;
+    const updatePointReport = await influService.updatePointReport(clientId, pointReport);
+    if (updatePointReport.rowsAffected[0]) {
+      return res.status(200).json({
+        message: "Update Report Point thành công"
+      });
+    } else {
+      return res.json({ message: "Update Thất bại" });
+    }
   } catch (error) {
     return res.json({ message: error });
   }
 }
 
-async function insertDataToHistoryReport(req, res, next){
+async function insertDataToHistoryReport(req, res, next) {
   try {
     const { influencerId, clientId } = req.body;
     const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
     const check = checkInfluencerExisted.recordset
     // console.log(check)
-    if(!checkInfluencerExisted.recordset.length > 0){
-      const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId,influencerId)
-      if(insertHistoryViewInfluencer){
+    if (!checkInfluencerExisted.recordset.length > 0) {
+      const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId, influencerId)
+      if (insertHistoryViewInfluencer) {
         return res.status(200).json({
           status: "True",
           message: "Insert To History View Of List Influencer thành công",
@@ -652,8 +653,8 @@ async function insertDataToHistoryReport(req, res, next){
         message: "Insert To History View Of List Influencer Thất bại",
       });
     }
-    else{
-      return res.json({status: "False", message: "Id Đã tồn tại " });
+    else {
+      return res.json({ status: "False", message: "Id Đã tồn tại " });
     }
   } catch (error) {
     return res.json({ message: error });
@@ -687,7 +688,7 @@ async function dataReportInfluencer(req, res, next) {
 
       Promise.all(dataPromise).then((results) => {
         results.forEach((result) => {
-          
+
         });
         return res.json({
           Influencer: results,
@@ -699,191 +700,188 @@ async function dataReportInfluencer(req, res, next) {
   }
 }
 
-async function updateInfluencer(req,res,next){
-	try {
+async function updateInfluencer(req, res, next) {
+  try {
     // return res.json({data : req.body.influencerDetail})
-		const {email} = req.body.influencerDetail
-		const idInflu = req.body.influencerDetail;
-		const image = req.body.image[0]
-		const uploadedImages = [];
-		if (image.thumbUrl) {
-			const img = await cloudinary.uploader.upload(image.thumbUrl, {
-				public_id: image.uid,
-				resource_type: "auto",
-			});
-			uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
-		} else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
-		const updateAvatar = await influService.updateInfluencer(email,uploadedImages[0].url);
-		if(updateAvatar.rowsAffected[0]){
-			return res.json({message : "Update Avatar success"})
-		}
-		await influModel.findByIdAndUpdate(idInflu, {
-			avatarImage: uploadedImages[0].url,
-			nickname: nickname
-		})
-		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-	} catch (error) {
-		console.log(error)
-		return res.json({ status : "False" ,message : "Update Avatar Fail"})
-	}
+    const { email } = req.body.influencerDetail
+    const idInflu = req.body.influencerDetail;
+    const image = req.body.image[0]
+    const uploadedImages = [];
+    if (image.thumbUrl) {
+      const img = await cloudinary.uploader.upload(image.thumbUrl, {
+        public_id: image.uid,
+        resource_type: "auto",
+      });
+      uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+    } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
+    const updateAvatar = await influService.updateInfluencer(email, uploadedImages[0].url);
+    if (updateAvatar.rowsAffected[0]) {
+      return res.json({ message: "Update Avatar success" })
+    }
+    await influModel.findByIdAndUpdate(idInflu, {
+      avatarImage: uploadedImages[0].url,
+      nickname: nickname
+    })
+    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+  } catch (error) {
+    console.log(error)
+    return res.json({ status: "False", message: "Update Avatar Fail" })
+  }
 }
 
 
 async function addInfluencer(req, res, next) {
-	try {
+  try {
 
-		const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
-		const { emailContact, phone } = req.body.overviewDetails
-		const idInflu = req.body.idInflu;
-		const { name, email } = req.body.influencerDetail
-		const user = await userService.getUserByEmail(email);
-		const now = new Date();
-		const dateNow = now.toISOString();
-    
-		if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, typeId)) {
-			return res.json({ status: 'False', message: 'Insert Data Profile Fails' });
-		}
-		if (!await addDataToContentTopic(req.body.contentDetails)) {
-			return res.json({ status: 'False', message: 'Insert Data To TopicContent Fails' });
-		}
+    const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
+    const { emailContact, phone } = req.body.overviewDetails
+    const idInflu = req.body.idInflu;
+    const { name, email } = req.body.influencerDetail
+    const user = await userService.getUserByEmail(email);
+    const now = new Date();
+    const dateNow = now.toISOString();
 
-		if (!await addInfluencerKols(user.userId, 0, null)) {
-			return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
-		}
+    if (!await addInfluencerKols(user.userId, 0, null)) {
+      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+    }
 
-		// Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
-		return res.json({
-			status: 'True',
-			message: 'Insert Success Influencer'
-		});
+    if (!await addInfluencerKols(user.userId, 0, dateNow)) {
+      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+    }
 
-	} catch (err) {
-		// Xử lý lỗi
-		res.json({ status: 'False', message: 'Lỗi' });
-	}
+    // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+    return res.json({
+      status: 'True',
+      message: 'Insert Success Influencer'
+    });
+
+  } catch (err) {
+    // Xử lý lỗi
+    res.json({ status: 'False', message: 'Lỗi' });
+  }
 }
 
 async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
-	try {
+  try {
 
-		// Thực hiện insert
-		const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId)
-		if (checkAddInfluencerProfile.rowsAffected[0]) {
-			return true;
-		} else {
-			return false;
-		}
+    // Thực hiện insert
+    const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId)
+    if (checkAddInfluencerProfile.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
 
-	} catch (e) {
-		console.log(e)
-		return false;
-	}
+  } catch (e) {
+    console.log(e)
+    return false;
+  }
 }
 
 async function addDataToContentTopic(dataArray) {
-	try {
-		const checkAddDataToContentTopic = await influService.insertDatatoContentTopic(dataArray)
-		if (checkAddDataToContentTopic.rowsAffected[0]) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch (error) {
-		console.log(error)
-		return false;
-	}
+  try {
+    const checkAddDataToContentTopic = await influService.insertDatatoContentTopic(dataArray)
+    if (checkAddDataToContentTopic.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error)
+    return false;
+  }
 }
 
 
 
 async function addInfluencerKols(userId, isPublish, dateEdit) {
-	try {
+  try {
 
-		// Thực hiện insert
-		const checkAddInfluencerKols = await influService.insertKols(userId, isPublish, dateEdit)
-		if (checkAddInfluencerKols.rowsAffected[0]) {
-			return true;
-		} else {
-			return false;
-		}
+    // Thực hiện insert
+    const checkAddInfluencerKols = await influService.insertKols(userId, isPublish, dateEdit)
+    if (checkAddInfluencerKols.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
 
-	} catch (e) {
-		console.log(e)
-		return false;
-	}
+  } catch (e) {
+    console.log(e)
+    return false;
+  }
 }
 
 
 async function createInflu(req, res, next) {
-	try {
-		const { nickname, email } = req.body;
-		const usernameCheck = await influModel.findOne({ nickname })
-		const emailCheck = await influModel.findOne({ email })
-		if (usernameCheck) {
-			return res.json({ msg: "Nick name already used", status: false });
-		}
-		if (emailCheck) {
-			return res.json({ msg: "Email already used", status: false });
-		}
-		const influ = await influModel.create({
-			email: email,
-			nickname: nickname
-		});
-		return res.json({ status: true, data: influ })
-	}
-	catch (err) {
-		return res.json({ message: ' ' + err });
-	}
+  try {
+    const { nickname, email } = req.body;
+    const usernameCheck = await influModel.findOne({ nickname })
+    const emailCheck = await influModel.findOne({ email })
+    if (usernameCheck) {
+      return res.json({ msg: "Nick name already used", status: false });
+    }
+    if (emailCheck) {
+      return res.json({ msg: "Email already used", status: false });
+    }
+    const influ = await influModel.create({
+      email: email,
+      nickname: nickname
+    });
+    return res.json({ status: true, data: influ })
+  }
+  catch (err) {
+    return res.json({ message: ' ' + err });
+  }
 }
 
 async function getDataForChart(req, res, next) {
-	try {
-		const { influencerId } = req.body
-		const response = await influService.getChartDataInfluencer(influencerId)
-		const result = common.formatChartDataInfluencer(response)
-		if (!response) {
-			return res.json({ message: 'Fails ' });
-		}
-		return res.status(200).json({
-			message: "get data getDataForChart success",
-			data: result
-		});
-	} catch (error) {
-		return res.json({ message: ' ' + error });
-	}
+  try {
+    const { influencerId } = req.body
+    const response = await influService.getChartDataInfluencer(influencerId)
+    const result = common.formatChartDataInfluencer(response)
+    if (!response) {
+      return res.json({ message: 'Fails ' });
+    }
+    return res.status(200).json({
+      message: "get data getDataForChart success",
+      data: result
+    });
+  } catch (error) {
+    return res.json({ message: ' ' + error });
+  }
 }
 
 async function getIdOfInflu(req, res, next) {
-	try {
-		const { email } = req.body
-		const emailCheck = await influModel.findOne({ email })
-		if (!emailCheck) {
-			return res.json({ msg: "Influencer don't already", status: false });
-		}
-		return res.status(200).json({
-			status: true,
-			data: emailCheck,
-		})
-	} catch (error) {
-		return res.json({ message: ' ' + error });
-	}
+  try {
+    const { email } = req.body
+    const emailCheck = await influModel.findOne({ email })
+    if (!emailCheck) {
+      return res.json({ msg: "Influencer don't already", status: false });
+    }
+    return res.status(200).json({
+      status: true,
+      data: emailCheck,
+    })
+  } catch (error) {
+    return res.json({ message: ' ' + error });
+  }
 }
 
 async function getDataVersion(req, res, next) {
-	try {
-		const { influencerId } = req.body
-		const response = await influService.getVersionDataInfluencer(influencerId)
-		const result = common.formatChartDataInfluencer(response)
-		if (!response) {
-			return res.json({ message: 'Fails ' });
-		}
-		return res.status(200).json({
-			message: "get data version success",
-			data: result
-		});
-	} catch (error) {
-		return res.json({ message: ' ' + error });
-	}
+  try {
+    const { influencerId } = req.body
+    const response = await influService.getVersionDataInfluencer(influencerId)
+    const result = common.formatChartDataInfluencer(response)
+    if (!response) {
+      return res.json({ message: 'Fails ' });
+    }
+    return res.status(200).json({
+      message: "get data version success",
+      data: result
+    });
+  } catch (error) {
+    return res.json({ message: ' ' + error });
+  }
 }
 
 async function getJobsInfluencer(req, res, next) {
@@ -916,8 +914,8 @@ async function getJobsInfluencer(req, res, next) {
             const queryResultBooking = await request.query(
               `SELECT Status FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_ID = '${jobIdToFind}'`
             );
-            statusBookings.push({status: queryResultBooking?.recordset[0]?.Status});
-          
+            statusBookings.push({ status: queryResultBooking?.recordset[0]?.Status });
+
 
             const queryResultJob = await request.query(
               `SELECT * FROM [UpReachDB].[dbo].[InfluencerJob] WHERE Job_ID = '${jobIdToFind}'`
@@ -952,7 +950,7 @@ async function getJobsInfluencer(req, res, next) {
           selectedJobs.forEach((job, index) => {
             result[job?.Job_ID] = {
               ...job,
-              Format_Id:selectedFormats[index]?.Format_Id || "",
+              Format_Id: selectedFormats[index]?.Format_Id || "",
               JobList_ID: selectedJobsListId[index]?.JobList_ID || "",
               status: statusBookings[index]?.status || "",
             };
@@ -1159,7 +1157,7 @@ async function getBookingJob(req, res, next) {
       }
       try {
         const request = new sql.Request();
-        
+
         const selectedKOLs = await request.query(
           `SELECT * FROM [UpReachDB].[dbo].[KOLs] WHERE isPublish = 1 AND User_ID = '${user.userId}'`
         );
@@ -1170,25 +1168,25 @@ async function getBookingJob(req, res, next) {
           );
 
           const jobIds = jobIdsQueryResult.recordset;
-          
+
           if (jobIds.length > 0) {
             const bookingJobs = [];
-              for (const job_Id of jobIds) {
-                const jobIdToFind = job_Id.Job_ID;
-                const queryResultJob = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_ID = '${jobIdToFind}'`
-                );
-                const queryResultClient = await request.query(
-                  `SELECT * FROM [UpReachDB].[dbo].[Clients] WHERE Client_ID = '${queryResultJob?.recordset[0]?.Client_ID}'`
-                );
-                const bookingJob = queryResultJob?.recordset[0];
-                const clientInfo = queryResultClient?.recordset[0];
-  
-                if (bookingJob && clientInfo) {
-                  bookingJob.clientInfo = clientInfo;
-                  bookingJobs.push(bookingJob);
-                }
+            for (const job_Id of jobIds) {
+              const jobIdToFind = job_Id.Job_ID;
+              const queryResultJob = await request.query(
+                `SELECT * FROM [UpReachDB].[dbo].[ClientBooking] WHERE Job_ID = '${jobIdToFind}'`
+              );
+              const queryResultClient = await request.query(
+                `SELECT * FROM [UpReachDB].[dbo].[Clients] WHERE Client_ID = '${queryResultJob?.recordset[0]?.Client_ID}'`
+              );
+              const bookingJob = queryResultJob?.recordset[0];
+              const clientInfo = queryResultClient?.recordset[0];
+
+              if (bookingJob && clientInfo) {
+                bookingJob.clientInfo = clientInfo;
+                bookingJobs.push(bookingJob);
               }
+            }
             if (bookingJobs.length > 0) {
               const selectedJobs = [];
               for (const bookingJob of bookingJobs) {
@@ -1212,7 +1210,7 @@ async function getBookingJob(req, res, next) {
                   Job_ID: jobIdBooking,
                 });
               }
-             
+
               const result = {};
               selectedJobs.forEach((job) => {
                 result[job?.Job_ID] = {
@@ -1229,7 +1227,7 @@ async function getBookingJob(req, res, next) {
                   Object.assign(mergedItem, matchingBookingJob);
                 }
               }
-              
+
               return res.status(200).json({
                 message: "Get Successfully",
                 data: mergedArray,
@@ -1251,7 +1249,7 @@ async function getBookingJob(req, res, next) {
 async function acceptBooking(req, res, next) {
   try {
     const bookingDetail = JSON.parse(req.body.booking);
-    
+
     sql.connect(config, async (err) => {
       if (err) {
         console.log(err);
@@ -1260,7 +1258,7 @@ async function acceptBooking(req, res, next) {
       const request = new sql.Request();
       await request.input('status', sql.NVarChar, bookingDetail.status)
       await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
-      .query(`
+        .query(`
           BEGIN
           UPDATE [UpReachDB].[dbo].[ClientBooking]
           SET         
@@ -1269,12 +1267,12 @@ async function acceptBooking(req, res, next) {
           END
       `);
 
-          return res.status(201).json({
-            message: "Accept booking successfully!",
-            // data: ,
-          });
-        }
-      );
+      return res.status(201).json({
+        message: "Accept booking successfully!",
+        // data: ,
+      });
+    }
+    );
   } catch (err) {
     console.log(err);
     return res.json({ message: " " + err });
@@ -1284,7 +1282,7 @@ async function acceptBooking(req, res, next) {
 async function rejectBooking(req, res, next) {
   try {
     const bookingDetail = JSON.parse(req.body.booking);
-    
+
     sql.connect(config, async (err) => {
       if (err) {
         console.log(err);
@@ -1293,7 +1291,7 @@ async function rejectBooking(req, res, next) {
       const request = new sql.Request();
       await request.input('status', sql.NVarChar, bookingDetail.status)
       await request.input('bookingId', sql.NVarChar, bookingDetail.bookingId)
-      .query(`
+        .query(`
           BEGIN
           UPDATE [UpReachDB].[dbo].[ClientBooking]
           SET         
@@ -1302,12 +1300,38 @@ async function rejectBooking(req, res, next) {
           END
       `);
 
-          return res.status(201).json({
-            message: "Reject booking successfully!",
-            // data: ,
-          });
-        }
-      );
+      return res.status(201).json({
+        message: "Reject booking successfully!",
+        // data: ,
+      });
+    }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
+//get the client with that influe
+async function getClientsByInflue(req, res, next) {
+  try {
+    const { influeId } = req.body; // Assuming you're passing the influencer's ID as a parameter
+
+    // Find the influencer by ID
+    const influencer = await influModel.findById(influeId);
+
+    if (!influencer) {
+      return res.json({ msg: "Influencer not found.", status: false, });
+    }
+
+    // Find clients that have booked the specified influencer
+    const clientsWithInflue = await clientModel.find({ booking: influeId })
+      .select('_id username email');
+
+    res.json({
+      data: clientsWithInflue,
+      status: true
+    });
   } catch (err) {
     console.log(err);
     return res.json({ message: " " + err });
@@ -1315,5 +1339,6 @@ async function rejectBooking(req, res, next) {
 }
 
 
+
 // module.exports = router;
-module.exports = {getAllHistoryReportByClient,reportOfInfluencer,insertDataToHistoryReport,searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateInfluencer,getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob,acceptBooking, rejectBooking }
+module.exports = { getAllHistoryReportByClient, reportOfInfluencer, insertDataToHistoryReport, searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateInfluencer, getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob, acceptBooking, rejectBooking, getClientsByInflue }
