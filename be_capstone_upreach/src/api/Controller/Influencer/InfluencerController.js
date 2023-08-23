@@ -38,7 +38,7 @@ async function updateInfo(req, res, next) {
             resource_type: "auto",
           });
 
-          uploadedImages.push({
+          uploadedImages.push({ 
             userId: influ.userId,
             id: image.uid,
             url: img.url,
@@ -77,7 +77,7 @@ async function updateInfo(req, res, next) {
               const kolsId = 'INF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
               const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-
+         
               await request.query(`
             BEGIN
             INSERT INTO [UpReachDB].[dbo].[PlatformInformation]
