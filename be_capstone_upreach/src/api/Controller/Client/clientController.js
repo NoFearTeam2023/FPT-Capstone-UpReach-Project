@@ -273,7 +273,7 @@ async function getDataClient(req,res,next){
   try {
     const { email } = req.body
     const infoClient = await clientService.getClientByEmail(email);
-    return res.json({ Client: infoClient, data: infoInfluencer })
+    return res.json({ Client: infoClient })
 } catch (error) {
     return res.json({ message: ' ' + error });
 }
@@ -554,23 +554,52 @@ async function updatePassword(req,res,next){
   }
 }
 
-function updatePlanPackage(req, res) {
-  const { description, amount } = req.body;
+ async function updatePlanPackage(req, res) {
+  // const { description, amount } = req.body;
 
-  createZaloPayOrder(description, amount)
-      .then(response => {
-          res.send(response.data);
-      })
-      .catch(error => {
-          console.error(error);
-          res.status(500).send('An error occurred');
-      });
+  // createZaloPayOrder(description, amount)
+  //     .then(response => {
+  //         res.send(response.data);
+  //     })
+  //     .catch(error => {
+  //         console.error(error);
+  //         res.status(500).send('An error occurred');
+  //     });
+  try {
+    console.log("updatePlanPackage")
+    const { description, amount } = req.body;
+    const response = await createZaloPayOrder(description, amount)
+    return res.json({data : response.data})
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+}
+
+async function callbackZaloPay(req,res){
+  try {
+    console.log("callbackZaloPay")
+    console.log(req.body)
+    const responseData = req.body; // Dữ liệu callback từ Zalo Pay
+    console.log(responseData)
+    if (responseData.errorCode === 0) {
+        // Giao dịch thành công, thực hiện chuyển hướng
+        console.log(123123) // Chuyển hướng đến trang thành công
+    } else {
+        // Giao dịch thất bại, xử lý theo logic của bạn
+       console.log(456456) // Chuyển hướng đến trang thất bại
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
 }
 
 
 
 module.exports = {
   updatePlanPackage,
+  callbackZaloPay,
   getDataClient,
   updatePassword,
   getDataToCheckPassword,

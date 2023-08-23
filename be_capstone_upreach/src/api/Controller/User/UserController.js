@@ -213,8 +213,10 @@ async function logout(req, res, next) {
 
 async function forgotPassword(req, res, next) {
     try {
+        // return res.json({data : req.body})
         const otpData = sendMail.generateOTP()
         const { email } = req.body
+        userModels.emailUser = email
         userModels.otpData = otpData.otp;
         userModels.checkExist = otpData.checkExist;
         existingEmail = await userService.getUserByEmail(email);
@@ -230,9 +232,9 @@ async function forgotPassword(req, res, next) {
             // Set tồn tại của OTP sau 30s
             setTimeout(changeCheckExist, 600 * 1000);
             sendMail.sendMailToUser(mailOptions).then(() => {
-                res.json({ otpData: userModels.otpData });
+                res.json({status: 'True', otpData: userModels.otpData });
             }).catch((error) => {
-                res.json({ message: error });
+                res.json({status: 'False', message: error });
             });
         }
     } catch (err) {
@@ -242,7 +244,11 @@ async function forgotPassword(req, res, next) {
 
 async function confirmForgotPassword(req, res, next) {
     try {
+        // return res.json({data : req.body})
         const { otp } = req.body
+        if(!otp){
+            return res.json({ status: 'False', message: "Input OTP" });
+        }
         if (!userModels.checkExist) {
             return res.json({ status: 'False', message: "OTP Is Expired" });
         }
@@ -257,9 +263,11 @@ async function confirmForgotPassword(req, res, next) {
 }
 async function changePassword(req,res,next){
     try {
-      const {email,  newPassword } = req.body
-      
-      const response = await userService.updatePasswordUser(email,newPassword)
+    // return res.json({data : req.body, email : userModels.emailUser})
+      const {  newPassword } = req.body;
+      email = userModels.emailUser;
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const response = await userService.updatePasswordUser(email,hashedPassword)
       if(response.rowsAffected[0]){
         return res.json({ status : "True", message : "Update Success !!! "})
       }
