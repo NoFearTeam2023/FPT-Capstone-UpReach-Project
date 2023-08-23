@@ -273,7 +273,7 @@ async function getDataClient(req,res,next){
   try {
     const { email } = req.body
     const infoClient = await clientService.getClientByEmail(email);
-    return res.json({ Client: infoClient, data: infoInfluencer })
+    return res.json({ Client: infoClient})
 } catch (error) {
     return res.json({ message: ' ' + error });
 }
