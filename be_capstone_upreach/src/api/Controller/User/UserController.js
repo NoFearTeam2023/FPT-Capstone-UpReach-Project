@@ -213,21 +213,62 @@ async function logout(req, res, next) {
 
 async function forgotPassword(req, res, next) {
     try {
-
-    }
-    catch (err) {
-        return res.json({ message: ' ' + err });
+        const otpData = sendMail.generateOTP()
+        const { email } = req.body
+        userModels.otpData = otpData.otp;
+        userModels.checkExist = otpData.checkExist;
+        existingEmail = await userService.getUserByEmail(email);
+        if (Object.keys(existingEmail).length <= 0) {
+            return res.json({ status: 'False', message: "Email Not Exist" });
+        } else {
+            const mailOptions = {
+                from: 'UpReachFpt2023@gmail.com',
+                to: email,
+                subject: 'OTP for Registration',
+                text: `Your OTP for registration is: ${userModels.otpData}`
+            };
+            // Set tồn tại của OTP sau 30s
+            setTimeout(changeCheckExist, 600 * 1000);
+            sendMail.sendMailToUser(mailOptions).then(() => {
+                res.json({ otpData: userModels.otpData });
+            }).catch((error) => {
+                res.json({ message: error });
+            });
+        }
+    } catch (err) {
+        res.json({ status: 'False', message: "Lỗi ", err });
     }
 }
 
 async function confirmForgotPassword(req, res, next) {
     try {
-
+        const { otp } = req.body
+        if (!userModels.checkExist) {
+            return res.json({ status: 'False', message: "OTP Is Expired" });
+        }
+        if (otp === userModels.otpData){
+            return res.json({ status: 'True', message: "OTP Is Match !" });
+        }
+        return res.json({ status: 'False', message: "OTP Is Not Match !" });
     }
     catch (err) {
         return res.json({ message: ' ' + err });
     }
 }
+async function changePassword(req,res,next){
+    try {
+      const {email,  newPassword } = req.body
+      
+      const response = await userService.updatePasswordUser(email,newPassword)
+      if(response.rowsAffected[0]){
+        return res.json({ status : "True", message : "Update Success !!! "})
+      }
+      return res.json({ status : "False", message : "Update Fails !!! "})
+    } catch (error) {
+      console.log(error);
+      return res.json({ message: " " + error });
+    }
+  }
 
 async function createClientOrInflu(email, roleId) {
     try {
@@ -274,5 +315,5 @@ async function createClient(req, res, next) {
 
 
 // module.exports = router;
-module.exports = { login, register, confirmRegister, logout, createClient }
+module.exports = { login, register, confirmRegister, logout, createClient, confirmForgotPassword, forgotPassword ,changePassword}
 
