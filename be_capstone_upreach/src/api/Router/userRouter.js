@@ -15,6 +15,9 @@ router.post('/login', userController.login);
 router.post('/register', userController.register);
 router.post('/confirm', userController.confirmRegister);
 router.post('/logout', userController.logout);
+router.post('/confirm-otp-forgot-pass', userController.confirmForgotPassword);
+router.post('/send-otp-forgot-pass', userController.forgotPassword);
+router.post('/change-password', userController.changePassword);
 
 
 router.get("/admin/get-approve-report", adminController.getApproveReport);
@@ -59,9 +62,9 @@ router.put("/client/bookingJob", clientController.bookingJob);
 router.get("/client/get-history-booking", clientController.getHistoryBooking);
 router.put("/client/check-done", clientController.checkDone);
 router.put("/client/send-feedback", clientController.sendFeedback);
-router.post("/client/check-existed", clientController.getClientExisted)
-router.post("/client/check-passsword", clientController.getDataClientToCheckPassword)
-router.post("/client/update-password", clientController.updatePasswordClient)
+router.post("/client/check-existed",clientController.getClientExisted)
+router.post("/client/check-passsword",clientController.getDataToCheckPassword)
+router.post("/client/update-password",clientController.updatePassword)
 
 
 router.get('/getalllist', listInfluencerController.GetAllList);
@@ -89,6 +92,8 @@ router.post('/influ/getAllClientHaveInflue', influencerController.getClientsByIn
 router.post("/message/addmess", addMessage);
 router.post("/message/getmess", getAllMessage);
 
-
+//Zalo pya
+router.post("/zalopay",clientController.updatePlanPackage)
+router.post("/zalopay-callback",clientController.callbackZaloPay)
 
 module.exports = router 

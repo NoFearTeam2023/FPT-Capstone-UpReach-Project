@@ -13,7 +13,6 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose")
-
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const router = require('./src/api/Router/userRouter')
 
@@ -40,6 +39,18 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }))
+// app.post('/zalopay-callback', (req, res) => {
+//     // Kiểm tra dữ liệu callback và xác nhận giao dịch thành công
+//     const responseData = req.body; // Dữ liệu callback từ Zalo Pay
+//     console.log(responseData)
+//     if (responseData.errorCode === 0) {
+//         // Giao dịch thành công, thực hiện chuyển hướng
+//         console.log(123123) // Chuyển hướng đến trang thành công
+//     } else {
+//         // Giao dịch thất bại, xử lý theo logic của bạn
+//        console.log(456456) // Chuyển hướng đến trang thất bại
+//     }
+// });
 
 app.use(
     fileUpload(
@@ -56,7 +67,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api', router)
-
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

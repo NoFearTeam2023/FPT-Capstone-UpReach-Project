@@ -13,7 +13,7 @@ const common = require("../../../../common/common");
 const clientModel = require("../../Model/MogooseSchema/clientModel");
 const influModel = require("../../Model/MogooseSchema/influModel");
 const { getUserByEmail } = require("../../Service/User/UserService");
-
+const { createZaloPayOrder } = require('../../ZaloPay/payment');
 async function addProfileClient(req, res, next) {
   try {
     const image = req.body.image[0];
@@ -273,7 +273,7 @@ async function getDataClient(req,res,next){
   try {
     const { email } = req.body
     const infoClient = await clientService.getClientByEmail(email);
-    return res.json({ Client: infoClient, data: infoInfluencer })
+    return res.json({ Client: infoClient })
 } catch (error) {
     return res.json({ message: ' ' + error });
 }
@@ -510,44 +510,99 @@ async function getClientExisted(req, res, next){
       return res.json({ message: " " + err });
     }
 }
-async function getDataClientToCheckPassword(req,res,next){
+async function getDataToCheckPassword(req,res,next){
   try {
-    const {email, password} = req.body
-    const response = await userService.getUserClientByEmail(email)
-    const passwordMatch = await bcrypt.compare(password, response.userPassword);
+    // return res.json({data :req.body})
+    const {userDetail, oldPassword } = req.body
+    const email = userDetail.email
+    const roleUser = userDetail.roleId
+    var response
+    if(roleUser === '3'){
+       response = await userService.getUserInfluencerByEmail(email)
+    }
+    else{
+       response = await userService.getUserClientByEmail(email)
+    }
+    
+    const passwordMatch = await bcrypt.compare(oldPassword, response.userPassword);
     if(response){
       if(passwordMatch){
-        return res.json({ status : "True", message : "Password match !"})
+        return res.json({ status : "True", message : "Old Password match !"})
       }
-      return res.json({ status : "False", message : "Password not match !"})
+      return res.json({ status : "False", message : "Old Password not match !"})
     }
-    return res.json({ status : "False", message : "Client Not Existed "})
+    return res.json({ status : "False", message : "Users Not Existed "})
   } catch (error) {
-    console.log(err);
-      return res.json({ message: " " + err });
+    console.log(error);
+      return res.json({ message: " " + error });
   }
 }
 
-async function updatePasswordClient(req,res,next){
+async function updatePassword(req,res,next){
   try {
-    const {email,password} = req.body
-    const response = await userService.updatePasswordUser(email,password)
+    const {userDetail,  newPassword } = req.body
+    const email = userDetail.email
+    
+    const response = await userService.updatePasswordUser(email,newPassword)
     if(response.rowsAffected[0]){
       return res.json({ status : "True", message : "Update Success !!! "})
     }
     return res.json({ status : "False", message : "Update Fails !!! "})
   } catch (error) {
-    console.log(err);
-    return res.json({ message: " " + err });
+    console.log(error);
+    return res.json({ message: " " + error });
+  }
+}
+
+ async function updatePlanPackage(req, res) {
+  // const { description, amount } = req.body;
+
+  // createZaloPayOrder(description, amount)
+  //     .then(response => {
+  //         res.send(response.data);
+  //     })
+  //     .catch(error => {
+  //         console.error(error);
+  //         res.status(500).send('An error occurred');
+  //     });
+  try {
+    console.log("updatePlanPackage")
+    const { description, amount } = req.body;
+    const response = await createZaloPayOrder(description, amount)
+    return res.json({data : response.data})
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+}
+
+async function callbackZaloPay(req,res){
+  try {
+    console.log("callbackZaloPay")
+    console.log(req.body)
+    const responseData = req.body; // Dữ liệu callback từ Zalo Pay
+    console.log(responseData)
+    if (responseData.errorCode === 0) {
+        // Giao dịch thành công, thực hiện chuyển hướng
+        console.log(123123) // Chuyển hướng đến trang thành công
+    } else {
+        // Giao dịch thất bại, xử lý theo logic của bạn
+       console.log(456456) // Chuyển hướng đến trang thất bại
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
   }
 }
 
 
 
 module.exports = {
+  updatePlanPackage,
+  callbackZaloPay,
   getDataClient,
-  updatePasswordClient,
-  getDataClientToCheckPassword,
+  updatePassword,
+  getDataToCheckPassword,
   updateProfileClient,
   getClientExisted,
   addProfileClient,
