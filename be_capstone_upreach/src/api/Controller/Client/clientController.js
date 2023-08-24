@@ -616,7 +616,7 @@ async function callbackZaloPay(req,res){
       // merchant cập nhật trạng thái cho đơn hàng
       let dataJson = JSON.parse(dataStr, configZalo.key2);
       console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
-
+      
       result.return_code = 1;
       result.return_message = "success";
     }
@@ -628,6 +628,8 @@ async function callbackZaloPay(req,res){
   // thông báo kết quả cho ZaloPay server
   res.json(result);
 }
+
+
 
 
 

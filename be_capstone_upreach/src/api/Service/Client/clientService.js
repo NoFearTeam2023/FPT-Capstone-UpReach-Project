@@ -194,4 +194,25 @@ async function updateClient(
     }
 }
 
-module.exports = {updateClient,getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}
+async function updatePlanForClient(planName,usageReports,usageResultSearching,emailUser){
+    try {
+        const updatePlanPackageClient = "updatePlanPackageForClient";
+        const remainingId = await getLastIdPointRemained()
+        const lastRemainingId = common.increaseID(remainingId.Remaining_ID);
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('remainingId', sql.NVarChar, lastRemainingId );
+        request.input('planName', sql.NVarChar, planName );
+        request.input('usageReports', sql.NVarChar, usageReports );
+        request.input('usageResultSearching', sql.NVarChar, usageResultSearching );
+        request.input('emailUser', sql.NVarChar, emailUser );
+        const result = await request.execute(updatePlanPackageClient);
+        
+        connection.close();
+        return result;
+    } catch (error) {
+        
+    }
+}
+
+module.exports = {updatePlanForClient,updateClient,getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}
