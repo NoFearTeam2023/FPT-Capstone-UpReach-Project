@@ -502,7 +502,7 @@ async function getClientExisted(req, res, next){
         const {email} = req.body
         const response = await clientService.getClientByEmail(email);
         if(response){
-          return res.json({ status : "True", message : "Client Existed "})
+          return res.json({ status : "True", message : "Client Existed ", data : response})
         }
         return res.json({ status : "False", message : "Client Not Existed "})
 
@@ -616,7 +616,7 @@ async function callbackZaloPay(req,res){
       // merchant cập nhật trạng thái cho đơn hàng
       let dataJson = JSON.parse(dataStr, configZalo.key2);
       console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
-      
+
       result.return_code = 1;
       result.return_message = "success";
     }
