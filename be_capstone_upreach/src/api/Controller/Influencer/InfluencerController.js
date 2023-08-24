@@ -74,9 +74,9 @@ async function updateInfo(req, res, next) {
 
           if (filteredData) {
             if (filteredData.isPublish) {
-              const kolsId = 'INF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-              const platformId = 'IPF' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-              const profileId = 'IPR' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+              const kolsId = 'INF' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
+              const platformId = 'IPF' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
+              const profileId = 'IPR' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
          
               await request.query(`
             BEGIN
@@ -111,7 +111,7 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-                const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const imageId = 'IMG' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                 request.input("imageId" + i, sql.NVarChar, imageId);
                 request.input("profileId" + i, sql.NVarChar, profileId);
@@ -129,7 +129,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {
-                  const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const followerListId = 'AFML' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
@@ -150,7 +150,7 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-                  const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const genderListId = 'AGL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
@@ -174,7 +174,7 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-                  const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const ageListId = 'AARL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
@@ -192,7 +192,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-                  const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const locationListId = 'IALL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
@@ -210,8 +210,8 @@ async function updateInfo(req, res, next) {
               const jobIds = [];
               for (let i = 0; i < booking?.length; i++) {
                 const bookingJob = booking[i];
-                const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const jobId = 'IJ' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
+                const formatListId = 'JCFL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                 jobIds.push(jobId);
 
@@ -259,7 +259,7 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < jobIds?.length; i++) {
                 const jobId = jobIds[i];
-                const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const jobListId = 'IJL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                 request.input("jobListId" + i, sql.NVarChar, jobListId);
 
@@ -291,7 +291,7 @@ async function updateInfo(req, res, next) {
 
               for (let i = 0; i < uploadedImages.length; i++) {
                 const imageObject = uploadedImages[i];
-                const imageId = 'IMG' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                const imageId = 'IMG' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                 request.input("imageId" + i, sql.NVarChar, imageId);
                 request.input("imageUrl" + i, sql.NVarChar, imageObject.url);
@@ -371,9 +371,9 @@ async function updateInfo(req, res, next) {
                   //--------------------------Update Job New ------------------------------------
 
                 } else {
-                  const jobId = 'IJ' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                  const jobListId = 'IJL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-                  const formatListId = 'JCFL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const jobId = 'IJ' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
+                  const jobListId = 'IJL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
+                  const formatListId = 'JCFL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
 
                   request.input("jobId" + i, sql.NVarChar, jobId);
@@ -445,7 +445,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataFollower && Array.isArray(chart.dataFollower)) {
                 for (let i = 0; i < chart.dataFollower.length; i++) {
-                  const followerListId = 'AFML' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const followerListId = 'AFML' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataFollowerObject = chart.dataFollower[i];
                   const date = dataFollowerObject.date;
@@ -466,7 +466,7 @@ async function updateInfo(req, res, next) {
                   ["Female", "AG002"],
                 ]);
                 for (let i = 0; i < chart.dataGender.length; i++) {
-                  const genderListId = 'AGL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const genderListId = 'AGL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataGenderObject = chart.dataGender[i];
                   const genderId = genderIdConvert.get(dataGenderObject.sex);
@@ -490,7 +490,7 @@ async function updateInfo(req, res, next) {
                   ["41-60", "AAI004"],
                 ]);
                 for (let i = 0; i < chart.dataAge.length; i++) {
-                  const ageListId = 'AARL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const ageListId = 'AARL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
                   const dataAgeObject = chart.dataAge[i];
                   const ageId = ageIdConvert.get(dataAgeObject.age);
                   const quantity = dataAgeObject.value;
@@ -507,7 +507,7 @@ async function updateInfo(req, res, next) {
 
               if (chart.dataLocation && Array.isArray(chart.dataLocation)) {
                 for (let i = 0; i < chart.dataLocation.length; i++) {
-                  const locationListId = 'IALL' + (Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+                  const locationListId = 'IALL' + (Math.floor(Math.random() * 100000).toString().padStart(5, '0'));
 
                   const dataLocationObject = chart.dataLocation[i];
                   const location = dataLocationObject.location;
