@@ -543,8 +543,8 @@ async function updatePassword(req,res,next){
   try {
     const {userDetail,  newPassword } = req.body
     const email = userDetail.email
-    
-    const response = await userService.updatePasswordUser(email,newPassword)
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const response = await userService.updatePasswordUser(email,hashedPassword)
     if(response.rowsAffected[0]){
       return res.json({ status : "True", message : "Update Success !!! "})
     }
