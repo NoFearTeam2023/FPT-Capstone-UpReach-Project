@@ -92,15 +92,18 @@ io.on("connection", (socket) => {
     console.log('A user connected');
     global.chatSocket = socket;
     socket.on("add-user", (userId) => {
+        console.log("add", userId)
+        console.log("add_id", socket.id)
         onlineUsers.set(userId, socket.id);
     });
 
     socket.on("send-msg", (data) => {
-        console.log("ocbsih")
+        console.log("onlineUsers", data)
         const sendUserSocket = onlineUsers.get(data.to);
-        console.log("abc", sendUserSocket)
+        console.log("data", data)
         if (sendUserSocket) {
-            socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+            socket.to(sendUserSocket).emit("msg-recieve", data.data);
+            console.log('aaaa', data.data)
         }
     });
 })
