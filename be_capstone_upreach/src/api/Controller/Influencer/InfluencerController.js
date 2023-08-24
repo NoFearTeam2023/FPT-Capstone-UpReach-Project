@@ -740,12 +740,10 @@ async function addInfluencer(req, res, next) {
     const user = await userService.getUserByEmail(email);
     const now = new Date();
     const dateNow = now.toISOString();
-
-    if (!await addInfluencerKols(user.userId, 0, null)) {
-      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId)) {
+      return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
     }
-
-    if (!await addInfluencerKols(user.userId, 0, dateNow)) {
+    if (!await addInfluencerKols(user.userId, 0, null)) {
       return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
     }
 
