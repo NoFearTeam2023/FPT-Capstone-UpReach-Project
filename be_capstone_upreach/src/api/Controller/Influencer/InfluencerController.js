@@ -732,7 +732,15 @@ async function updateInfluencer(req, res, next) {
 
 async function addInfluencer(req, res, next) {
   try {
-
+    const image = req.body.image[0]
+    const uploadedImages = [];
+    if (image.thumbUrl) {
+      const img = await cloudinary.uploader.upload(image.thumbUrl, {
+        public_id: image.uid,
+        resource_type: "auto",
+      });
+      uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+    } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
     const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
     const { emailContact, phone } = req.body.overviewDetails
     const idInflu = req.body.idInflu;
@@ -740,7 +748,7 @@ async function addInfluencer(req, res, next) {
     const user = await userService.getUserByEmail(email);
     const now = new Date();
     const dateNow = now.toISOString();
-    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId)) {
+    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId,uploadedImages[0].url)) {
       return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
     }
     if (!await addInfluencerKols(user.userId, 0, null)) {
@@ -759,11 +767,11 @@ async function addInfluencer(req, res, next) {
   }
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId,avatar) {
   try {
 
     // Thực hiện insert
-    const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId)
+    const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId, avatar)
     if (checkAddInfluencerProfile.rowsAffected[0]) {
       return true;
     } else {

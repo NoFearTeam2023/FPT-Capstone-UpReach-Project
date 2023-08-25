@@ -44,7 +44,7 @@ async function addProfileClient(req, res, next) {
       brandName,
       idClient,
     } = req.body;
-
+    // return res.json({data : req.body})
     if (!(await InsertPointRemained())) {
       return res.json({
         status: "False",
@@ -124,7 +124,7 @@ async function updateProfileClient(req, res, next) {
         Client_ID,location,fullName,emailContact,uploadedImages[0].url,phoneNumber,brandName
       ))
     ) {
-      return res.json({ status: "False", message: "Insert Client Fails" });
+      return res.json({ status: "False", message: "Update Client Fails" });
     }
 
 
@@ -135,7 +135,7 @@ async function updateProfileClient(req, res, next) {
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: "True",
-      message: "Insert Success Client",
+      message: "Update Success Client",
       dataImage: uploadedImages[0].url,
     });
   } catch (err) {
@@ -239,8 +239,10 @@ async function InsertClient(
       brandClient
     );
     if (checkInsertClient.rowsAffected[0]) {
+      console.log(123123)
       return true;
     } else {
+      console.log(456456)
       return false;
     }
   } catch (e) {
@@ -501,10 +503,11 @@ async function getClientExisted(req, res, next){
       // return res.json({data : req.body})
         const {email} = req.body
         const response = await clientService.getClientByEmail(email);
-        if(response){
+        console.log(response)
+        if(response.length > 0){
           return res.json({ status : "True", message : "Client Existed ", data : response})
         }
-        return res.json({ status : "False", message : "Client Not Existed "})
+        return res.json({ status : "False", message : "Client Not Existed ", data : response})
 
     } catch (err) {
       console.log(err);
@@ -519,10 +522,10 @@ async function getDataToCheckPassword(req,res,next){
     const roleUser = userDetail.roleId
     var response
     if(roleUser === '3'){
-       response = await userService.getUserInfluencerByEmail(email)
+      response = await userService.getUserInfluencerByEmail(email)
     }
     else{
-       response = await userService.getUserClientByEmail(email)
+      response = await userService.getUserClientByEmail(email)
     }
     
     const passwordMatch = await bcrypt.compare(oldPassword, response.userPassword);
@@ -577,57 +580,15 @@ async function updatePassword(req,res,next){
   }
 }
 
-async function callbackZaloPay(req,res){
-  // try {
-  //   console.log("callbackZaloPay")
-  //   console.log(req.body)
-  //   const responseData = req.body; // Dữ liệu callback từ Zalo Pay
-  //   console.log(responseData)
-  //   if (responseData.errorCode === 0) {
-  //       // Giao dịch thành công, thực hiện chuyển hướng
-  //       console.log(123123) // Chuyển hướng đến trang thành công
-  //   } else {
-  //       // Giao dịch thất bại, xử lý theo logic của bạn
-  //      console.log(456456) // Chuyển hướng đến trang thất bại
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).send('An error occurred');
-  // }
+// async function callbackZaloPay(req,res){
+//   // Xử lý dữ liệu callback từ ZaloPay ở đây
+//   const callbackData = req.body; // Dữ liệu từ ZaloPay
 
-  let result = {};
-
-  try {
-    let dataStr = req.body.data;
-    let reqMac = req.body.mac;
-
-    let mac = CryptoJS.HmacSHA256(dataStr, configZalo.key2).toString();
-    console.log("mac =", mac);
-
-
-    // kiểm tra callback hợp lệ (đến từ ZaloPay server)
-    if (reqMac !== mac) {
-      // callback không hợp lệ
-      result.return_code = -1;
-      result.return_message = "mac not equal";
-    }
-    else {
-      // thanh toán thành công
-      // merchant cập nhật trạng thái cho đơn hàng
-      let dataJson = JSON.parse(dataStr, configZalo.key2);
-      console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
-
-      result.return_code = 1;
-      result.return_message = "success";
-    }
-  } catch (ex) {
-    result.return_code = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
-    result.return_message = ex.message;
-  }
-
-  // thông báo kết quả cho ZaloPay server
-  res.json(result);
-}
+//   // Xử lý logic dựa trên callbackData, ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu
+//   // và gửi phản hồi về cho ZaloPay (thường trả về một JSON với trạng thái 200 OK)
+  
+//   res.status(200).json({ message: 'Callback processed successfully' });
+// }
 
 
 
@@ -635,7 +596,7 @@ async function callbackZaloPay(req,res){
 
 module.exports = {
   updatePlanPackage,
-  callbackZaloPay,
+  // callbackZaloPay,
   getDataClient,
   updatePassword,
   getDataToCheckPassword,

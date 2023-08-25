@@ -8,7 +8,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const sql = require('mssql');
 const config = require("./src/api/Config/dbConfig");
-
+const configZalo = require("./src/api/Config/configZalo");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
@@ -39,18 +39,41 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }))
-// app.post('/zalopay-callback', (req, res) => {
-//     // Kiểm tra dữ liệu callback và xác nhận giao dịch thành công
-//     const responseData = req.body; // Dữ liệu callback từ Zalo Pay
-//     console.log(responseData)
-//     if (responseData.errorCode === 0) {
-//         // Giao dịch thành công, thực hiện chuyển hướng
-//         console.log(123123) // Chuyển hướng đến trang thành công
-//     } else {
-//         // Giao dịch thất bại, xử lý theo logic của bạn
-//        console.log(456456) // Chuyển hướng đến trang thất bại
-//     }
-// });
+app.post('api/callback', (req, res) => {
+    console.log(123123123123123123)
+    let result = {};
+  
+    try {
+      let dataStr = req.body.data;
+      let reqMac = req.body.mac;
+  
+      let mac = CryptoJS.HmacSHA256(dataStr, configZalo.key2).toString();
+      console.log("mac =", mac);
+  
+  
+      // kiểm tra callback hợp lệ (đến từ ZaloPay server)
+      if (reqMac !== mac) {
+        // callback không hợp lệ
+        result.return_code = -1;
+        result.return_message = "mac not equal";
+      }
+      else {
+        // thanh toán thành công
+        // merchant cập nhật trạng thái cho đơn hàng
+        let dataJson = JSON.parse(dataStr, configZalo.key2);
+        console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
+  
+        result.return_code = 1;
+        result.return_message = "success";
+      }
+    } catch (ex) {
+      result.return_code = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
+      result.return_message = ex.message;
+    }
+  
+    // thông báo kết quả cho ZaloPay server
+    res.json(result);
+  });
 
 app.use(
     fileUpload(
