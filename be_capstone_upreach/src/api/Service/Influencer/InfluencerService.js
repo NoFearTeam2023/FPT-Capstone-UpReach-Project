@@ -190,11 +190,12 @@ async function getProfileInfluencerByPublish() {
     }
 }
 
-async function getAllInfluencerByEmailAndPublish() {
+async function getAllInfluencerByEmailAndPublish(email) {
     try {
         const getAllInfluencerByEmailAndPublish = "getAllInfluencerByEmailAndPublish";
         const connection = await pool.connect();
         const request = connection.request();
+        request.input('email', sql.NVarChar, email);
         const result = await request.execute(getAllInfluencerByEmailAndPublish);
         
         if(result){

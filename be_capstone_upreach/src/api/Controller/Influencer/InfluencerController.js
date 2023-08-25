@@ -3,7 +3,7 @@ const passport = require("passport");
 const cloudinary = require("cloudinary").v2;
 const config = require("../../Config/dbConfig");
 const sql = require("mssql");
-
+const _ = require('lodash');
 const auth = require("../../Authen/auth");
 const userModels = require("../User/UserController");
 const influService = require("../../Service/Influencer/InfluencerService")
@@ -21,6 +21,10 @@ auth.initialize(
   (id) => userModels.find((user) => user.userId === id),
   (email) => userModels.find((user) => user.userEmail === email)
 );
+
+const isObjectEmpty = (objectName) => {
+  return _.isEmpty(objectName);
+};
 
 async function updateInfo(req, res, next) {
   try {
@@ -1354,7 +1358,21 @@ async function getClientsByInflue(req, res, next) {
   }
 }
 
+async function getDataForInfluencerByEmailAndPublish(req, res, next){
+  try {
+    const {email} = req.body
+    const response = await influService.getAllInfluencerByEmailAndPublish(email);
+    if(!isObjectEmpty(response)){
+      return res.json({ status : "True", data : response})
+    }
+    return res.json({ status : "False", message : "No Data Influncer "})
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: " " + err });
+  }
+}
+
 
 
 // module.exports = router;
-module.exports = { getAllHistoryReportByClient, reportOfInfluencer, insertDataToHistoryReport, searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateInfluencer, getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob, acceptBooking, rejectBooking, getClientsByInflue }
+module.exports = {getDataForInfluencerByEmailAndPublish, getAllHistoryReportByClient, reportOfInfluencer, insertDataToHistoryReport, searchPoint, getDataForChart, updateInfo, searchInfluencer, getAllInfluencer, dataReportInfluencer, addInfluencer, createInflu, getIdOfInflu, updateInfluencer, getDataVersion, getJobsInfluencer, getImagesInfluencer, getAudienceInfluencer, getBookingJob, acceptBooking, rejectBooking, getClientsByInflue }

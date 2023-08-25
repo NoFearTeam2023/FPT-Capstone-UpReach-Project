@@ -37,6 +37,7 @@ router.get("/admin/get-total-list", adminController.getTotalList);
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search", influencerController.searchInfluencer);
 router.get("/influ/get", influencerController.getAllInfluencer);
+router.post("/influ/get-data-influencer", influencerController.getDataForInfluencerByEmailAndPublish);
 router.post("/influ/search-minus-point", influencerController.searchPoint);
 router.post("/influ/report-influencer", influencerController.reportOfInfluencer);
 router.post("/influ/get-data-history-report", influencerController.getAllHistoryReportByClient);
