@@ -1,7 +1,6 @@
 .booking-page-bg {
     width: 100%;
-	font-size: 24px;
-	font-weight: bold;
+	--font-weight: bold;
 	background-color: #F8F9FF;
 	display: flex;
 }

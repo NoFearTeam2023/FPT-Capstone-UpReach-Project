@@ -50,8 +50,8 @@ const CardHotList = () => {
           topics={topics}
         />
       </div>
-    )
-  };
+    );
+  }
 
   return (
     <div className="hotListLayout">
@@ -71,8 +71,13 @@ const CardHotList = () => {
           indicators={true}
           duration={2000}
         >
-          {LIST_HOTLIST.map((item) => (
-            <RenderHotList image={item.image} name={item.name} topics={item.topics} />
+          {LIST_HOTLIST.map((item, index) => (
+            <RenderHotList
+              key={index}
+              image={item?.image}
+              name={item?.name}
+              topics={item?.topics}
+            />
           ))}
         </Slide>
       </div>

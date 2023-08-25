@@ -1,103 +1,27 @@
 import "./UpdateReportAudience.css";
-import { Row, Col } from "antd";
+import { Row, Col, Button } from "antd";
 import { Line, Pie, Bar } from "@ant-design/plots";
 import React from "react";
 import { ExcelRenderer } from "react-excel-renderer";
+import axios from "axios";
+import getDataFollower from "../../mockFollowerExcel";
+import getDataGender from "../../mockGenderExcel";
+import getDataAge from "../../mockAgeExcel";
+import getDataLocation from "../../mockLocationExcel";
+import XLSX from "xlsx";
 
-const UpdateReportAudience = () => {
-  const [dataFollower, setDataFollower] = React.useState([
-    {
-      year: "2018",
-      value: 3,
-    },
-    {
-      year: "2019",
-      value: 4,
-    },
-    {
-      year: "2020",
-      value: 5,
-    },
-    {
-      year: "2021",
-      value: 4,
-    },
-    {
-      year: "2022",
-      value: 6,
-    },
-    {
-      year: "2023",
-      value: 18,
-    },
-  ]);
-
-  const [dataGender, setDataGender] = React.useState([
-    {
-      sex: "Male",
-      value: 45,
-    },
-    {
-      sex: "Female",
-      value: 55,
-    },
-  ]);
-
-  const [dataAge, setDataAge] = React.useState([
-    {
-      age: "18-",
-      value: 38,
-    },
-    {
-      age: "18-24",
-      value: 52,
-    },
-    {
-      age: "25-34",
-      value: 61,
-    },
-    {
-      age: "35-44",
-      value: 145,
-    },
-    {
-      age: "45-54",
-      value: 48,
-    },
-    {
-      age: "55+",
-      value: 38,
-    },
-  ]);
-  const [dataLocation, setDataLocation] = React.useState([
-    {
-      location: "TP.HCM",
-      value: 38,
-    },
-    {
-      location: "Ha Noi",
-      value: 52,
-    },
-    {
-      location: "Da Nang",
-      value: 61,
-    },
-    {
-      location: "Hue",
-      value: 14,
-    },
-    {
-      location: "Can Tho",
-      value: 48,
-    },
-    {
-      location: "Quang Binh",
-      value: 38,
-    },
-  ]);
+const UpdateReportAudience = ({ influInfo, setPreviewChart, setIsChange }) => {
+  const [dataFollower, setDataFollower] = React.useState([]);
+  const [dataGender, setDataGender] = React.useState([]);
+  const [dataAge, setDataAge] = React.useState([]);
+  const [dataLocation, setDataLocation] = React.useState([]);
+  const [sheetDataFollower, setSheetDataFollower] = React.useState(null);
+  const [sheetDataGender, setSheetDataGender] = React.useState(null);
+  const [sheetDataAge, setSheetDataAge] = React.useState(null);
+  const [sheetDataLocation, setSheetDataLocation] = React.useState(null);
   const configFollower = {
     data: dataFollower,
-    xField: "year",
+    xField: "date",
     yField: "value",
   };
 
@@ -147,58 +71,152 @@ const UpdateReportAudience = () => {
     minBarWidth: 16,
     maxBarWidth: 16,
   };
-  const fileHandler = (event, chartName) => {
-    if (event.target.files[0]) {
-      let fileObj = event.target.files[0];
+  function convertExcelDateToNormalDate(excelDate) {
+    let baseDate = new Date(1900, 0, 1);
+    let milliseconds = excelDate * 86400000;
+    let resultDate = new Date(baseDate.getTime() + milliseconds);
 
+    let month = resultDate.getMonth() + 1;
+    // let day = resultDate.getDate() - 2;
+    let year = resultDate.getFullYear();
+
+    // let formattedDate = month + "/" + day + "/" + year;
+    let formattedDate = month + "/" + year;
+
+    return formattedDate;
+  }
+
+  const fileHandler = (event, chartName) => {
+    if (event?.target?.files[0]) {
+      let fileObj = event?.target?.files[0];
       ExcelRenderer(fileObj, (err, resp) => {
         if (err) {
           console.log(err);
         } else {
           if (chartName === "follower") {
-            const rows = resp.rows.slice(1);
+            const rows = resp?.rows?.slice(2, 8);
             const data = rows.map((row) => {
               return {
-                year: row[0],
-                value: row[1],
+                date: row[1],
+                // date: row[1],
+                value: row[2],
               };
             });
             setDataFollower(data);
+            setPreviewChart((prevChart) => ({
+              ...prevChart,
+              dataFollower: data,
+            }));
           } else if (chartName === "gender") {
-            const rows = resp.rows.slice(1);
-
-            const data = rows.map((row) => {
+            const rows = resp?.rows?.slice(2, 4);
+            const data = rows?.map((row) => {
               return {
-                sex: row[0],
-                value: row[1],
+                sex: row[1],
+                value: row[2],
               };
             });
             setDataGender(data);
+            setPreviewChart((prevChart) => ({
+              ...prevChart,
+              dataGender: data,
+            }));
           } else if (chartName === "age") {
-            const rows = resp.rows.slice(1);
-            const data = rows.map((row) => {
+            const rows = resp?.rows?.slice(2, 6);
+            const data = rows?.map((row) => {
               return {
-                age: row[0],
-                value: row[1],
+                age: row[1],
+                value: row[2],
               };
             });
             setDataAge(data);
+            setPreviewChart((prevChart) => ({
+              ...prevChart,
+              dataAge: data,
+            }));
           } else if (chartName === "location") {
-            const rows = resp.rows.slice(1);
-            const data = rows.map((row) => {
+            const rows = resp?.rows?.slice(2, 8);
+            const data = rows?.map((row) => {
               return {
-                location: row[0],
-                value: row[1],
+                location: row[1],
+                value: row[2],
               };
             });
             setDataLocation(data);
+            setPreviewChart((prevChart) => ({
+              ...prevChart,
+              dataLocation: data,
+            }));
           }
         }
       });
     }
   };
+
+  React.useEffect(() => {
+    if (
+      dataFollower?.length > 0 ||
+      dataGender?.length > 0 ||
+      dataAge?.length > 0 ||
+      dataLocation?.length > 0
+    ) {
+      setIsChange(true);
+    }
+  }, [dataFollower, dataGender, dataAge, dataLocation]);
+
+  React.useEffect(() => {
+    setSheetDataFollower(getDataFollower());
+    setSheetDataGender(getDataGender());
+    setSheetDataAge(getDataAge());
+    setSheetDataLocation(getDataLocation());
+  }, []);
+
+  const handleExportFollower = () => {
+    // console.log(sheetData);
+    var wb = XLSX.utils.book_new(),
+      // ws = XLSX.utils.json_to_sheet(sheetDataFollower);
+      ws = XLSX.utils.aoa_to_sheet(sheetDataFollower);
+    XLSX.utils.book_append_sheet(wb, ws, "FollowerAudience");
+    XLSX.writeFile(wb, "FollowerAudience.xlsx");
+  };
+
+  const handleExportGender = () => {
+    var wb = XLSX.utils.book_new(),
+      // ws = XLSX.utils.json_to_sheet(sheetDataGender);
+      ws = XLSX.utils.aoa_to_sheet(sheetDataGender);
+    XLSX.utils.book_append_sheet(wb, ws, "GenderAudience");
+    XLSX.writeFile(wb, "GenderAudience.xlsx");
+  };
+
+  const handleExportAge = () => {
+    var wb = XLSX.utils.book_new(),
+      // ws = XLSX.utils.json_to_sheet(sheetDataGender);
+      ws = XLSX.utils.aoa_to_sheet(sheetDataAge);
+    XLSX.utils.book_append_sheet(wb, ws, "AgeAudience");
+    XLSX.writeFile(wb, "AgeAudience.xlsx");
+  };
+
+  const handleExportLocation = () => {
+    var wb = XLSX.utils.book_new(),
+      // ws = XLSX.utils.json_to_sheet(sheetDataGender);
+      ws = XLSX.utils.aoa_to_sheet(sheetDataLocation);
+    XLSX.utils.book_append_sheet(wb, ws, "LocationAudience");
+    XLSX.writeFile(wb, "LocationAudience.xlsx");
+  };
+
   return (
     <div className="update-report-audience-layout">
+      <Button onClick={handleExportFollower} className="export-follower-btn">
+        Export
+      </Button>
+      <Button onClick={handleExportGender} className="export-gender-btn">
+        Export
+      </Button>
+      <Button onClick={handleExportAge} className="export-age-btn">
+        Export
+      </Button>
+      <Button onClick={handleExportLocation} className="export-location-btn">
+        Export
+      </Button>
       <Row gutter={[16, 16]}>
         <Col style={{ position: "relative" }} span={12}>
           <input
@@ -273,4 +291,4 @@ const UpdateReportAudience = () => {
   );
 };
 
-export default UpdateReportAudience;
+export default React.memo(UpdateReportAudience);

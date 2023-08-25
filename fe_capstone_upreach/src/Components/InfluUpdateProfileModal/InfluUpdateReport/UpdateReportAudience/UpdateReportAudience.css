@@ -7,6 +7,7 @@
 	padding: 50px 0px 50px 60px;
 	display: flex;
 	border-bottom-right-radius: 20px;
+	position: relative;
 }
 
 .update-report-audience-layout:hover::-webkit-scrollbar-thumb {
@@ -32,6 +33,38 @@
 
 .update-report-audience-layout::-webkit-scrollbar-thumb:hover {
 	background: #858585;
+}
+
+.update-report-audience-layout .export-follower-btn {
+position: absolute;
+width: fit-content;
+z-index: 1;
+left: 171px;
+top: 18px;
+}
+
+.update-report-audience-layout .export-age-btn {
+	position: absolute;
+	width: fit-content;
+	z-index: 1;
+	left: 171px;
+	top: 384px;
+	}
+
+.update-report-audience-layout .export-gender-btn {
+	position: absolute;
+	width: fit-content;
+	z-index: 1;
+	right: 268px;
+	top: 18px;
+}
+
+.update-report-audience-layout .export-location-btn {
+	position: absolute;
+	width: fit-content;
+	z-index: 1;
+	right: 268px;
+	top: 384px;
 }
 
 .update-report-audience-layout .report-audience-bg {

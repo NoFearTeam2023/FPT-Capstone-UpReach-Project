@@ -2,10 +2,11 @@ import { Button, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import React from "react";
 
-const ButtonDropdow = ({ titleBtn }) => {
+const ButtonDropdown = ({ titleBtn, Id }) => {
   return (
     <Button
       className="dropdownSlider bg-white"
+      id={Id}
       style={{
         width: "100%",
       }}
@@ -17,4 +18,4 @@ const ButtonDropdow = ({ titleBtn }) => {
   );
 };
 
-export default ButtonDropdow;
+export default ButtonDropdown;

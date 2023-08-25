@@ -2,6 +2,8 @@ import HotListCard1 from "../../../Assets/Image/Hot_list/HotListCard1.jpg";
 import HotListCard2 from "../../../Assets/Image/Hot_list/HotListCard2.jpg";
 import HotListCard3 from "../../../Assets/Image/Hot_list/HotListCard3.jpg";
 import HotListCard4 from "../../../Assets/Image/Hot_list/HotListCard4.jpg";
+import HotListCard5 from "../../../Assets/Image/Hot_list/HotListCard5.jpg";
+
 
 export const LIST_HOTLIST = [
     {
@@ -23,5 +25,10 @@ export const LIST_HOTLIST = [
         image: HotListCard4,
         name: "DEC AO",
         topics: "Instagram , Facebook"
+    },
+    {
+        image: HotListCard5,
+        name: "Châu Bùi",
+        topics: "Instagram, Tiktok"
     },
 ]

@@ -38,7 +38,9 @@ const moment = require('moment');
 const config = require("../Config/configZalo");
 
 function createZaloPayOrder(description, amount) {
-    const embed_data = {};
+    const embed_data = {
+        redirectUrl : "http://localhost:3000/homepage"
+    };
 
     const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
@@ -52,7 +54,7 @@ function createZaloPayOrder(description, amount) {
         amount: amount,
         description: description, 
         bank_code: "zalopayapp", 
-        callback_url: "http://localhost:4000/api/zalopay-callback",
+        callback_url: "http://localhost:4000/api/callback",
     };
 
     const data = config.appid + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;

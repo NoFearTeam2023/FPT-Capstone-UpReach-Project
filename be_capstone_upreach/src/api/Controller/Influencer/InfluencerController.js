@@ -732,7 +732,15 @@ async function updateInfluencer(req, res, next) {
 
 async function addInfluencer(req, res, next) {
   try {
-
+    const image = req.body.image[0]
+    const uploadedImages = [];
+    if (image.thumbUrl) {
+      const img = await cloudinary.uploader.upload(image.thumbUrl, {
+        public_id: image.uid,
+        resource_type: "auto",
+      });
+      uploadedImages.push({ userId: image.userId, id: image.uid, url: img.url });
+    } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
     const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
     const { emailContact, phone } = req.body.overviewDetails
     const idInflu = req.body.idInflu;
@@ -740,8 +748,11 @@ async function addInfluencer(req, res, next) {
     const user = await userService.getUserByEmail(email);
     const now = new Date();
     const dateNow = now.toISOString();
-    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId)) {
+    if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, typeId,uploadedImages[0].url)) {
       return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
+    }
+    if (!await addDataToContentTopic(req.body.contentDetails)) {
+      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
     }
     if (!await addInfluencerKols(user.userId, 0, null)) {
       return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
@@ -759,11 +770,11 @@ async function addInfluencer(req, res, next) {
   }
 }
 
-async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
+async function addInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId,avatar) {
   try {
 
     // Thực hiện insert
-    const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId)
+    const checkAddInfluencerProfile = await influService.insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId, avatar)
     if (checkAddInfluencerProfile.rowsAffected[0]) {
       return true;
     } else {
@@ -834,15 +845,22 @@ async function createInflu(req, res, next) {
 
 async function getDataForChart(req, res, next) {
   try {
-    const { influencerId } = req.body
+    const { influencerId, influInfoEmail } = req.body
     const response = await influService.getChartDataInfluencer(influencerId)
     const result = common.formatChartDataInfluencer(response)
+    const emailCheck = await influModel.findOne({ email: influInfoEmail })
+    console.log("chart", result);
+    console.log("emailCheck", emailCheck);
+    if (!emailCheck) {
+      return res.json({ message: "Influencer don't already", status: false });
+    }
     if (!response) {
       return res.json({ message: 'Fails ' });
     }
     return res.status(200).json({
       message: "get data getDataForChart success",
-      data: result
+      data: result,
+      _idInflue: emailCheck._id,
     });
   } catch (error) {
     return res.json({ message: ' ' + error });
@@ -1313,18 +1331,18 @@ async function rejectBooking(req, res, next) {
 //get the client with that influe
 async function getClientsByInflue(req, res, next) {
   try {
-    const { influeId } = req.body; // Assuming you're passing the influencer's ID as a parameter
+    const { _idInflue } = req.body; // Assuming you're passing the influencer's ID as a parameter
 
     // Find the influencer by ID
-    const influencer = await influModel.findById(influeId);
+    const influencer = await influModel.findById(_idInflue);
 
     if (!influencer) {
       return res.json({ msg: "Influencer not found.", status: false, });
     }
 
     // Find clients that have booked the specified influencer
-    const clientsWithInflue = await clientModel.find({ booking: influeId })
-      .select('_id username email');
+    const clientsWithInflue = await clientModel.find({ booking: _idInflue })
+      .select('_id username email avatarImage');
 
     res.json({
       data: clientsWithInflue,

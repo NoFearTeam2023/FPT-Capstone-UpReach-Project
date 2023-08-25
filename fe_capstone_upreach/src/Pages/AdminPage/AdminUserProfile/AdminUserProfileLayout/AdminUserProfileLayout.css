@@ -1,0 +1,73 @@
+.admin-user-layout {
+    width: 100%;
+    height: 100%;
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-user-layout a{
+    text-decoration: none;
+}
+
+.admin-user-layout a:not([href]):not([class]):hover {
+    text-decoration: none;
+    color: #69b1ff;
+}
+
+/* .admin-user-title {
+    padding: 0 20px;
+    width: 100%;
+    height: 40px;   
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin-user-title p {
+    font-size: 20px;
+    font-weight: 600;
+} */
+
+.admin-user-list-layout {
+    width: 100%;
+    height: 100%;
+}
+
+.admin-user-table{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    padding: 5px 10px;
+}
+
+.admin-user-layout .ant-spin-nested-loading {
+    position: unset;
+}
+
+.admin-user-layout .ant-spin-container {
+    position: unset;
+}
+
+.admin-user-layout .ant-table-wrapper .ant-table-pagination.ant-pagination {
+    position: absolute;
+    right: 750px;
+    bottom: 0;
+}
+
+.ant-typography {
+    font-size: 19px;
+    font-weight: initial;
+    color: black;
+}
+
+.admin-user-layout input[type=number]::-webkit-inner-spin-button, 
+.admin-user-layout input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.admin-user-layout .ant-table-wrapper .ant-table-thead>tr>th,.admin-user-layout .ant-table-wrapper .ant-table-tbody>tr>th,.admin-user-layout .ant-table-wrapper .ant-table-tbody>tr>td,.admin-user-layout .ant-table-wrapper tfoot>tr>th,.admin-user-layout .ant-table-wrapper tfoot>tr>td {
+    padding: 11.5px;
+}

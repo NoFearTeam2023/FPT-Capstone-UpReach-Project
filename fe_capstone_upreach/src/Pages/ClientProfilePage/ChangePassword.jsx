@@ -27,6 +27,13 @@ const ChangePassword = ({
             autoComplete="off"
           >
             <div>
+            <Form.Item name="oldpassword">
+                <Input
+                  className="btn_input"
+                  style={{ border: "1px solid #9B9A9A" }}
+                  placeholder="Enter Old Password"
+                />
+              </Form.Item>
               <Form.Item name="newpassword">
                 <Input
                   className="btn_input"
@@ -42,7 +49,6 @@ const ChangePassword = ({
                 />
               </Form.Item>
             </div>
-            <div></div>
             <div className="btn-button">
               <FormItem>
                 <Button className="btn_verification">

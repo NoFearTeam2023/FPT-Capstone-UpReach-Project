@@ -1,5 +1,5 @@
 import FooterHome from "../../Components/Layouts/Footer/FooterHome";
-import HeaderLoginHompape from "../../Components/Layouts/Header/HeaderLoginHompape";
+import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 import React, { useEffect, useState } from "react";
 import { ReactComponent as Influencers } from "../../Assets/Icon/InfluencersMyList.svg";
 import { ReactComponent as TotalInteractions } from "../../Assets/Icon/Est.TotalInteractions.svg";
@@ -10,6 +10,7 @@ import {
   SettingOutlined,
   EditOutlined,
   RestOutlined,
+  FolderAddOutlined,
 } from "@ant-design/icons";
 import {
   Menu,
@@ -43,6 +44,7 @@ const MyListPage = ({
   setFlagChangeNameList,
   flagDeleteList,
   setFlagDeleteList,
+  idAccClient,
 }) => {
   const [dataListShow, setDataListShow] = useState({});
   const [isFirstShow, setIsFirstShow] = useState(true);
@@ -56,6 +58,8 @@ const MyListPage = ({
   const [isEmptyInput, setIsEmptyInput] = useState(false);
   const [isNameListExist, setIsNameListExist] = useState(false);
   const [form] = Form.useForm();
+  const [dataPieChart, setDataPieChart] = useState();
+  const [dataBarChart, setDataBarChart] = useState();
   // const [namelist, setNameList] = useState();
 
   // var numberElement = findUserById(IDList);
@@ -64,91 +68,91 @@ const MyListPage = ({
 
   // Data apply ==================================
 
-  const dataPieChart = {
-    chart: {
-      type: "pie",
-      height: 250,
-    },
-    title: {
-      text: "",
-    },
-    credits: {
-      enabled: false,
-    },
-    plotOptions: {
-      pie: {
-        innerSize: 100,
-        depth: 45,
-      },
-    },
+  // const dataPieChart = {
+  //   chart: {
+  //     type: "pie",
+  //     height: 250,
+  //   },
+  //   title: {
+  //     text: "",
+  //   },
+  //   credits: {
+  //     enabled: false,
+  //   },
+  //   plotOptions: {
+  //     pie: {
+  //       innerSize: 100,
+  //       depth: 45,
+  //     },
+  //   },
 
-    series: [
-      {
-        name: "Ratio ",
-        data: [
-          {
-            name: "Male",
-            // y: object?.Table.length === 0 ? [] : object?.dataMale,
-            y: null,
-          },
-          {
-            name: "Female",
-            // y: object?.Table.length === 0 ? [] : object?.dataFemale,
-            y: null,
-          },
-        ],
-      },
-    ],
-  };
-  const dataBarChart = {
-    chart: {
-      type: "bar",
-      height: 250,
-    },
-    title: {
-      text: "",
-    },
-    credits: {
-      enabled: false,
-    },
-    legend: {
-      align: "right",
-      verticalAlign: "top",
-      layout: "vertical",
-    },
-    xAxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-    },
-    yAxis: {
-      gridLineWidth: 0,
-    },
-    plotOptions: {
-      series: {
-        pointWidth: 10,
-      },
-    },
+  //   series: [
+  //     {
+  //       name: "Ratio ",
+  //       data: [
+  //         {
+  //           name: "Male",
+  //           // y: object?.Table.length === 0 ? [] : object?.dataMale,
+  //           y: null,
+  //         },
+  //         {
+  //           name: "Female",
+  //           // y: object?.Table.length === 0 ? [] : object?.dataFemale,
+  //           y: null,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // };
+  // const dataBarChart = {
+  //   chart: {
+  //     type: "bar",
+  //     height: 250,
+  //   },
+  //   title: {
+  //     text: "",
+  //   },
+  //   credits: {
+  //     enabled: false,
+  //   },
+  //   legend: {
+  //     align: "right",
+  //     verticalAlign: "top",
+  //     layout: "vertical",
+  //   },
+  //   xAxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //       "Oct",
+  //       "Nov",
+  //       "Dec",
+  //     ],
+  //   },
+  //   yAxis: {
+  //     gridLineWidth: 0,
+  //   },
+  //   plotOptions: {
+  //     series: {
+  //       pointWidth: 10,
+  //     },
+  //   },
 
-    series: [
-      {
-        name: "Age",
-        // data: object?.Table.length === 0 ? [] : object?.bar,
-        data: [],
-      },
-    ],
-  };
+  //   series: [
+  //     {
+  //       name: "Age",
+  //       // data: object?.Table.length === 0 ? [] : object?.bar,
+  //       data: [],
+  //     },
+  //   ],
+  // };
   const columns = [
     {
       title: "All",
@@ -161,7 +165,9 @@ const MyListPage = ({
       title: "Followers",
       dataIndex: "followers",
       key: "followers",
-      render: (text) => <Tag color="blue">{text}</Tag>,
+      render: (text) => (
+        <Tag color="blue">{(parseInt(text) / 1000).toFixed(1) + "K"}</Tag>
+      ),
     },
     {
       title: "Interactions",
@@ -201,7 +207,7 @@ const MyListPage = ({
       setIsNameListExist(true);
       return;
     } else {
-      fetchEditNameList(object.id, editnamelist);
+      fetchEditNameList(idAccClient, object.id, editnamelist);
       setEditList(false);
     }
   };
@@ -224,9 +230,13 @@ const MyListPage = ({
 
   //============================= Edit Name List DB BE =============================
 
-  const fetchEditNameList = async (idList, nameList) => {
+  const fetchEditNameList = async (idAccClient, idList, nameList) => {
     try {
-      const response = await ApiListInfluecer.editListName(idList, nameList);
+      const response = await ApiListInfluecer.editListName(
+        idAccClient,
+        idList,
+        nameList
+      );
       if (response.Status == "Success") {
         setFlagChangeNameList(!flagChangeNameList);
       }
@@ -250,6 +260,137 @@ const MyListPage = ({
       if (response.Status == "Success") {
         setFlagDeleteList(!flagDeleteList);
       }
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
+  //===============================================================================
+  //============================= Get Data Chart Audiance=============================
+  const fetchDataAge = async () => {
+    try {
+      const ListKOLsIndenifier = [];
+      object?.Table.forEach((element) => {
+        ListKOLsIndenifier.push(element.key);
+      });
+      const response = await ApiListInfluecer.getAudienceDataAge(
+        ListKOLsIndenifier
+      );
+      setDataPieChart({
+        chart: {
+          type: "pie",
+          height: 250,
+        },
+        title: {
+          text: "",
+        },
+        credits: {
+          enabled: false,
+        },
+        plotOptions: {
+          pie: {
+            innerSize: 100,
+            depth: 45,
+          },
+        },
+
+        series: [
+          {
+            name: "Ratio",
+            data: [
+              {
+                name: "Male",
+                y:
+                  object?.Table.length === 0
+                    ? []
+                    : parseFloat(
+                        (
+                          (response.data[0]?.Quantity * 100) /
+                          (response.data[0]?.Quantity +
+                            response.data[1]?.Quantity)
+                        ).toFixed(2)
+                      ),
+                // y: null,
+              },
+              {
+                name: "Female",
+                y:
+                  object?.Table.length === 0
+                    ? []
+                    : parseFloat(
+                        (
+                          (response.data[1]?.Quantity * 100) /
+                          (response.data[0]?.Quantity +
+                            response.data[1]?.Quantity)
+                        ).toFixed(2)
+                      ),
+                // y: null,
+              },
+            ],
+          },
+        ],
+      });
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
+
+  const fetchDataGender = async () => {
+    try {
+      const ListKOLsIndenifier = [];
+      object?.Table.forEach((element) => {
+        ListKOLsIndenifier.push(element.key);
+      });
+      const response = await ApiListInfluecer.getAudienceDataGender(
+        ListKOLsIndenifier
+      );
+      const ListDataBarChart = [];
+      response.data.forEach((item) => {
+        ListDataBarChart.push(item.Quantity);
+      });
+      setDataBarChart({
+        chart: {
+          type: "bar",
+          height: 250,
+        },
+        title: {
+          text: "",
+        },
+        credits: {
+          enabled: false,
+        },
+        legend: {
+          align: "right",
+          verticalAlign: "top",
+          layout: "vertical",
+        },
+        xAxis: {
+          categories:
+            object?.Table.length === 0
+              ? []
+              : [
+                  response.data[0].AudienceAge,
+                  response.data[1].AudienceAge,
+                  response.data[2].AudienceAge,
+                  response.data[3].AudienceAge,
+                ],
+        },
+        yAxis: {
+          gridLineWidth: 0,
+        },
+        plotOptions: {
+          series: {
+            pointWidth: 10,
+          },
+        },
+
+        series: [
+          {
+            name: "Age",
+            data: object?.Table.length === 0 ? [] : ListDataBarChart,
+            // data: [],
+          },
+        ],
+      });
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -303,11 +444,8 @@ const MyListPage = ({
   }, [object, form, editValue]);
 
   useEffect(() => {
-    // if (pieChart.current) {
-    //   pieChart.current.chart.series[0].remove(false);
-    //   series.remove();
-    //   pieChart.current.chart.redraw();
-    // }
+    fetchDataAge();
+    fetchDataGender();
   }, [object]);
 
   const handleChangeValue = (event) => {
@@ -369,7 +507,7 @@ const MyListPage = ({
             </div>
             {/* card 2 */}
             <div className="col-4 demographic mt-3 ms-4">
-              <div className="row">
+              <div className="row info">
                 <div className="col-6 text-center infomation">INFOMATION</div>
                 <div className="col-6 text-center type">TYPE</div>
                 <div className="col-12 mt-5">
@@ -393,7 +531,9 @@ const MyListPage = ({
                     <div className="col-9">
                       <TotalInteractions /> Total Follower
                     </div>
-                    <div className="col-3 value-type">{object?.Followers}</div>
+                    <div className="col-3 value-type">
+                      {(parseInt(object?.Followers) / 1000).toFixed(1) + "K"}
+                    </div>
                   </div>
                 </div>
                 <div className="col-12 mt-4">
@@ -402,7 +542,7 @@ const MyListPage = ({
                       <PricePerAssignment /> Total Interactions
                     </div>
                     <div className="col-3 value-type">
-                      {object?.Interactions}
+                      {(parseInt(object?.Interactions) / 1000).toFixed(1) + "K"}
                     </div>
                   </div>
                 </div>

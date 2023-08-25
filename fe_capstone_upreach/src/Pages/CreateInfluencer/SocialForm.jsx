@@ -18,7 +18,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
             <Form onFinish={onFinish} initialValues={initialValues}>
               <div className="social-input-form">
                 <FormItem
-                  name="instagram-link"
+                  name="instagramLink"
                   rules={[
                     {
                       required: true,
@@ -36,7 +36,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
                   />
                 </FormItem>
                 <FormItem
-                  name="instagram-follower"
+                  name="instagramFollower"
                   rules={[
                     {
                       required: true,
@@ -56,7 +56,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
               </div>
               <div className="social-input-form">
                 <FormItem
-                  name="facebook-link"
+                  name="facebookLink"
                   rules={[
                     {
                       required: true,
@@ -74,7 +74,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
                   />
                 </FormItem>
                 <FormItem
-                  name="facebook-follower"
+                  name="facebookFollower"
                   rules={[
                     {
                       required: true,
@@ -94,7 +94,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
               </div>
               <div className="social-input-form">
                 <FormItem
-                  name="youtube-link"
+                  name="youtubeLink"
                   rules={[
                     {
                       required: true,
@@ -113,7 +113,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
                 </FormItem>
 
                 <FormItem
-                  name="youtube-follower"
+                  name="youtubeFollower"
                   rules={[
                     {
                       required: true,
@@ -133,7 +133,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
               </div>
               <div className="social-input-form">
                 <FormItem
-                  name="tiktok-link"
+                  name="tiktokLink"
                   rules={[
                     {
                       required: true,
@@ -152,7 +152,7 @@ const SocialForm = ({ onFinish, initialValues }) => {
                 </FormItem>
 
                 <FormItem
-                  name="tiktok-follower"
+                  name="tiktokFollower"
                   rules={[
                     {
                       required: true,

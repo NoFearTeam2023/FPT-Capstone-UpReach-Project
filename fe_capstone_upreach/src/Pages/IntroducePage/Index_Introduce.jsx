@@ -1,6 +1,15 @@
 import React from "react";
 import "../../CSS/Theme.css";
-import { SUB_TITLE, CONTENT, ITEMSEARCHBTN, ITEMCATEGORYBTN, PLATFORM, DESCRIBE_PLAFORM, CATEGORY, DESCRIBE_CATEGORY } from "./Constant";
+import {
+  SUB_TITLE,
+  CONTENT,
+  ITEMSEARCHBTN,
+  ITEMCATEGORYBTN,
+  PLATFORM,
+  DESCRIBE_PLAFORM,
+  CATEGORY,
+  DESCRIBE_CATEGORY,
+} from "./Constant";
 import { Button, Dropdown } from "antd";
 import { ReactComponent as IconSearch } from "../../../src/Assets/Icon/Search_icon.svg";
 import { ReactComponent as IconApplication } from "../../../src/Assets/Icon/IconApplication.svg";
@@ -28,10 +37,10 @@ function RenderDropdown({ listItems, title, description }) {
         <p className="searchDescription">{description}</p>
       </Button>
     </Dropdown>
-  )
+  );
 }
 
-const Index_LandingPage = ({ handleClickLogin }) => {
+const Index_Introduce = ({ handleClickLogin }) => {
   return (
     <div className="contentIntroducePage backgroundPage">
       <div className="row card-bg">
@@ -49,8 +58,16 @@ const Index_LandingPage = ({ handleClickLogin }) => {
                   </div>
                   <div className="col-9 contentSubTitle my-4">{SUB_TITLE}</div>
                   <div className="searchBtns">
-                    <RenderDropdown listItems={ITEMSEARCHBTN} title={PLATFORM} description={DESCRIBE_PLAFORM} />
-                    <RenderDropdown listItems={ITEMCATEGORYBTN} title={CATEGORY} description={DESCRIBE_CATEGORY} />
+                    <RenderDropdown
+                      listItems={ITEMSEARCHBTN}
+                      title={PLATFORM}
+                      description={DESCRIBE_PLAFORM}
+                    />
+                    <RenderDropdown
+                      listItems={ITEMCATEGORYBTN}
+                      title={CATEGORY}
+                      description={DESCRIBE_CATEGORY}
+                    />
                     <div className="iconSearchBtn">
                       <Buttons
                         className="backgroundDark iconSearch"
@@ -76,11 +93,16 @@ const Index_LandingPage = ({ handleClickLogin }) => {
             <div className="col-12 mt-3">
               <div className="button-block mt-5">
                 <Link to="/login">
-                  <Buttons
-                    className="discoverBtn"
-                    text="Discover Now"
-                    icon={<IconArrow />}
-                  />
+                  <button class="discoverBtn" type="button">
+                    <strong>Discover Now</strong>
+                    <div id="discover-container-stars">
+                      <div id="discover-stars"></div>
+                    </div>
+                    <div id="discover-glow">
+                      <div class="discover-circle"></div>
+                      <div class="discover-circle"></div>
+                    </div>
+                  </button>
                 </Link>
               </div>
             </div>
@@ -129,4 +151,4 @@ const Index_LandingPage = ({ handleClickLogin }) => {
   );
 };
 
-export default Index_LandingPage;
+export default Index_Introduce;
