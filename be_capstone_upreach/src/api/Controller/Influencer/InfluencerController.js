@@ -748,7 +748,7 @@ async function addInfluencer(req, res, next) {
     const user = await userService.getUserByEmail(email);
     const now = new Date();
     const dateNow = now.toISOString();
-    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId,uploadedImages[0].url)) {
+    if (!await addInfluencerProfile(name, nickname, emailContact, age, phone, gender, intro, location, relationship, typeId,uploadedImages[0].url)) {
       return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
     }
     if (!await addInfluencerKols(user.userId, 0, null)) {
