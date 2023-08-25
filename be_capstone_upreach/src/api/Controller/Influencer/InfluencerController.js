@@ -752,7 +752,7 @@ async function addInfluencer(req, res, next) {
       return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
     }
     if (!await addDataToContentTopic(req.body.contentDetails)) {
-      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+      return res.json({ status: 'False', message: 'Insert Data ContentTopic Fails' });
     }
     if (!await addInfluencerKols(user.userId, 0, null)) {
       return res.json({ status: 'False', message: 'Insert Data Kols Fails' });

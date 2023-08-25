@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const _ = require('lodash');
 const { v4: uuidv4 } = require("uuid");
 const cloudinary = require("cloudinary").v2;
 const router = express.Router();
@@ -15,6 +16,11 @@ const clientModel = require("../../Model/MogooseSchema/clientModel");
 const influModel = require("../../Model/MogooseSchema/influModel");
 const { getUserByEmail } = require("../../Service/User/UserService");
 const { createZaloPayOrder } = require('../../ZaloPay/payment');
+
+const isObjectEmpty = (objectName) => {
+  return _.isEmpty(objectName);
+};
+
 async function addProfileClient(req, res, next) {
   try {
     const image = req.body.image[0];
@@ -504,7 +510,7 @@ async function getClientExisted(req, res, next){
         const {email} = req.body
         const response = await clientService.getClientByEmail(email);
         console.log(response)
-        if(response.length > 0){
+        if(!isObjectEmpty(response)){
           return res.json({ status : "True", message : "Client Existed ", data : response})
         }
         return res.json({ status : "False", message : "Client Not Existed ", data : response})
