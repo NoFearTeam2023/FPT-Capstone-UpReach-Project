@@ -52,6 +52,7 @@ function createZaloPayOrder(description, amount) {
         amount: amount,
         description: description, 
         bank_code: "zalopayapp", 
+        callback_url: "http://localhost:4000/api/zalopay-callback",
     };
 
     const data = config.appid + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;

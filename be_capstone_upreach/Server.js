@@ -13,7 +13,6 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose")
-const { createZaloPayOrder } = require('./src/api/ZaloPay/payment');
 const controllerInflu = require("./src/api/Controller/Influencer/InfluencerController");
 const router = require('./src/api/Router/userRouter')
 
@@ -40,6 +39,18 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }))
+// app.post('/zalopay-callback', (req, res) => {
+//     // Kiểm tra dữ liệu callback và xác nhận giao dịch thành công
+//     const responseData = req.body; // Dữ liệu callback từ Zalo Pay
+//     console.log(responseData)
+//     if (responseData.errorCode === 0) {
+//         // Giao dịch thành công, thực hiện chuyển hướng
+//         console.log(123123) // Chuyển hướng đến trang thành công
+//     } else {
+//         // Giao dịch thất bại, xử lý theo logic của bạn
+//        console.log(456456) // Chuyển hướng đến trang thất bại
+//     }
+// });
 
 app.use(
     fileUpload(
@@ -56,7 +67,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api', router)
-
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -82,15 +92,18 @@ io.on("connection", (socket) => {
     console.log('A user connected');
     global.chatSocket = socket;
     socket.on("add-user", (userId) => {
+        console.log("add", userId)
+        console.log("add_id", socket.id)
         onlineUsers.set(userId, socket.id);
     });
 
     socket.on("send-msg", (data) => {
-        console.log("ocbsih")
+        console.log("onlineUsers", data)
         const sendUserSocket = onlineUsers.get(data.to);
-        console.log("abc", sendUserSocket)
+        console.log("data", data)
         if (sendUserSocket) {
-            socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+            socket.to(sendUserSocket).emit("msg-recieve", data.data);
+            console.log('aaaa', data.data)
         }
     });
 })

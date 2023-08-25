@@ -740,12 +740,10 @@ async function addInfluencer(req, res, next) {
     const user = await userService.getUserByEmail(email);
     const now = new Date();
     const dateNow = now.toISOString();
-
-    if (!await addInfluencerKols(user.userId, 0, null)) {
-      return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
+    if (!await addInfluencerProfile(name, nickname, email, age, phone, gender, intro, location, relationship, typeId)) {
+      return res.json({ status: 'False', message: 'Insert Data Influencer Profiles Fails' });
     }
-
-    if (!await addInfluencerKols(user.userId, 0, dateNow)) {
+    if (!await addInfluencerKols(user.userId, 0, null)) {
       return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
     }
 
@@ -836,15 +834,22 @@ async function createInflu(req, res, next) {
 
 async function getDataForChart(req, res, next) {
   try {
-    const { influencerId } = req.body
+    const { influencerId, influInfoEmail } = req.body
     const response = await influService.getChartDataInfluencer(influencerId)
     const result = common.formatChartDataInfluencer(response)
+    const emailCheck = await influModel.findOne({ email: influInfoEmail })
+    console.log("chart", result);
+    console.log("emailCheck", emailCheck);
+    if (!emailCheck) {
+      return res.json({ message: "Influencer don't already", status: false });
+    }
     if (!response) {
       return res.json({ message: 'Fails ' });
     }
     return res.status(200).json({
       message: "get data getDataForChart success",
-      data: result
+      data: result,
+      _idInflue: emailCheck._id,
     });
   } catch (error) {
     return res.json({ message: ' ' + error });
@@ -1315,18 +1320,18 @@ async function rejectBooking(req, res, next) {
 //get the client with that influe
 async function getClientsByInflue(req, res, next) {
   try {
-    const { influeId } = req.body; // Assuming you're passing the influencer's ID as a parameter
+    const { _idInflue } = req.body; // Assuming you're passing the influencer's ID as a parameter
 
     // Find the influencer by ID
-    const influencer = await influModel.findById(influeId);
+    const influencer = await influModel.findById(_idInflue);
 
     if (!influencer) {
       return res.json({ msg: "Influencer not found.", status: false, });
     }
 
     // Find clients that have booked the specified influencer
-    const clientsWithInflue = await clientModel.find({ booking: influeId })
-      .select('_id username email');
+    const clientsWithInflue = await clientModel.find({ booking: _idInflue })
+      .select('_id username email avatarImage');
 
     res.json({
       data: clientsWithInflue,

@@ -260,7 +260,9 @@ function formatChartDataInfluencer(data) {
         const jobId = item["idJob"];
         const existingJob = dataChartGroup[influencerId]["dataJob"].find(job => job["jobId"] === jobId);
         if (existingJob) {
-            existingJob["clientId"].push(item["idClient"]);
+            if (!existingJob["clientId"].includes(item["idClient"])) {
+                existingJob["clientId"].push(item["idClient"]);
+            }
         } else {
             dataChartGroup[influencerId]["dataJob"].push({
                 "jobId": jobId,
