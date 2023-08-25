@@ -5,7 +5,7 @@ import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 const SignUpInfluencerPage = () => {
   return (
     <>
-      <div className="coverMain">
+      <div className="coverMain-sign-up-influ">
         <HeaderHomepage />
         <Index_SignUpInfluencerPage />
       </div>

@@ -1,6 +1,6 @@
-import { Avatar, Button, Col, Collapse, Form, Input, Row } from "antd";
+import { Avatar, Button, Col, Collapse, Form, Input, Row,Modal,Upload } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ClientProfilePage.css";
 import {
   DownCircleOutlined,
@@ -9,35 +9,159 @@ import {
 } from "@ant-design/icons";
 import UpdateEmail from "./UpdateEmail";
 import ChangePassword from "./ChangePassword";
+import ApiListClient from "../../Api/ApiListClient";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Index_ClientProfile = () => {
-  const [isModalOpenUpdateEmail, setIsModalOpenUpdateEmail] = useState(false);
-  const [isSubModel, setSubModel] = useState(false);
-  const [isModalOpenChangePassword, setIsModalOpenChangePassword] =
-    useState(false);
-  const [data, setData] = useState();
-  const inputRef = useRef(null);
-  const [image, setImage] = useState("");
+ const [isSubModel, setSubModel] = useState(false);
+  const [isModalOpenChangePassword, setIsModalOpenChangePassword] =useState(false);
+  const [message, setMessage] = useState()
+  const [status, setStatus] = useState()
+  const navigate = useNavigate(); 
+  
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileList, setFileList] = useState()
+  const [checkClientExist, setCheckClientExist] = useState(false)
+  const [formValues, setFormValues] = useState({
+    image: '',
+    fullName: '',
+    brandName: '',
+    phoneNumber: '',
+    location: '',
+    emailContact: '',
+    clientDetail: null,
+  });
 
-  function onFinish(value) {
-    setData(value);
-  }
-  console.log("data", data);
 
-  function handleClickShowDialog() {
-    setIsModalOpenUpdateEmail(true);
+  useEffect(() =>{
+    const newClient = localStorage.getItem('formData');
+    if(localStorage.getItem('user-draw-storage') !== null){
+      const oldClient = localStorage.getItem('user-draw-storage');
+      const formDataOldClientJson = JSON.parse(oldClient);
+      const data = formDataOldClientJson.state.user
+      console.log(data)
+      setFormValues(prevDetails => ({ ...prevDetails, clientDetail: data }));
+      FetchDataCheckProfile(data)
+      return
+    }
+    const formDataNewClientJson = JSON.parse(newClient);
+    setFormValues(prevDetails => ({ ...prevDetails, clientDetail: formDataNewClientJson }));
+    console.log(formDataNewClientJson)
+    FetchDataCheckProfile(formDataNewClientJson)
+    if(status ==='True'){
+      navigate('/homepage')
+    } 
+  },[status])
+
+  const onFinishInsertClient = () => {
+    console.log(formValues)
+    FetchInsertClientProfile(formValues)
   }
+
+  const onFinishUpdateClient = () => {
+    console.log(formValues)
+    FetchUpdateClientProfile(formValues)
+  }
+
+  const FetchDataCheckProfile = async (data) => {
+    try {
+      const response = await ApiListClient.checkClientExisted(data);
+      if(response.status === "True"){
+        setCheckClientExist(true)
+      }
+      console.log(response)
+      return response;
+    } catch (error) {
+      setMessage(error)
+      console.log(error);
+    }
+    
+  }
+
+  const FetchInsertClientProfile = async (data) => {
+    try {
+      const response = await ApiListClient.addProfileClient(data);
+      if(response.status === "False"){
+        toast.error(response.message, toastOptions)
+        setStatus(response.status)
+        return ;
+      }
+      toast.success(response.message, toastOptions)
+      setStatus(response.status)
+      console.log(response)
+      return response;
+    } catch (error) {
+      setMessage(error)
+      console.log(error);
+    }
+  };
+  
+  const FetchUpdateClientProfile = async (data) => {
+    try {
+      const response = await ApiListClient.updateProfileClient(data);
+      if(response.status === "False"){
+        toast.error(response.message, toastOptions)
+        setStatus(response.status)
+        return ;
+      }
+      toast.success(response.message, toastOptions)
+      setStatus(response.status)
+      console.log(response)
+      return response;
+    } catch (error) {
+      setMessage(error)
+      console.log(error);
+    }
+  }; 
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value
+    });
+  };
+  const updateImageValue = (newValue) => {
+    setFormValues({
+      ...formValues, // Sao chép tất cả các giá trị hiện tại của formValues
+      image: newValue // Thay đổi giá trị của image thành newValue
+    });
+  };
+
+  const handleCancel = () => setPreviewOpen(false);
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+  };
+  const handleChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+    updateImageValue(newFileList)
+  }
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+      className="ant-upload"
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
+
   function handleClickShowDialogChangePassword() {
     setIsModalOpenChangePassword(true);
   }
-  const handleImageClick = () => {
-    inputRef.current.click();
-  };
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    console.log(file);
-    setImage(file);
-  };
 
   const items = [
     {
@@ -46,16 +170,7 @@ const Index_ClientProfile = () => {
       children: (
         <>
           <div>
-            <p>Sign-In Email</p>
-            <EditOutlined onClick={handleClickShowDialog} />
-            <UpdateEmail
-              isModalOpenUpdateEmail={isModalOpenUpdateEmail}
-              setIsModalOpenUpdateEmail={setIsModalOpenUpdateEmail}
-              isSubModel={isSubModel}
-              setSubModel={setSubModel}
-            />
-
-            <p>Password</p>
+            <p>Change Password</p>
             <EditOutlined onClick={handleClickShowDialogChangePassword} />
             <ChangePassword
               isModalOpenChangePassword={isModalOpenChangePassword}
@@ -67,12 +182,21 @@ const Index_ClientProfile = () => {
     },
   ];
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined size={10} />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnFocusLoss: true,
+    draggable: true,
+    theme: "dark",
+  }
+
+  const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
   return (
     <Row style={{ marginTop: "4%" }}>
@@ -87,7 +211,7 @@ const Index_ClientProfile = () => {
             <div>
               <Form
                 className="client-form"
-                onFinish={onFinish}
+                onFinish= {checkClientExist ? onFinishUpdateClient : onFinishInsertClient}
                 name="validateOnly"
                 layout="vertical"
                 autoComplete="off"
@@ -102,6 +226,26 @@ const Index_ClientProfile = () => {
                 }}
               >
                 <div>
+                  <Form.Item>
+                  <Upload
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                  >
+                    {fileList ? null : uploadButton}
+                  </Upload>
+                  <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                    <img
+                      alt="example"
+                      style={{
+                        width: '100%',
+                      }}
+                      src={previewImage}
+                    />
+                  </Modal>
+                  </Form.Item>
                   <Form.Item
                     rules={[
                       {
@@ -112,7 +256,7 @@ const Index_ClientProfile = () => {
                     name="fullname"
                     label="Full Name"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="fullName" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -124,13 +268,13 @@ const Index_ClientProfile = () => {
                     name="brandname"
                     label="Brand Name"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="brandName" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item name="location" label="Location">
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="location" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
-                  <Form.Item name="email" label="Email">
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                  <Form.Item name="emailContact" label="Email">
+                    <Input name="emailContact" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                   <Form.Item
                     rules={[
@@ -144,7 +288,7 @@ const Index_ClientProfile = () => {
                     name="phonenumber"
                     label="Phone Number"
                   >
-                    <Input style={{ border: "1px solid #9B9A9A" }} />
+                    <Input name="phoneNumber" onChange={handleInputChange} style={{ border: "1px solid #9B9A9A" }} />
                   </Form.Item>
                 </div>
                 <div></div>
@@ -155,8 +299,10 @@ const Index_ClientProfile = () => {
                     </Button>
                   </FormItem>
                 </div>
+                
               </Form>
             </div>
+            <ToastContainer />
             <Collapse
               className="collapse_advanced"
               ghost
@@ -173,28 +319,10 @@ const Index_ClientProfile = () => {
               items={items}
             />
           </Col>
-          <Col span={8}>
-            <div onClick={handleImageClick}>
-              {image ? (
-                <Avatar
-                  shape="square"
-                  src={URL.createObjectURL(image)}
-                  size={400}
-                />
-              ) : (
-                <Avatar shape="square" icon={uploadButton} size={400} />
-              )}
-              <input
-                type="file"
-                ref={inputRef}
-                onChange={handleImageChange}
-                style={{ display: "none" }}
-              />
-            </div>
-          </Col>
         </Row>
       </Col>
     </Row>
+    
   );
 };
 

@@ -266,7 +266,7 @@ async function getLastInfluencerTypeListId() {
     }
 }
 
-async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId) {
+async function insertInfluencerProfile(fullName, nickName, email, age, phone, gender, bio, address, relationship, typeId,avatar) {
     try {
         const insertInfluencerProfile = "insertInfluencerProfile";
         const profileId = await getLastProfileId()
@@ -287,7 +287,7 @@ async function insertInfluencerProfile(fullName, nickName, email, age, phone, ge
         request.input('bio', sql.NVarChar, bio);
         request.input('address', sql.NVarChar, address);
         request.input('relationship', sql.NVarChar, relationship);
-
+        request.input('Avatar', sql.NVarChar, avatar);
         request.input('typeListId', sql.NVarChar, lastTypeListId);
         request.input('typeId', sql.NVarChar, typeId);
 

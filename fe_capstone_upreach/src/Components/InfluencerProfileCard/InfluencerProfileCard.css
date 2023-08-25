@@ -75,8 +75,13 @@
 
 .profile-date-view {
     display: flex;
-    width: 95px;
+    width: 80px;
     justify-content: space-between;
+}
+
+.profile-date {
+	width: fit-content;
+	height: fit-content;
 }
 
 .profile-view {
@@ -97,7 +102,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
-	width: 15%;
+	width: 80px;
 	height: 25px;
 }
 

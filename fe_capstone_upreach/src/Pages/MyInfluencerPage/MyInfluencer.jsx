@@ -1,11 +1,13 @@
 import FooterHome from "../../Components/Layouts/Footer/FooterHome";
-import HeaderLoginHompape from "../../Components/Layouts/Header/HeaderLoginHompape";
+import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 import React, { useState, useEffect } from "react";
 import {
   MailOutlined,
   SettingOutlined,
   UnorderedListOutlined,
   HistoryOutlined,
+  FileProtectOutlined,
+  FolderAddOutlined,
 } from "@ant-design/icons";
 import { Menu, Modal, Input, Form, Button, List } from "antd";
 import "./MyInfluencer.css";
@@ -14,6 +16,9 @@ import MyHistoryReport from "./MyHistoryReportPage";
 import { map } from "highcharts";
 import { v4 as uuid } from "uuid";
 import ApiListInfluecer from "../../Api/ApiListInfluecer";
+import { useUserStore } from "../../Stores/user";
+import { useNavigate } from "react-router-dom";
+import MyBookingPage from "./MyBookingPage/MyBookingPage";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -25,100 +30,13 @@ function getItem(label, key, icon, children, type) {
   };
 }
 
-// data example get from BE
-// const DATALIST = [
-//   {
-//     id: "mot",
-//     label: "List 1",
-//     dataMale: 50,
-//     dataFemale: 50,
-//     bar: [30, 30, 40, 50, 60],
-//     influencer: 3,
-//     channels: 4,
-//     Esttotal: 5,
-//     Price: 4,
-//     Table: [
-//       {
-//         key: "1",
-//         influencer: "John Brown",
-//         followers: 32,
-//         interactions: "New York No. 1 Lake Park",
-//         costestimate: ["nice", "developer"],
-//       },
-//       {
-//         key: "2",
-//         influencer: "Jim Green",
-//         followers: 42,
-//         interactions: "London No. 1 Lake Park",
-//         costestimate: ["loser"],
-//       },
-//       {
-//         key: "3",
-//         influencer: "Joe Black",
-//         followers: 32,
-//         interactions: "Sydney No. 1 Lake Park",
-//         costestimate: ["cool", "teacher"],
-//       },
-//     ],
-//   },
-//   {
-//     id: "hai",
-//     label: "List 2",
-//     dataMale: 40,
-//     dataFemale: 60,
-//     bar: [10, 20, 30, 40, 50, 30],
-//     influencer: 6,
-//     channels: 5,
-//     Esttotal: 2,
-//     Price: 1,
-//     Table: [
-//       {
-//         key: "1",
-//         influencer: "John Brown",
-//         followers: 32,
-//         interactions: "New York No. 1 Lake Park",
-//         costestimate: ["nice", "developer"],
-//       },
-//       {
-//         key: "2",
-//         influencer: "Jim Green",
-//         followers: 42,
-//         interactions: "London No. 1 Lake Park",
-//         costestimate: ["loser"],
-//       },
-//     ],
-//   },
-//   {
-//     id: "ba",
-//     label: "List 3",
-//     dataMale: 30,
-//     dataFemale: 70,
-//     bar: [30, 40, 10, 30, 50, 70],
-//     influencer: 1,
-//     channels: 2,
-//     Esttotal: 4,
-//     Price: 5,
-//     Table: [
-//       {
-//         key: "2",
-//         influencer: "Jim Green",
-//         followers: 42,
-//         interactions: "London No. 1 Lake Park",
-//         costestimate: ["loser"],
-//       },
-//     ],
-//   },
-// ];
-// const DATA_NAMELIST = [];
-
-// DATALIST.forEach((item) => {
-//   DATA_NAMELIST.push(getItem(item.label, item.id));
-// });
-// DATA_NAMELIST.push(getItem("+ Add New", "new"));
-
 const MyInfluencer = () => {
+  const [user] = useUserStore((state) => [state.user]);
+  const navigate = useNavigate();
   const [addNewList, setAddNewList] = useState(false);
   const [checkTabListPage, setCheckTabListPage] = useState(true);
+  const [tabName, setTabName] = useState("new");
+
   const [object, setObject] = useState();
   const [dataOfList, setdataOfList] = useState([]);
   const [value, setValue] = useState("");
@@ -133,7 +51,14 @@ const MyInfluencer = () => {
   const [flagChangeDataTable, setFlagChangeDataTable] = useState(true);
   const [flagChangeNameList, setFlagChangeNameList] = useState(true);
   const [flagDeleteList, setFlagDeleteList] = useState(true);
+  const [idAccClient, setIdAccClient] = useState("");
 
+  // // get Id account
+  // function getClientID() {
+
+  // }
+
+  //get all list in menu
   function getDataSelectList() {
     var elementData = dataOfList.find((obj) => obj.id === listSelected);
     setObject(elementData);
@@ -144,7 +69,7 @@ const MyInfluencer = () => {
   listInfluencer.forEach((item) => {
     listMenu.push(getItem(item.Name_list, item.ClientLists_ID));
   });
-  listMenu.push(getItem("+ Add New", "new"));
+  listMenu.push(getItem("Add New", "new", <FolderAddOutlined />));
   const items = [
     {
       type: "divider",
@@ -162,21 +87,37 @@ const MyInfluencer = () => {
       [getItem("My History Report", "history", <HistoryOutlined />)],
       "group"
     ),
+    getItem(
+      "",
+      "bkg",
+      null,
+      [getItem("History Booking", "booking", <FileProtectOutlined />)],
+      "group"
+    ),
   ];
 
   //====================== Get Data Back End ======================
   const fetchDataGetList = async () => {
     try {
-      const response = (await ApiListInfluecer.getListMenu()).data;
+      const dataLocalStorge = await JSON.parse(
+        localStorage.getItem("user-draw-storage")
+      ).state.user.Client_ID;
+      setIdAccClient(dataLocalStorge);
+      const response = (await ApiListInfluecer.getListMenu(dataLocalStorge))
+        .data;
       setListInfluencer(response);
     } catch (error) {
       console.log("Error fetching data:", error);
     }
   };
 
-  const AddNewListClient = async (idList, nameList) => {
+  const AddNewListClient = async (clientID, idList, nameList) => {
     try {
-      const response = await ApiListInfluecer.addListClient(idList, nameList);
+      const response = await ApiListInfluecer.addListClient(
+        clientID,
+        idList,
+        nameList
+      );
       if (response.Status == "Success") {
         fetchDataGetList();
       }
@@ -184,9 +125,9 @@ const MyInfluencer = () => {
       console.log("Error fetching data:", error);
     }
   };
-  const fetchDataTableKOLs = async (idList) => {
+  const fetchDataTableKOLs = async (idAccClient, idList) => {
     try {
-      const response = await ApiListInfluecer.getTableKOLs(idList);
+      const response = await ApiListInfluecer.getTableKOLs(idAccClient, idList);
       setTableInfluencer(response);
       const nameIdList = listInfluencer.find(
         (item) => item.ClientLists_ID == idList
@@ -197,7 +138,6 @@ const MyInfluencer = () => {
       const totalInteractions = response.Table.reduce(function (prev, current) {
         return prev + +current.interactions;
       }, 0);
-      console.log(totalFlollowers);
       const dataObject = {
         id: idList,
         label: nameIdList.Name_list,
@@ -210,6 +150,7 @@ const MyInfluencer = () => {
         Interactions: totalInteractions,
         Table: response.Table,
       };
+      console.log("aa");
       setObject(dataObject);
     } catch (error) {
       console.log("Error fetching data:", error);
@@ -219,13 +160,16 @@ const MyInfluencer = () => {
   //================================================================
   //====================== click item in list=======================
   const onClick = (e) => {
-    console.log("key", e);
     if (e.key === "history") {
       setCheckTabListPage(false);
+      setTabName(e.key);
+    } else if (e.key === "booking") {
+      setCheckTabListPage(false);
+      setTabName(e.key);
     } else {
       setCheckTabListPage(true);
       setListSelected(e.key);
-      fetchDataTableKOLs(e.key);
+      fetchDataTableKOLs(idAccClient, e.key);
       // setIdList(e.key);
     }
     if (e.key === "new") {
@@ -248,8 +192,7 @@ const MyInfluencer = () => {
     } else {
       //setListInfluencer([getItem(nameList, nameList), ...listInfluencer]);
       const idList = uuid().slice(0, 8);
-      console.log(`id: ${idList}, name ${nameList}`);
-      AddNewListClient(idList, nameList);
+      AddNewListClient(idAccClient, idList, nameList);
       setAddNewList(false);
       form.resetFields();
       setListSelected(idList);
@@ -271,13 +214,13 @@ const MyInfluencer = () => {
   //   getDataSelectList();
   // }, [dataOfList, listSelected, listInfluencer]);
 
-  // useEffect(() => {
-  //   fetchDataGetList();
-  // }, []);
+  useEffect(() => {
+    fetchDataGetList(idAccClient);
+  }, []);
 
   //Remove Influ out list
   useEffect(() => {
-    fetchDataTableKOLs(listSelected);
+    fetchDataTableKOLs(idAccClient, listSelected);
   }, [flagChangeDataTable]);
 
   //Change Name List
@@ -288,7 +231,7 @@ const MyInfluencer = () => {
   }, [flagChangeNameList]);
 
   useEffect(() => {
-    fetchDataTableKOLs(listSelected);
+    fetchDataTableKOLs(idAccClient, listSelected);
   }, [listInfluencer]);
 
   //Delete List
@@ -302,52 +245,82 @@ const MyInfluencer = () => {
     setIsEmptyInput(false);
     setIsNameListExist(false);
   };
+
+  React.useEffect(() => {
+    if (user.roleId == 1) {
+      navigate("/admin/dashboard");
+    } else if (user.roleId == 2) {
+      navigate("/myinfluencer");
+    } else if (user.roleId == 3) {
+      navigate("/influencer/my-report");
+    } else {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <>
-      <div className="coverMain">
-        <HeaderLoginHompape />
-        <div className="row pt-5">
-          <div className="col-2 pt-2 menuList">
-            <Menu
-              onClick={onClick}
-              className="menu"
-              mode="inline"
-              items={items}
-              selectedKeys={[listSelected]}
-            />
-          </div>
-          <div className="col-10">
-            {checkTabListPage ? (
-              <MyListPage
-                listInfluencer={listInfluencer}
-                setdataOfList={setdataOfList}
-                object={object}
-                tableInfluencer={tableInfluencer}
-                editnamelist={editnamelist}
-                setEditNameList={setEditNameList}
-                setListSelected={setListSelected}
-                getDataSelectList={getDataSelectList}
-                flagChangeDataTable={flagChangeDataTable}
-                setFlagChangeDataTable={setFlagChangeDataTable}
-                flagChangeNameList={flagChangeNameList}
-                setFlagChangeNameList={setFlagChangeNameList}
-                flagDeleteList={flagDeleteList}
-                setFlagDeleteList={setFlagDeleteList}
-                // IdList={IdList}
-                // DeleteList={DeleteList}
+      {console.log(tabName)}
+      {user?.roleId == 2 ? (
+        <div className="coverMain">
+          <HeaderHomepage />
+          <div className="row pt-5">
+            <div className="col-2 pt-2 menuList padding-0">
+              <Menu
+                onClick={onClick}
+                className="menu"
+                mode="inline"
+                items={items}
+                selectedKeys={[listSelected]}
               />
-            ) : (
-              <MyHistoryReport />
-            )}
+            </div>
+            <div className="col-10 padding-0">
+              {checkTabListPage ? (
+                <MyListPage
+                  listInfluencer={listInfluencer}
+                  setdataOfList={setdataOfList}
+                  object={object}
+                  tableInfluencer={tableInfluencer}
+                  editnamelist={editnamelist}
+                  setEditNameList={setEditNameList}
+                  setListSelected={setListSelected}
+                  getDataSelectList={getDataSelectList}
+                  flagChangeDataTable={flagChangeDataTable}
+                  setFlagChangeDataTable={setFlagChangeDataTable}
+                  flagChangeNameList={flagChangeNameList}
+                  setFlagChangeNameList={setFlagChangeNameList}
+                  flagDeleteList={flagDeleteList}
+                  setFlagDeleteList={setFlagDeleteList}
+                  idAccClient={idAccClient}
+                  // IdList={IdList}
+                  // DeleteList={DeleteList}
+                />
+              ) : (
+                <>
+                  {tabName === "history" ? (
+                    <div className="content-history-bg">
+                      <MyHistoryReport />
+                    </div>
+                  ) : tabName === "booking" ? (
+                    <MyBookingPage />
+                  ) : (
+                    ""
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <FooterHome />
-      </div>
+          <FooterHome />
+        </div>
+      ) : (
+        ""
+      )}
       <Modal
         title="Add New List"
         className="popup-add-new"
         centered
+        destroyOnClose={true}
         open={addNewList}
         onOk={() => form.submit(value)}
         onCancel={() => setAddNewList(false)}

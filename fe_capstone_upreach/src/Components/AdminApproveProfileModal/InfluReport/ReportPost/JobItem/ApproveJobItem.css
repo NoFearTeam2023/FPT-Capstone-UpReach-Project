@@ -1,0 +1,51 @@
+.approve-report-post-item {
+	width: 100%;
+	height: 105px;
+	border: #ccc 1px solid;
+	padding: 15px 25px;
+    margin-bottom: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.approve-report-post-item .post-item-title {
+	display: flex;
+}
+
+
+
+.approve-report-post-item .post-item-title p {
+	font-weight: 600;
+}
+
+.approve-report-post-item .social-icon {
+	width: 70px;
+	height: 70px;
+	margin-right: 10px;
+}
+
+.approve-report-post-item .post-item-sub-title {
+    height: 100%;
+	width: 370px;
+    width: fit-content;
+}
+
+.approve-report-post-item .cover-quantity-cost {
+	height: 70px;
+    width: 385px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.approve-report-post-item .cover-quantity-cost p {
+	color: #9b9a9a;
+}
+
+.post-item-btn {
+	width: fit-content;
+	height: 100%;
+	display: flex;
+	align-items: flex-end;
+}

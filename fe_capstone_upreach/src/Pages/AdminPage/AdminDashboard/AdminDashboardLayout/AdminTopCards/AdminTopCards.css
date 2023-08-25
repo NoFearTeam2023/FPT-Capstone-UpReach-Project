@@ -19,25 +19,16 @@
     width: 100%;
     padding-top: 100%;
     border-radius: 50%;
-    background-image: linear-gradient(to top right, #f49898, #ff0000d6);
+    background-image: linear-gradient(to top right, #fdbfc6, #9e1919);
     position: absolute;
-    left: 50%;
+    right: 50%;
     top: 50px;
     transform: scale(0);
     transition: transform 0.8s ease 0s;
   }
 .admin-top-card1 .admin-top-card-contents:hover::before {
     transform: scale(3);
-  }
-
-
-/* .admin-top-card1 .admin-top-card-contents:hover {
-    transform: translateY(-2px) scale(1.004) translateZ(0);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
-      0 2px 4px rgba(206, 178, 252, 0.48);
-    background-color: #F57070;
-    color: #FFF;
-} */
+}
 
 .admin-top-card1 .admin-top-card-contents:hover p {
     color: #FFF;
@@ -49,12 +40,25 @@
     top: 65px;;
 }
 
-.admin-top-card2 .admin-top-card-contents:hover {
-    transform: translateY(-2px) scale(1.004) translateZ(0);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
-      0 2px 4px rgba(206, 178, 252, 0.48);
-    background-color: #599BE7;
-    color: #FFF;
+.admin-top-card2 .admin-top-card-contents p{
+    z-index: 1;
+    transition: 0.5s;
+}
+
+.admin-top-card2 .admin-top-card-contents::before {
+    content: "";
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 50%;
+    background-image: linear-gradient(to top right, #d4e0fa, #3f79bb);
+    position: absolute;
+    right: 50%;
+    top: 50px;
+    transform: scale(0);
+    transition: transform 0.8s ease 0s;
+  }
+.admin-top-card2 .admin-top-card-contents:hover::before {
+    transform: scale(3);
 }
 
 .admin-top-card2 .admin-top-card-contents:hover p {
@@ -64,16 +68,28 @@
 .admin-top-card3 {
     position: absolute;
     left: 605px;
-    top: 115px;
+    top: 95px;
 }
 
-.admin-top-card3 .admin-top-card-contents:hover {
-    transform: translateY(-2px) scale(1.004) translateZ(0);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.11),
-      0 2px 4px rgba(206, 178, 252, 0.48);
-    background-color: #ecca50d4;
-    color: #FFF;
+.admin-top-card3 .admin-top-card-contents p{
+    z-index: 1;
+    transition: 0.5s;
+}
 
+.admin-top-card3 .admin-top-card-contents::before {
+    content: "";
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 50%;
+    background-image: linear-gradient(to top right, #fbf8d3, #FFB330);
+    position: absolute;
+    right: 50%;
+    top: 50px;
+    transform: scale(0);
+    transition: transform 0.8s ease 0s;
+  }
+.admin-top-card3 .admin-top-card-contents:hover::before {
+    transform: scale(3);
 }
 
 .admin-top-card3 .admin-top-card-contents:hover p {

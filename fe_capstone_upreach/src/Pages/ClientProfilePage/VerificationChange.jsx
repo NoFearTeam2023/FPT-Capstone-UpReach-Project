@@ -17,15 +17,6 @@ const VerificationChange = ({ isSubModel, onSubModel }) => {
           name="validateOnly"
           layout="vertical"
           autoComplete="off"
-          // labelCol={{
-          //   span: 4,
-          // }}
-          // wrapperCol={{
-          //   span: 14,
-          // }}
-          // style={{
-          //   maxWidth: 800,
-          // }}
         >
           <div>
             <Form.Item name="verificationchange">

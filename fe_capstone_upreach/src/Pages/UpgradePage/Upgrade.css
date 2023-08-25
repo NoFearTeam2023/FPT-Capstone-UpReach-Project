@@ -8,7 +8,7 @@
 
 .upgrade-header {
     width: 100%;
-    height: 200px;
+    height: 115px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,7 +34,7 @@
 .upgrade-body {
     width: 100%;
     height: 1050px;
-    padding: 75px 130px;
+    padding: 60px 130px;
 }
 
 .upgrade-footer {

@@ -101,12 +101,18 @@ transform: scale(0.9);
     justify-content: center;
     align-items: center;
 }
+
 .loginLink a{
     margin-left: 5px;
     text-decoration: none;
     color: #7f7f7f;
 }
+
 .loginLink:hover{
     text-decoration: underline #7f7f7f;
    
+}
+.auth-form-cover{
+    height: 75vh;
+    top: 53%;
 }

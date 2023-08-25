@@ -50,7 +50,6 @@ const InfluencerSidebar = () => {
       <MailBoxIcon />
     ),
   ];
-  console.log(currentPath);
   return (
     <>
       <Menu

@@ -1,26 +1,26 @@
-body{
+.coverMain-sign-up-influ body{
     height: 100vh;
     font-family: Volkhov;
 }
-#content {
+.coverMain-sign-up-influ #content {
     width: 100%;
     max-width: 1600px;
     margin: 0;
 }
 
-.form-content{
+.coverMain-sign-up-influ .form-content{
     margin: 0 auto;
     width: 30%;
     display: block;
 }
-.title-signup{
+.coverMain-sign-up-influ .title-signup{
     padding-top: 20%;
     font-size: 185%;
     font-weight: 600;
     text-align: center;
     margin-bottom: 12%;
 }
-.signUp-btn{
+.coverMain-sign-up-influ .signUp-btn{
     min-height: 50px;
     padding: 0 4px;
     appearance: none;
@@ -28,7 +28,7 @@ body{
     width: calc(100% - 10px);
     margin-bottom: 3%;
 }
-.signUp-submit{
+.coverMain-sign-up-influ .signUp-submit{
     display: flex;
     justify-content: center;
     align-items:center;
@@ -42,13 +42,13 @@ body{
 
 }
 /* Verifu Influencer Register */
-.verify-influencer-background{
+.coverMain-sign-up-influ .verify-influencer-background{
     padding: 60px;
     height: 100vh;
     background: white;
     position: relative;
 }
-.verify-influencer-bg{
+.coverMain-sign-up-influ .verify-influencer-bg{
     background-color: #fff;
     width: 40vw;
     height: 60vh;

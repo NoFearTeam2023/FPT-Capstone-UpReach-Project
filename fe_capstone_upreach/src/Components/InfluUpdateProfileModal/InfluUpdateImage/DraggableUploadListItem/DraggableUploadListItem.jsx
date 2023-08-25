@@ -12,7 +12,7 @@ const DraggableUploadListItem = ({ originNode, file }) => {
     transition,
     isDragging,
   } = useSortable({
-    id: file.uid,
+    id: file?.uid,
   });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -35,8 +35,8 @@ const DraggableUploadListItem = ({ originNode, file }) => {
       {...listeners}
     >
       {/* hide error tooltip when dragging */}
-      {file.status === "error" && isDragging
-        ? originNode.props.children
+      {file?.status === "error" && isDragging
+        ? originNode?.props?.children
         : originNode}
     </div>
   );
