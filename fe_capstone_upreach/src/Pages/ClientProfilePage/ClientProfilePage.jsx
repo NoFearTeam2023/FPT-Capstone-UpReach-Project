@@ -1,11 +1,11 @@
 import React from "react";
-import HeaderLoginHompape from "../../Components/Layouts/Header/HeaderLoginHompape";
+import HeaderHomepage from "../../Components/Layouts/Header/HeaderHomepage";
 import Index_ClientProfile from "./Index_ClientProfile";
 
 const ClientProfilePage = () => {
   return (
-    <div className="coverMain">
-      <HeaderLoginHompape />
+    <div className="coverMain-client-profile">
+      <HeaderHomepage />
       <Index_ClientProfile />
     </div>
   );

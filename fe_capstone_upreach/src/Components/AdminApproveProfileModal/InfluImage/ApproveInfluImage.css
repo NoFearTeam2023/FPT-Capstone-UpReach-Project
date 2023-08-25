@@ -1,0 +1,19 @@
+.approve-influ-images{
+    width: auto;
+    height: 100%;
+    overflow-x: hidden;
+	overflow-y: hidden;
+    padding: 25px 60px;
+    border-bottom: #ccc 1px solid;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.approve-influ-images .influ-image {
+    width: 250px;
+    height: 100%;
+    border-radius: 30px;
+    margin: 0 33px ;
+}
+

@@ -19,7 +19,7 @@ const AdminStatusCard = ({ value, title, icon }) => {
         setValueColor("#7297FF");
 
         break;
-      case "Channels":
+      case "Booking":
         setBgColor("#55C97B");
         setStrokeColor("#DDF4E5");
         setValueColor("#55C97B");

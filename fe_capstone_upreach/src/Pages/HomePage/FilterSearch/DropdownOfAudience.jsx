@@ -1,45 +1,54 @@
 import React, { useEffect, useState } from "react";
-import ButtonDropdow from "./ButtonDropdow";
 import { Button, Dropdown, Slider, Checkbox, Row, Col } from "antd";
 import {
+  GENDER_OF_AGE,
   GENDER_OF_AUDIANCE,
   LOCATION_OF_AUDIANCE,
   URL_API_CITY,
+  AGE,
 } from "../ConstHomePage";
 import Selects from "../../../Components/UI/Selects";
 import axios from "axios";
+import ButtonDropdown from "./ButtonDropdown";
 
-const DropdownOfAudience = () => {
-  const [valueAge, setValueAge] = useState([20, 50]);
+const DropdownOfAudience = (checkClearAll) => {
+  const [valueAge, setValueAge] = useState([0, 100]);
   const [valueGender, setValueGender] = useState();
   const [valueLocation, setValuelocation] = useState();
   const [city, setCity] = useState([]);
 
-  function handleOnChangeAge(sliderValue) {
-    setValueAge(sliderValue);
+  function handleOnChangeAge(checkValue) {
+    setValueAge(checkValue);
+    // change background when onchange filter
+    document.getElementById("AudienceBtn").classList.add("active-filter");
   }
   function handleOnChangeGender(checkValue) {
     setValueGender(checkValue);
+    // change background when onchange filter
+    document.getElementById("AudienceBtn").classList.add("active-filter");
   }
   function handleOnChangelocation(selectValue) {
     setValuelocation(selectValue);
+    // change background when onchange filter
+    document.getElementById("AudienceBtn").classList.add("active-filter");
   }
 
-  console.log(
-    `age: ${valueAge}, gender: ${valueGender}, location: ${valueLocation}`
-  );
+  // console.log(
+  //   `age: ${valueAge}, gender: ${valueGender}, location: ${valueLocation}`
+  // );
 
   function handleBtnClear() {
-    setValueAge([20, 50]);
+    setValueAge([0, 100]);
     setValueGender();
     setValuelocation();
+    // change background when onchange filter
+    document.getElementById("AudienceBtn").classList.remove("active-filter");
   }
 
   //func call api tỉnh thành Việt Nam
   const fetchDataCity = async () => {
     try {
       const response = await axios.get(URL_API_CITY);
-      console.log(response.data);
       const newDataCity = response.data.map((item) => ({
         value: item.name,
         label: item.name,
@@ -54,6 +63,10 @@ const DropdownOfAudience = () => {
     fetchDataCity();
   }, []);
 
+  useEffect(() => {
+    handleBtnClear();
+  }, [checkClearAll]);
+
   return (
     <Dropdown
       dropdownRender={() => (
@@ -62,11 +75,21 @@ const DropdownOfAudience = () => {
             <div className="col-12">
               {/* Filter Age of audiance */}
               <div className="fw-bold">Audiance Age</div>
-              <Slider
-                range={{ draggableTrack: true }}
-                value={valueAge}
+              <Checkbox.Group
+                style={{
+                  width: "100%",
+                }}
                 onChange={handleOnChangeAge}
-              />
+                value={valueAge}
+              >
+                <Row>
+                  {GENDER_OF_AGE.map((item, index) => (
+                    <Col span={24} key={index}>
+                      <Checkbox value={item.value}>{item.name}</Checkbox>
+                    </Col>
+                  ))}
+                </Row>
+              </Checkbox.Group>
             </div>
             {/* Filter gender of audiance */}
             <div className="col-12">
@@ -79,8 +102,8 @@ const DropdownOfAudience = () => {
                 value={valueGender}
               >
                 <Row>
-                  {GENDER_OF_AUDIANCE.map((item) => (
-                    <Col span={24}>
+                  {GENDER_OF_AUDIANCE.map((item, index) => (
+                    <Col span={24} key={index}>
                       <Checkbox value={item.value}>{item.name}</Checkbox>
                     </Col>
                   ))}
@@ -111,7 +134,7 @@ const DropdownOfAudience = () => {
       )}
     >
       <a onClick={(e) => e.preventDefault()}>
-        <ButtonDropdow titleBtn="Audience" />
+        <ButtonDropdown Id="AudienceBtn" titleBtn="Audience" />
       </a>
     </Dropdown>
   );

@@ -51,3 +51,7 @@
 .influ-update-report-btn:hover {
     font-size: 15px;
 }
+
+.influ-update-profile  .ant-spin-nested-loading .ant-spin {
+	top:25%;
+}

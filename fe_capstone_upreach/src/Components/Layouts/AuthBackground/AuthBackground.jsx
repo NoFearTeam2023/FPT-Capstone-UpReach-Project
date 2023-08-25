@@ -3,7 +3,7 @@ import "./AuthBackground.css";
 const AuthBackground = ({ children }) => {
   return (
     <>
-      <HeaderHomepage />
+      {/* <HeaderHomepage /> */}
       <div className="auth-background">
         <div className="auth-form-cover">
           <div className="auth-custom-bg">

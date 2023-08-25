@@ -61,7 +61,7 @@ export const COST = {
             paddingTop: "10px",
             paddingLeft: "10px",
         },
-        label: <strong>0{" "}(VND)</strong>,
+        label: <div>0{" "}(VND)</div>,
     },
     5000000: {
         style: {
@@ -69,7 +69,7 @@ export const COST = {
             paddingTop: "10px",
             paddingRight: "40px",
         },
-        label: <strong>5M+{" "}(VND)</strong>,
+        label: <div>5M+{" "}(VND)</div>,
     },
 };
 
@@ -77,24 +77,82 @@ export const AGE = {
     0: {
         style: {
             paddingTop: "10px",
-            paddingLeft: "50px",
+            paddingLeft: "2px",
         },
-        label: <strong>0{" "}(year old)</strong>,
+        label: <div>0</div>,
     },
     100: {
         style: {
-            width:"160px",
             paddingTop: "10px",
-            paddingRight: "50px",
+            paddingRight: "5px",
         },
-        label: <strong>100{" "}(year old)</strong>,
+        label: <div>100</div>,
     },
 };
 
+export const FOLLOWERS = {
+    0: {
+        style: {
+            paddingTop: "10px",
+            paddingLeft: "10px",
+        },
+        label: <div>0</div>,
+    },
+    10000000: {
+        style: {
+            width:"150px",
+            paddingTop: "10px",
+            paddingRight: "40px",
+        },
+        label: <div>10M+</div>,
+    },
+};
+
+export const ENGAGEMENT = {
+    0: {
+        style: {
+            paddingTop: "10px",
+            paddingLeft: "10px",
+        },
+        label: <div>0%</div>,
+    },
+    20: {
+        style: {
+            width:"150px",
+            paddingTop: "10px",
+            paddingRight: "40px",
+        },
+        label: <div>20%+</div>,
+    },
+};
+
+export const PUBLICATION = {
+    0: {
+        style: {
+            paddingTop: "10px",
+            paddingLeft: "10px",
+        },
+        label: <div>0</div>,
+    },
+    15: {
+        style: {
+            width:"150px",
+            paddingTop: "10px",
+            paddingRight: "40px",
+        },
+        label: <div>15+</div>,
+    },
+};
+
+export const GENDER_OF_AGE = [
+    { name: "0-18", value: "AAI001" },
+    { name: "19-25", value: "AAI002" },
+    { name: "26-40", value: "AAI003" },
+    { name: "41-60", value: "AAI004" }
+];
 export const GENDER_OF_AUDIANCE = [
     { name: "Male", value: "Male" },
     { name: "Female", value: "Female" },
-    { name: "Other", value: "Other" },
 ];
 
 export const PROFILE_INFLUS = [

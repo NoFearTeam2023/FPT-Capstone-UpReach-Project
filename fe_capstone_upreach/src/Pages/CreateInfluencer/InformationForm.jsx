@@ -1,9 +1,11 @@
 import { Button, Form, Input, InputNumber, Select } from "antd";
-import React from "react";
+import React, {useRef, useState} from "react";
 import "./CreateInfluencerPage.css";
 import { Option } from "antd/es/mentions";
-
+import ApiUser from "../../Api/ApiUser";
 const InformationForm = ({ onFinish, initialValues }) => {
+
+  
   return (
     <>
       <div id="content">
@@ -18,7 +20,7 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please input your nickname!",
                   },
                 ]}
@@ -30,7 +32,7 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please select your location",
                   },
                 ]}
@@ -46,14 +48,14 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please select your gender",
                   },
                 ]}
               >
                 <Select placeholder="Select Your Gender">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
+                  <Option value="Male">Male</Option>
+                  <Option value="Female">Female</Option>
                 </Select>
               </Form.Item>
               <Form.Item
@@ -64,7 +66,7 @@ const InformationForm = ({ onFinish, initialValues }) => {
                     type: "number",
                     min: 18,
                     max: 99,
-                    required: true,
+                    required: false,
                     message: "Please enter your age",
                   },
                 ]}
@@ -76,7 +78,7 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please enter your Intro",
                   },
                 ]}
@@ -88,21 +90,21 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 />
               </Form.Item>
               <Form.Item
-                name="type"
+                name="typeId"
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please enter your influencer type",
                   },
                 ]}
               >
                 <Select placeholder="Select Your Influencer Type ">
-                  <Option value="type1">Celebrity</Option>
-                  <Option value="type2">Talent</Option>
-                  <Option value="type3">Professional</Option>
-                  <Option value="type4">Citizen</Option>
-                  <Option value="type5">Community</Option>
+                  <Option value="IT01">Celebrity</Option>
+                  <Option value="IT02">Talent</Option>
+                  <Option value="IT03">Professional</Option>
+                  <Option value="IT04">Citizen</Option>
+                  <Option value="IT05">Community</Option>
                 </Select>
               </Form.Item>
               <Form.Item
@@ -110,17 +112,17 @@ const InformationForm = ({ onFinish, initialValues }) => {
                 className="information-btn"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please enter your relationship",
                   },
                 ]}
               >
                 <Select placeholder="Select Your Relationship ">
-                  <Option value="rela1">Single</Option>
-                  <Option value="rela2">Married</Option>
-                  <Option value="rela3">Single Mom</Option>
-                  <Option value="rela4">Single Dad</Option>
-                  <Option value="rela5">Unknown</Option>
+                  <Option value="Single">Single</Option>
+                  <Option value="Married">Married</Option>
+                  <Option value="Single Mom">Single Mom</Option>
+                  <Option value="Single Dad">Single Dad</Option>
+                  <Option value="Unknown">Unknown</Option>
                 </Select>
               </Form.Item>
               <div>

@@ -2,6 +2,33 @@
     width: 100%;
     height: 94vh;
     padding: 40px;
+    overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.influencer-booking-layout:hover::-webkit-scrollbar-thumb {
+	z-index: 2;
+	visibility: visible;
+}
+
+.influencer-booking-layout::-webkit-scrollbar {
+	width: 8px;
+}
+
+.influencer-booking-layout::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 5px;
+}
+
+.influencer-booking-layout::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background: #bdbdbd;
+	z-index: 1;
+	visibility: hidden;
+}
+
+.influencer-booking-layout::-webkit-scrollbar-thumb:hover {
+	background: #858585;
 }
 
 .influencer-booking-title {
