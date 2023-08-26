@@ -1,8 +1,14 @@
-.coverMain .menu{
+.coverMain-myinflu {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.coverMain-myinflu .menu{
     width: 100%;
     height: 100%;
 }
-.coverMain .demographic{
+.coverMain-myinflu .demographic{
     height: 300px;
     background-color: white;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -10,31 +16,31 @@
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
-.coverMain .info{
+.coverMain-myinflu .info{
     margin: 0;
 }
-.coverMain .infomation{
+.coverMain-myinflu .infomation{
     border-bottom: 2px solid black;
     border-right: 2px solid black;
     padding-top: 10px;
     height: 50px;
 }
-.coverMain .type{
+.coverMain-myinflu .type{
     border-bottom: 2px solid black;
     padding-top: 10px;
     height: 50px;
 }
-.coverMain .ant-table-content{
+.coverMain-myinflu .ant-table-content{
     background-color: white;
 }
-.coverMain .ant-table-cell{
+.coverMain-myinflu .ant-table-cell{
     background-color: white !important;
 }
-.coverMain .table-my-list{
+.coverMain-myinflu .table-my-list{
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-radius: 15px;
 }
-.coverMain .group-by{
+.coverMain-myinflu .group-by{
     color: #9B9A9A;
     font-size: 20px;
     font-family: Volkhov;
@@ -43,53 +49,53 @@
     line-height: normal;
     letter-spacing: 0.12px;
 }
-.coverMain .button-edit{
+.coverMain-myinflu .button-edit{
     background-color: transparent;
     color: blue;
     border: none;
 }
- .coverMain .button-delete{
+ .coverMain-myinflu .button-delete{
     background-color: transparent !important;
     color: red;
     border: none;
 }
 
- .coverMain .button-edit:hover,.button-delete:hover{
+ .coverMain-myinflu .button-edit:hover,.button-delete:hover{
     font-weight: bold;
 }
- .coverMain .value-type{
+ .coverMain-myinflu .value-type{
     text-align: right;
 }
-.coverMain .chart{
+.coverMain-myinflu .chart{
     height: 100%;
 }
-.coverMain .popup-add-new{
+.coverMain-myinflu .popup-add-new{
     background-color: white !important;
     border-radius: 10px;
 }
-.coverMain .ant-modal-content{
+.coverMain-myinflu .ant-modal-content{
     background-color: white !important;
     border-radius: 10px;
     box-shadow: none !important;
     height: 175px;
 }
-.coverMain .ant-modal-close{
+.coverMain-myinflu .ant-modal-close{
     padding: 0 !important;
     margin: 0 !important;
 }
-.coverMain .ant-modal-title{
+.coverMain-myinflu .ant-modal-title{
     padding-top: 15px;
     padding-left: 15px;
 }
-.coverMain .ant-modal-footer{
+.coverMain-myinflu .ant-modal-footer{
     position: absolute;
     bottom: 10px;
     right: 10px;
 }
-.coverMain .menuList{
-    height: 120vh;
+.coverMain-myinflu .menuList{
+    height: 90vh;
 }
-.coverMain .new-add-list{
+.coverMain-myinflu .new-add-list{
     text-align: center;
     opacity: 30%;
     font-size: 55px;
@@ -97,10 +103,10 @@
     padding-top: 40vh;
     font-weight: bold;
 }
-.coverMain .ant-modal-content{
+.coverMain-myinflu .ant-modal-content{
     padding: 0 !important;
 }
-.coverMain .ant-form-item{
+.coverMain-myinflu .ant-form-item{
     padding-bottom: 0;
     margin-bottom: 0;
 }
@@ -113,8 +119,16 @@
 }
 .content-history-bg {
     background-color: #ececec;
-    height: 100%;
+    height: 100vh;
 }
 .padding-top-60{
     padding-top: 60px;
+}
+
+.coverMain-myinflu .ant-layout.ant-layout-has-sider { 
+    height: 94vh !important;
+}
+
+.coverMain-myinflu .ant-table-wrapper .ant-table-pagination-right {
+    justify-content: center;
 }

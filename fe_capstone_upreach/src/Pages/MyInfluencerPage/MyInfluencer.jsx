@@ -328,7 +328,7 @@ const MyInfluencer = () => {
     <>
       {console.log(tabName === "chat")}
       {user?.roleId == 2 ? (
-        <div className="coverMain">
+        <div className="coverMain-myinflu">
           <HeaderHomepage />
           <div className="row padding-top-60">
             <div className="col-2 pt-3 menuList padding-0">
@@ -378,8 +378,6 @@ const MyInfluencer = () => {
               )}
             </div>
           </div>
-
-          <FooterHome />
         </div>
       ) : (
         ""
