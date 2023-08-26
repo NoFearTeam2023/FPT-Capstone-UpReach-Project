@@ -83,10 +83,12 @@ async function addProfileClient(req, res, next) {
       email: email
     });
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
+    const infoClient = await userService.getUserClientByEmail(email)
     return res.json({
       status: "True",
       message: "Insert Success Client",
       dataImage: uploadedImages[0].url,
+      data : infoClient,
       _idMongodb: client._id,
       //data:
     });
