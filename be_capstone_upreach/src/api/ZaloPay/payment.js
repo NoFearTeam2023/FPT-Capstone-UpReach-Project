@@ -64,33 +64,8 @@ function createZaloPayOrder(describe, amount) {
     return axios.post(config.endpoint, null, { params: order });
 }
 
-function makeApiRequest(config, appTransId) {
-    const postData = {
-        app_id: config.app_id,
-        app_trans_id: appTransId,
-    };
-  
-    const data = `${postData.app_id}|${postData.app_trans_id}|${config.key1}`;
-    postData.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
-  
-    const postConfig = {
-        method: 'post',
-        url: config.endpoint,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify(postData)
-    };
-  
-    axios(postConfig)
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-  }
+
 
 module.exports = {
-    createZaloPayOrder,makeApiRequest
+    createZaloPayOrder
 };

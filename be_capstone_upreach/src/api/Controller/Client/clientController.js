@@ -15,7 +15,7 @@ const common = require("../../../../common/common");
 const clientModel = require("../../Model/MogooseSchema/clientModel");
 const influModel = require("../../Model/MogooseSchema/influModel");
 const { getUserByEmail } = require("../../Service/User/UserService");
-const { createZaloPayOrder,makeApiRequest } = require('../../ZaloPay/payment');
+const { createZaloPayOrder } = require('../../ZaloPay/payment');
 
 const isObjectEmpty = (objectName) => {
   return _.isEmpty(objectName);
@@ -246,10 +246,8 @@ async function InsertClient(
       brandClient
     );
     if (checkInsertClient.rowsAffected[0]) {
-      console.log(123123)
       return true;
     } else {
-      console.log(456456)
       return false;
     }
   } catch (e) {
@@ -565,17 +563,7 @@ async function updatePassword(req,res,next){
   }
 }
 
- async function updatePlanPackage(req, res) {
-  // const { description, amount } = req.body;
-
-  // createZaloPayOrder(description, amount)
-  //     .then(response => {
-  //         res.send(response.data);
-  //     })
-  //     .catch(error => {
-  //         console.error(error);
-  //         res.status(500).send('An error occurred');
-  //     });
+ async function createQRcode(req, res) {
   try {
     console.log("updatePlanPackage")
     const { describe, amount } = req.body;
@@ -587,25 +575,70 @@ async function updatePassword(req,res,next){
   }
 }
 
-async function checkStatusPayment (req, res,next){
+async function updateAfterScanQR (req, res,next){
   try {
-    const{apptransid} = req.body
-    const response = await makeApiRequest(configZalo , apptransid)
-    return res.json({data : response})
+    var usageReports;
+    var usageResultSearching;
+    
+    const {tag} = req.body.planPackageDetail
+    const {email} = req.body.clientDetail
+    // const {tag,amount} = req.body
+    // const {email} = req.body
+    switch(tag) {
+      case 'Gold':
+        usageReports = 1000,
+        usageResultSearching = 3000
+        break;
+      case "Business":
+        usageReports = 500,
+        usageResultSearching = 1000
+        break;
+      case "Starter":
+        usageReports = 20,
+        usageResultSearching = 200
+        break;  
+      default:
+    }
+    
+    // return res.json({data : req.body})
+    if(!await insertDataPointRemaining(tag,usageReports,usageResultSearching,)){
+      return res.json({ status: "False",message: "Updated False"})
+    }
+    if(!await updatePlanPackage(email)){
+      return res.json({ status: "False", message: "Updated Data False"})
+    }
+    return res.json({
+      status: "True",
+      message: "Updated"
+    })
+
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred');
   }
   
 }
-
-
-
+  async function insertDataPointRemaining(planName,usageReports,usageResultSearching){
+    const checkInsertPointRemaining = await clientService.addNewPointRemained(planName,usageReports,usageResultSearching);
+    if (checkInsertPointRemaining.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  async function updatePlanPackage(email){
+    const checkUpdatePlanPackage = await clientService.updatePlanForClient(email)
+    if (checkUpdatePlanPackage.rowsAffected[0]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 
 module.exports = {
-  updatePlanPackage,
-  checkStatusPayment,
+  createQRcode,
+  updateAfterScanQR,
   getDataClient,
   updatePassword,
   getDataToCheckPassword,

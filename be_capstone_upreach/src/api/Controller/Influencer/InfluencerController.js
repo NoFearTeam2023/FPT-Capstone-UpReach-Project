@@ -1365,7 +1365,7 @@ async function getDataForInfluencerByEmailAndPublish(req, res, next){
     if(!isObjectEmpty(response)){
       return res.json({ status : "True", data : response})
     }
-    return res.json({ status : "False", message : "No Data Influncer "})
+    return res.json({ status : "False", message : "Influncer Not Approved Yet "})
   } catch (err) {
     console.log(err);
     return res.json({ message: " " + err });

@@ -93,7 +93,7 @@ router.post("/message/addmess", addMessage);
 router.post("/message/getmess", getAllMessage);
 
 //Zalo pya
-router.post("/zalopay",clientController.updatePlanPackage)
-router.post("/status-check",clientController.checkStatusPayment)
+router.post("/zalopay",clientController.createQRcode)
+router.post("/update-plan-package",clientController.updateAfterScanQR)
 
 module.exports = router

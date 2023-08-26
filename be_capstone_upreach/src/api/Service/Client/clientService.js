@@ -194,25 +194,42 @@ async function updateClient(
     }
 }
 
-async function updatePlanForClient(planName,usageReports,usageResultSearching,emailUser){
+async function addNewPointRemained (planName,usageReports,usageResultSearching){
     try {
-        const updatePlanPackageClient = "updatePlanPackageForClient";
+        const insertPointRemaining = "insertDataPointRemaining";
         const remainingId = await getLastIdPointRemained()
         const lastRemainingId = common.increaseID(remainingId.Remaining_ID);
         const connection = await pool.connect();
         const request = connection.request();
         request.input('remainingId', sql.NVarChar, lastRemainingId );
         request.input('planName', sql.NVarChar, planName );
-        request.input('usageReports', sql.NVarChar, usageReports );
-        request.input('usageResultSearching', sql.NVarChar, usageResultSearching );
-        request.input('emailUser', sql.NVarChar, emailUser );
-        const result = await request.execute(updatePlanPackageClient);
-        
+        request.input('usageReports', sql.Int, usageReports );
+        request.input('usageResultSearching', sql.Int, usageResultSearching );
+        const result = await request.execute(insertPointRemaining);
         connection.close();
         return result;
     } catch (error) {
-        
+        console.log('Lỗi thực thi addNewPointRemained:', error);
+        throw error;
     }
 }
 
-module.exports = {updatePlanForClient,updateClient,getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}
+async function updatePlanForClient(emailUser){
+    try {
+        const updatePlanPackageClient = "updatePlanPackageForClient";
+        const remainingId = await getLastIdPointRemained()
+        const lastRemainingId = remainingId.Remaining_ID;
+        const connection = await pool.connect();
+        const request = connection.request();
+        request.input('remainingId', sql.NVarChar, lastRemainingId );
+        request.input('emailUser', sql.NVarChar, emailUser );
+        const result = await request.execute(updatePlanPackageClient);
+        connection.close();
+        return result;
+    } catch (error) {
+        console.log('Lỗi thực thi updatePlanForClient:', error);
+        throw error;
+    }
+}
+
+module.exports = {addNewPointRemained,updatePlanForClient,updateClient,getAllClient,getClientByEmail,getLastIdClients,getLastIdPointRemained,getLastIdInvoices,insertClient,insertInvoice,insertPointRemained}
