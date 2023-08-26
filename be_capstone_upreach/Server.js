@@ -39,41 +39,7 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }))
-app.post('api/callback', (req, res) => {
-    console.log(123123123123123123)
-    let result = {};
-  
-    try {
-      let dataStr = req.body.data;
-      let reqMac = req.body.mac;
-  
-      let mac = CryptoJS.HmacSHA256(dataStr, configZalo.key2).toString();
-      console.log("mac =", mac);
-  
-  
-      // kiểm tra callback hợp lệ (đến từ ZaloPay server)
-      if (reqMac !== mac) {
-        // callback không hợp lệ
-        result.return_code = -1;
-        result.return_message = "mac not equal";
-      }
-      else {
-        // thanh toán thành công
-        // merchant cập nhật trạng thái cho đơn hàng
-        let dataJson = JSON.parse(dataStr, configZalo.key2);
-        console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
-  
-        result.return_code = 1;
-        result.return_message = "success";
-      }
-    } catch (ex) {
-      result.return_code = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
-      result.return_message = ex.message;
-    }
-  
-    // thông báo kết quả cho ZaloPay server
-    res.json(result);
-  });
+
 
 app.use(
     fileUpload(

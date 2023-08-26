@@ -36,10 +36,11 @@ const axios = require('axios').default;
 const CryptoJS = require('crypto-js');
 const moment = require('moment');
 const config = require("../Config/configZalo");
+const qs = require('qs');
 
-function createZaloPayOrder(description, amount) {
+function createZaloPayOrder(describe, amount) {
     const embed_data = {
-        redirectUrl : "http://localhost:3000/homepage"
+        redirectUrl : "http://localhost:3000/confirm-payment"
     };
 
     const items = [{}];
@@ -52,7 +53,7 @@ function createZaloPayOrder(description, amount) {
         item: JSON.stringify(items),
         embed_data: JSON.stringify(embed_data),
         amount: amount,
-        description: description, 
+        description: describe, 
         bank_code: "zalopayapp", 
         callback_url: "http://localhost:4000/api/callback",
     };
@@ -63,6 +64,33 @@ function createZaloPayOrder(description, amount) {
     return axios.post(config.endpoint, null, { params: order });
 }
 
+function makeApiRequest(config, appTransId) {
+    const postData = {
+        app_id: config.app_id,
+        app_trans_id: appTransId,
+    };
+  
+    const data = `${postData.app_id}|${postData.app_trans_id}|${config.key1}`;
+    postData.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
+  
+    const postConfig = {
+        method: 'post',
+        url: config.endpoint,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: qs.stringify(postData)
+    };
+  
+    axios(postConfig)
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+  }
+
 module.exports = {
-    createZaloPayOrder
+    createZaloPayOrder,makeApiRequest
 };

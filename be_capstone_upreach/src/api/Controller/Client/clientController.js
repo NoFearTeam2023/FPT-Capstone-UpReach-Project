@@ -15,7 +15,7 @@ const common = require("../../../../common/common");
 const clientModel = require("../../Model/MogooseSchema/clientModel");
 const influModel = require("../../Model/MogooseSchema/influModel");
 const { getUserByEmail } = require("../../Service/User/UserService");
-const { createZaloPayOrder } = require('../../ZaloPay/payment');
+const { createZaloPayOrder,makeApiRequest } = require('../../ZaloPay/payment');
 
 const isObjectEmpty = (objectName) => {
   return _.isEmpty(objectName);
@@ -178,7 +178,8 @@ async function InsertPointRemained() {
 
 async function InsertInvoice() {
   try {
-    const now = "" + Date.now();
+    const now = new Date();
+    const dateNow = now.toISOString();
     const lastIdClient = await clientService.getLastIdClients();
     const lastIdInvoices = await clientService.getLastIdInvoices();
     var newIdInvoices = common.increaseID(lastIdInvoices.Invoice_ID); // Lấy last Id của Invoice_ID cuối trong db
@@ -190,7 +191,7 @@ async function InsertInvoice() {
       newIdClient,
       "P04",
       1,
-      now
+      dateNow
     );
     if (checkInsertInvoice.rowsAffected[0]) {
       return true;
@@ -577,8 +578,8 @@ async function updatePassword(req,res,next){
   //     });
   try {
     console.log("updatePlanPackage")
-    const { description, amount } = req.body;
-    const response = await createZaloPayOrder(description, amount)
+    const { describe, amount } = req.body;
+    const response = await createZaloPayOrder(describe, amount)
     return res.json({data : response.data})
   } catch (error) {
     console.error(error);
@@ -586,15 +587,17 @@ async function updatePassword(req,res,next){
   }
 }
 
-// async function callbackZaloPay(req,res){
-//   // Xử lý dữ liệu callback từ ZaloPay ở đây
-//   const callbackData = req.body; // Dữ liệu từ ZaloPay
-
-//   // Xử lý logic dựa trên callbackData, ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu
-//   // và gửi phản hồi về cho ZaloPay (thường trả về một JSON với trạng thái 200 OK)
+async function checkStatusPayment (req, res,next){
+  try {
+    const{apptransid} = req.body
+    const response = await makeApiRequest(configZalo , apptransid)
+    return res.json({data : response})
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
   
-//   res.status(200).json({ message: 'Callback processed successfully' });
-// }
+}
 
 
 
@@ -602,7 +605,7 @@ async function updatePassword(req,res,next){
 
 module.exports = {
   updatePlanPackage,
-  // callbackZaloPay,
+  checkStatusPayment,
   getDataClient,
   updatePassword,
   getDataToCheckPassword,

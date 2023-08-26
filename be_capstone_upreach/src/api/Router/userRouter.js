@@ -94,6 +94,6 @@ router.post("/message/getmess", getAllMessage);
 
 //Zalo pya
 router.post("/zalopay",clientController.updatePlanPackage)
-// router.post("/callback",clientController.callbackZaloPay)
+router.post("/status-check",clientController.checkStatusPayment)
 
 module.exports = router
