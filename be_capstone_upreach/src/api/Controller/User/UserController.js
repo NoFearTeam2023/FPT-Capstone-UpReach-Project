@@ -103,12 +103,10 @@ async function confirmRegister(req, res, next) {
                             console.log('fails add session');
                             return res.json({ status: 'False', message: 'Fails Add Session' });
                         }
-                        const infoUser = await createClientOrInflu(user.email, role)
                         return res.status(200).json({
                             status: 'True',
                             message: "Them session vao db thanh cong",
                             data: user,
-                            idUser: user.roleId === '1' ? null  : infoUser._id
                         });
                     });
 
@@ -278,25 +276,25 @@ async function changePassword(req,res,next){
     }
   }
 
-async function createClientOrInflu(email, roleId) {
-    try {
-        if (roleId === '2') {
-            const client = await clientModel.create({
-                email: email
-            });
-            return client
-        }
-        if (roleId === '3') {
-            const influ = await influModel.create({
-                email: email
-            });
-            return influ
-        }
-    }
-    catch (err) {
-        return res.json({ message: ' ' + err });
-    }
-}
+// async function createClientOrInflu(email, roleId) {
+//     try {
+//         if (roleId === '2') {
+//             const client = await clientModel.create({
+//                 email: email
+//             });
+//             return client
+//         }
+//         if (roleId === '3') {
+//             const influ = await influModel.create({
+//                 email: email
+//             });
+//             return influ
+//         }
+//     }
+//     catch (err) {
+//         return res.json({ message: ' ' + err });
+//     }
+// }
 
 async function createClient(req, res, next) {
     try {

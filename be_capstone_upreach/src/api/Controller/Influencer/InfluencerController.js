@@ -708,7 +708,7 @@ async function updateInfluencer(req, res, next) {
   try {
     // return res.json({data : req.body.influencerDetail})
     const { email } = req.body.influencerDetail
-    const idInflu = req.body.influencerDetail;
+    const idInflu = req.body.idInflu;
     const image = req.body.image[0]
     const uploadedImages = [];
     if (image.thumbUrl) {
@@ -722,10 +722,12 @@ async function updateInfluencer(req, res, next) {
     if (updateAvatar.rowsAffected[0]) {
       return res.json({ message: "Update Avatar success" })
     }
-    await influModel.findByIdAndUpdate(idInflu, {
-      avatarImage: uploadedImages[0].url,
-      nickname: nickname
-    })
+    if(idInflu){
+      await influModel.findByIdAndUpdate(idInflu, {
+        avatarImage: uploadedImages[0].url,
+        nickname: nickname
+      })
+    }
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
   } catch (error) {
     console.log(error)
@@ -747,7 +749,6 @@ async function addInfluencer(req, res, next) {
     } else uploadedImages.push({ userId: image.userId, id: image.uid, url: image.url });
     const { nickname, location, gender, age, intro, typeId, relationship } = req.body.informationDetails
     const { emailContact, phone } = req.body.overviewDetails
-    const idInflu = req.body.idInflu;
     const { name, email } = req.body.influencerDetail
     const user = await userService.getUserByEmail(email);
     const now = new Date();
@@ -762,10 +763,21 @@ async function addInfluencer(req, res, next) {
       return res.json({ status: 'False', message: 'Insert Data Kols Fails' });
     }
 
+    //Create influe in mongodb
+    const influe =  await influModel.create({
+      avatarImage: uploadedImages[0].url,
+      nickname: nickname,
+      email: email
+    });
+    
+    const infoClient = await userService.getUserInfluencerByEmail(email)
+    console.log("infoClient", infoClient)
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: 'True',
-      message: 'Insert Success Influencer'
+      message: 'Insert Success Influencer',
+      data : infoClient,
+      _idMongodb: influe._id
     });
 
   } catch (err) {
