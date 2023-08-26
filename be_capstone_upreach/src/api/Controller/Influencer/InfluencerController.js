@@ -641,9 +641,9 @@ async function reportOfInfluencer(req, res, next) {
 async function insertDataToHistoryReport(req, res, next) {
   try {
     const { influencerId, clientId } = req.body;
-    const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(influencerId)
+    const checkInfluencerExisted = await influService.checkInfluencerExistedInHistoryView(clientId,influencerId)
     const check = checkInfluencerExisted.recordset
-    // console.log(check)
+    console.log(checkInfluencerExisted)
     if (!checkInfluencerExisted.recordset.length > 0) {
       const insertHistoryViewInfluencer = await influService.insertHistoryViewInfluencer(clientId, influencerId)
       if (insertHistoryViewInfluencer) {

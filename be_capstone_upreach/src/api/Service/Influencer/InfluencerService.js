@@ -544,13 +544,14 @@ async function insertHistoryViewInfluencer(clientId,kolsId){
         throw err;
     }
 }
-async function checkInfluencerExistedInHistoryView(influencerId){
+async function checkInfluencerExistedInHistoryView(clientId,influencerId){
     try {
         const checkExisted = "getInfluencerIdHistoryReport";
         const connection = await pool.connect();
         const request = connection.request();
 
         request.input('influencerId', sql.NVarChar, influencerId)
+        request.input('clientId', sql.NVarChar, clientId)
         const result = await request.execute(checkExisted);
         connection.close();
         return result;
