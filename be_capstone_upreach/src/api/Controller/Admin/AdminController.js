@@ -379,13 +379,13 @@ const router = express.Router();
           return res.json({ message: " " + err });
         }
         const request = new sql.Request();
-        await request.input('fullName', sql.NVarChar, influ?.fullName)
-        .input('age', sql.Int, influ?.Age)
-        .input('gender', sql.NVarChar, influ?.Gender)
-        .input('relationship', sql.NVarChar, influ?.Relationship)
-        .input('email', sql.NVarChar, influ?.Email)
-        .input('phone', sql.NVarChar, influ?.Phone)
-        .input('address', sql.NVarChar, influ?.Address)
+        await request.input('fullName', sql.NVarChar, influ?.influencerfullName)
+        .input('age', sql.Int, influ?.influencerAge)
+        .input('gender', sql.NVarChar, influ?.influencerGender)
+        .input('relationship', sql.NVarChar, influ?.influencerRelationship)
+        .input('email', sql.NVarChar, influ?.influencerEmail)
+        .input('phone', sql.NVarChar, influ?.influencerPhone)
+        .input('address', sql.NVarChar, influ?.influencerAddress)
         .input('profileId', sql.NVarChar, influId)
         .query(`
             BEGIN
@@ -654,5 +654,60 @@ const router = express.Router();
     }
   }
 
+  async function editPackage(req, res, next) {
+    try {
+      const package = JSON.parse(req.body?.package);
+      const clientId = JSON.parse(req.body?.clientId);
+      console.log(package,1);
+      console.log(clientId,2);
+      sql.connect(config, async (err) => {
+        if (err) {
+          console.log(err);
+          return res.json({ message: " " + err });
+        }
+        const request = new sql.Request();
+        await request.input('clientId', sql.NVarChar, clientId)
+        const remainingId = await request.query(`
+            BEGIN
+            SELECT Remaining_ID FROM [UpReachDB].[dbo].[Clients] WHERE Client_ID = @clientId
+            END
+        `);
+        const pointReportInt = parseInt(package.pointReport, 10);
+        const pointSearchInt = parseInt(package.pointSearch, 10);
+        
+        request.input('plan', sql.NVarChar, package.plan)
+        const planId = await request.query(`
+        BEGIN
+        SELECT Plan_ID  FROM [UpReachDB].[dbo].[PlanPackage] WHERE [Plan] = @plan
+        END
+        `);
+        request.input('pointReport', sql.Int, pointReportInt)
+        request.input('pointSearch', sql.Int, pointSearchInt)
+        request.input('remainingId', sql.NVarChar, remainingId.recordset[0].Remaining_ID)
+    request.input('planId', sql.NVarChar, planId.recordset[0].Plan_ID)
+  
+        await request.query(`
+        BEGIN
+        UPDATE [UpReachDB].[dbo].[PointRemained]
+                SET Plan_ID = @planId,
+                    Usage_Reports = @pointReport,
+                    Usage_Result_Searching = @pointSearch
+                WHERE Remaining_ID = @remainingId
+        END
+    `);
+        
 
-  module.exports = {getTotalList, getTotalBooking, getApproveReport, postApproveReport, getInfluencerAccount,getTopInfluencer,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }
+            return res.status(201).json({
+              message: "Successfully!",
+              // data: ,
+            });
+          }
+        );
+    } catch (err) {
+      console.log(err);
+      return res.json({ message: " " + err });
+    }
+  }
+
+
+  module.exports = {editPackage,getTotalList, getTotalBooking, getApproveReport, postApproveReport, getInfluencerAccount,getTopInfluencer,editInflu,lockInflu, unlockInflu, getClientAccount, editClient, lockClient, unlockClient }

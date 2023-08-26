@@ -77,15 +77,18 @@ async function addProfileClient(req, res, next) {
       return res.json({ status: "False", message: "Insert Invoice Fails" });
     }
 
-    await clientModel.findByIdAndUpdate(idClient, {
+    const client =  await clientModel.create({
       avatarImage: uploadedImages[0].url,
-      username: fullName,
+      username: name,
+      email: email
     });
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: "True",
       message: "Insert Success Client",
       dataImage: uploadedImages[0].url,
+      _idMongodb: client._id,
+      //data:
     });
   } catch (err) {
     // Xử lý lỗi
@@ -327,8 +330,8 @@ async function bookingJob(req, res, next) {
         return res.json({ message: " " + err });
       }
       const request = new sql.Request();
-      const randomNumber = Math.floor(Math.random() * 10000);
-      const formattedNumber = randomNumber.toString().padStart(4, "0");
+      const randomNumber = Math.floor(Math.random() * 100000);
+      const formattedNumber = randomNumber.toString().padStart(5, "0");
       const bookingId = "CB" + formattedNumber;
       request.query(`
       BEGIN
