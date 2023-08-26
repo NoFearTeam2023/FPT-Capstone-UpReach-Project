@@ -770,13 +770,13 @@ async function addInfluencer(req, res, next) {
       email: email
     });
     
-    const infoClient = await userService.getUserInfluencerByEmail(email)
-    console.log("infoClient", infoClient)
+    const infoInfluencer = await userService.getUserInfluencerByEmail(email)
+    console.log("infoInfluencer", infoInfluencer)
     // Nếu tất cả các thao tác trước đó thành công, gửi phản hồi thành công
     return res.json({
       status: 'True',
       message: 'Insert Success Influencer',
-      data : infoClient,
+      data : infoInfluencer,
       _idMongodb: influe._id
     });
 
