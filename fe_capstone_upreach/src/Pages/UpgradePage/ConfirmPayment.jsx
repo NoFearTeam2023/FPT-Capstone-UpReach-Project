@@ -1,48 +1,59 @@
 import React, { useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import ApiListClient from '../../Api/ApiListClient';
-import { Button } from "antd";
+import ApiListClient from "../../Api/ApiListClient";
+import { useState } from "react";
+import { Button, Form, Input, InputNumber } from "antd";
 import { CheckCircleTwoTone } from "@ant-design/icons";
-import { useState } from 'react';
+import { ToastContainer, toast } from "react-toastify";
+const ConfirmPayment = () => {
+  const location = useLocation();
+  const queryParams = Object.fromEntries(new URLSearchParams(location.search));
+  const navigate = useNavigate();
+  const [isData, setIsData] = useState();
+  const [message, setMessage] = useState();
+  const [status, setStatus] = useState();
+  const onClickHomePage = () => {
+    console.log(isData);
+    FetchDataPayment(isData);
+  };
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnFocusLoss: true,
+    draggable: true,
+    theme: "dark",
+  };
 
-const ConfirmPayment =() => {
-    const location = useLocation();
-    const queryParams = Object.fromEntries(new URLSearchParams(location.search));
-    const navigate = useNavigate();
-    const [isData,setIsData] = useState()
-    const [status,setStatus] = useState(false)
-    const onClickHomePage = () =>{
-      console.log(isData)
-      FetchDataPayment(isData)
-      setStatus(true)
-    }
-
-    
-
-    const FetchDataPayment = async (data) =>{
-      try {
-          const respone = await ApiListClient.updateAfterScanQR(data)
-          console.log(respone)
-          return respone
-      } catch (error) {
-          console.log(error);
+  const FetchDataPayment = async (data) => {
+    try {
+      const response = await ApiListClient.updateAfterScanQR(data);
+      if (response.status === "False") {
+        toast.error(response.message, toastOptions);
+        setStatus(response.status);
+        return;
       }
+      toast.success(response.message, toastOptions);
+      setStatus(response.status);
+      console.log(response);
+      return response;
+    } catch (error) {
+      setMessage(error);
+      console.log(error);
     }
+  };
 
-    useEffect(()=>{
-      const data = localStorage.getItem("Plan-Package");
-      const dataPlanPackage = JSON.parse(data);
-      setIsData(dataPlanPackage)
-      if(status){
-        navigate('/homepage')
-      }
-    },[status])
+  useEffect(() => {
+    const data = localStorage.getItem("Plan-Package");
+    const dataPlanPackage = JSON.parse(data);
+    setIsData(dataPlanPackage);
+    if (status === "True") {
+      navigate("/homepage");
+    }
+  }, [status]);
 
-    useEffect(() =>{
+  useEffect(() => {});
 
-    })
-    
   return (
     <div>
       <div>
@@ -72,6 +83,7 @@ const ConfirmPayment =() => {
                     Home Page
                   </Button>
                 </div>
+                <ToastContainer />
               </div>
             </div>
           </div>
