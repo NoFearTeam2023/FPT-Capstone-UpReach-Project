@@ -332,8 +332,8 @@ async function bookingJob(req, res, next) {
         return res.json({ message: " " + err });
       }
       const request = new sql.Request();
-      const randomNumber = Math.floor(Math.random() * 10000);
-      const formattedNumber = randomNumber.toString().padStart(4, "0");
+      const randomNumber = Math.floor(Math.random() * 100000);
+      const formattedNumber = randomNumber.toString().padStart(5, "0");
       const bookingId = "CB" + formattedNumber;
       request.query(`
       BEGIN
