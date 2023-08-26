@@ -36,7 +36,7 @@ const Index_ClientProfile = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([{}]);
+  const [fileList, setFileList] = useState([]);
   const [checkClientExist, setCheckClientExist] = useState(false);
   const [formValues, setFormValues] = useState({
     image: "",
@@ -91,6 +91,7 @@ const Index_ClientProfile = () => {
       ...prevDetails,
       clientDetail: formDataNewClientJson,
     }));
+
     FetchDataCheckProfile(formDataNewClientJson);
   };
 
@@ -283,15 +284,23 @@ const Index_ClientProfile = () => {
               >
                 <div>
                   <Form.Item>
-                    <Upload
+                  <Upload
+                      customRequest={({ file, onSuccess }) => {
+                        onSuccess("ok");
+                      }}
                       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       listType="picture-card"
                       fileList={fileList}
                       onPreview={handlePreview}
                       onChange={handleChange}
+                      name="image"
                       beforeUpload={beforeUpload}
                     >
-                      {fileList ? null : uploadButton}
+                      {!fileList
+                        ? "+ Upload"
+                        : fileList?.length < 1
+                        ? "+ Upload"
+                        : null}
                     </Upload>
                     <Modal
                       open={previewOpen}
