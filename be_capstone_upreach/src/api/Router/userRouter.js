@@ -38,6 +38,7 @@ router.put("/admin/edit-package", adminController.editPackage);
 router.put("/influ/update", influencerController.updateInfo);
 router.post("/influ/search", influencerController.searchInfluencer);
 router.get("/influ/get", influencerController.getAllInfluencer);
+router.post("/influ/get-data-influencer", influencerController.getDataForInfluencerByEmailAndPublish);
 router.post("/influ/search-minus-point", influencerController.searchPoint);
 router.post("/influ/report-influencer", influencerController.reportOfInfluencer);
 router.post("/influ/get-data-history-report", influencerController.getAllHistoryReportByClient);
@@ -94,6 +95,6 @@ router.post("/message/getmess", getAllMessage);
 
 //Zalo pya
 router.post("/zalopay",clientController.updatePlanPackage)
-// router.post("/callback",clientController.callbackZaloPay)
+router.post("/status-check",clientController.checkStatusPayment)
 
 module.exports = router
