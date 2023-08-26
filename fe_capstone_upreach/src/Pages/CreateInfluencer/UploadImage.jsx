@@ -62,7 +62,11 @@ const UploadImage = ({ onFinish, initialValues, setImage }) => {
                   beforeUpload={() => true}
                   onChange={handleChange}
                 >
-                  {fileList?.length >= 1 ? null : uploadButton}
+                  {!fileList
+                    ? "+ Upload"
+                    : fileList?.length < 1
+                    ? "+ Upload"
+                    : null}
                 </Upload>
               </ImgCrop>
 

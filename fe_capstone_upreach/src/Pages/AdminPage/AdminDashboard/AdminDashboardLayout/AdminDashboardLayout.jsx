@@ -106,7 +106,7 @@ const AdminDashboardLayout = () => {
               <AdminTopIncome listClient={listClientTop} />
             </div>
           </div>
-          <div className="upgrade-packages">
+          {/* <div className="upgrade-packages">
             <div className="upgrade-package-free">
               <div className="upgrade-package-header">
                 <p>Free</p>
@@ -187,7 +187,7 @@ const AdminDashboardLayout = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </Spin>
       </div>
     </>

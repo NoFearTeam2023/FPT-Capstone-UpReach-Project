@@ -3,6 +3,7 @@ import "./SignUpInfluencerPage.css";
 import { Button, Form, Input, InputNumber } from "antd";
 import { Link } from "react-router-dom";
 import FormItem from "antd/es/form/FormItem";
+import AuthBackground from "../../Components/Layouts/AuthBackground/AuthBackground";
 
 const VerifyInfluencerRegister = () => {
   return (

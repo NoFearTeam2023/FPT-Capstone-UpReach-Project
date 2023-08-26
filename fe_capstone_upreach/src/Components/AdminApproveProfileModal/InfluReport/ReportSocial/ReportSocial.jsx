@@ -65,7 +65,7 @@ const ReportSocial = ({ influInfo }) => {
                               ?.slice(0, 10)}...`
                           : Number(
                               influInfo?.profile?.CostEstimateFrom
-                            )?.toLocaleString("vi-VN")}
+                            )?.toLocaleString("vi-VN") || 0}
                       </span>
                     </Tooltip>
                   </div>
@@ -87,7 +87,7 @@ const ReportSocial = ({ influInfo }) => {
                               ?.slice(0, 10)}...`
                           : Number(
                               influInfo?.profile?.CostEstimateTo
-                            )?.toLocaleString("vi-VN")}
+                            )?.toLocaleString("vi-VN") || 0}
                       </span>
                     </Tooltip>
                   </div>
@@ -105,7 +105,7 @@ const ReportSocial = ({ influInfo }) => {
                     ).toLocaleString("vi-VN")}
                   >
                     <span className="text-tooltip">
-                      {roundNumber(influInfo?.platform?.PostsPerWeek)}
+                      {roundNumber(influInfo?.platform?.PostsPerWeek) || 0}
                     </span>
                   </Tooltip>
                 </div>

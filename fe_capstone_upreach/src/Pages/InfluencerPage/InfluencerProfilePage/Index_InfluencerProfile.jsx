@@ -35,7 +35,7 @@ const Index_InfluencerProfile = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState();
+  const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
   const [formValues, setFormValues] = useState({
     image: "",
@@ -255,6 +255,9 @@ const Index_InfluencerProfile = () => {
                 <div>
                   <Form.Item>
                     <Upload
+                      customRequest={({ file, onSuccess }) => {
+                        onSuccess("ok");
+                      }}
                       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       listType="picture-card"
                       fileList={fileList}

@@ -228,7 +228,7 @@ const MyInfluencer = () => {
     // click add new
     if (
       (e.key === "new" && roleClient !== "Free") ||
-      listInfluencer.length === 0
+      (listInfluencer.length === 0 && e.key === "new")
     ) {
       setAddNewList(true);
       form.resetFields();
@@ -358,8 +358,8 @@ const MyInfluencer = () => {
                   flagDeleteList={flagDeleteList}
                   setFlagDeleteList={setFlagDeleteList}
                   idAccClient={idAccClient}
-                // IdList={IdList}
-                // DeleteList={DeleteList}
+                  // IdList={IdList}
+                  // DeleteList={DeleteList}
                 />
               ) : (
                 <>

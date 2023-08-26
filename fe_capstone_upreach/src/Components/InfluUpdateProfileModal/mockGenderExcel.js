@@ -1,6 +1,6 @@
 const dataGenderArr = [
     ["","",""],
-    ["","Sex", "%"],
+    ["","Gender", "People"],
     ["","Male" , ""],
     ["","Female" , ""],
 ];

@@ -102,6 +102,7 @@ const ProfileCardLayout = ({
         info.influencerId,
         user.Client_ID
       );
+      console.log(response);
       setInfluInfo(info);
       // open popup client
       setIsOpenProfileInflu(true);

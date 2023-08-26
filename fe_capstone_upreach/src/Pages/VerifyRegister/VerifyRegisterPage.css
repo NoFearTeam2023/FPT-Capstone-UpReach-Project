@@ -35,7 +35,7 @@
     display: flex;
     align-items: center;
     justify-items: center;
-    margin: 20px 0;
+    margin: 20px auto;
 }
 
 .otp-filed {
@@ -58,4 +58,10 @@
     height: 100%;
     padding: 15px 10px;
     font-size: 30px;
+}
+.index-1000{
+    z-index: 1000;
+}
+.index-100{
+    z-index: 100;
 }

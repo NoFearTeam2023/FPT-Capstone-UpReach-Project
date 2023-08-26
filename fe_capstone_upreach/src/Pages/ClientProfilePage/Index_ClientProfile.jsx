@@ -62,6 +62,7 @@ const Index_ClientProfile = () => {
   console.log(formData);
   useEffect(() => {
     form.setFieldsValue({
+      image: formData?.clientData?.image,
       fullName: formData?.clientData?.fullName,
       brandName: formData?.clientData?.brand,
       phoneNumber: formData?.clientData?.phone,
@@ -214,6 +215,7 @@ const Index_ClientProfile = () => {
         style={{
           marginTop: 8,
         }}
+        name="image"
       >
         Upload
       </div>
@@ -250,6 +252,14 @@ const Index_ClientProfile = () => {
     draggable: true,
     theme: "dark",
   };
+
+  // const getBase64 = (file) =>
+  //   new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = (error) => reject(error);
+  //   });
 
   console.log(checkClientExist);
   return (

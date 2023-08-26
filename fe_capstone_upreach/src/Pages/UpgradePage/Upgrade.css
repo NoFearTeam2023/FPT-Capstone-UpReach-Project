@@ -85,5 +85,30 @@
     text-align: center;
     padding-top: 10px;
 }
+.index-1000{
+    z-index: 1000;
+}
+.index-100{
+    z-index: 100;
+}
+.margin-0-auto{
+    margin: 0 auto;
+}
+.upgrade-card-btn {
+    width: 100%;
+    height: 50px;
+}
 
-
+.upgrade-card-btn a {
+    text-decoration: none;
+}
+.margin-top-300{
+    margin-top: 160px;
+}
+.messSuccess{
+    font-size: 40px;
+}
+.messSuccess svg{
+    font-size: 50px;
+    padding-bottom: 16px;
+}

@@ -452,7 +452,7 @@ const AdminInfluencerLayout = () => {
                   rowClassName="editable-row"
                   pagination={{
                     onChange: cancel,
-                    pageSize: 9,
+                    pageSize: 10,
                   }}
                   size="large"
                 />

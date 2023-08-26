@@ -67,32 +67,35 @@ const InfluUpdateProfileModal = ({
   };
 
   React.useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/influ/get-jobs-influencer", {
-        params: {
-          email: previewInflu.influencerEmail,
-        },
-      })
-      .then((response) => {
-        const jobDataArray = response.data.data;
+    // console.log(previewInflu.dateEdit);
+    if (previewInflu?.dateEdit !== null) {
+      axios
+        .get("http://localhost:4000/api/influ/get-jobs-influencer", {
+          params: {
+            email: previewInflu.influencerEmail,
+          },
+        })
+        .then((response) => {
+          const jobDataArray = response.data.data;
 
-        const bookingList = jobDataArray?.map((data) => ({
-          jobName: data?.Name_Job,
-          platform: data?.Platform_Job,
-          jobLink: data?.Link,
-          quantity: data?.Quantity,
-          costEstimateFrom: data?.CostEstimate_From_Job,
-          costEstimateTo: data?.CostEstimate_To_Job,
-          formatContent: data?.Format_Id,
-          jobId: data?.Job_ID,
-          JobList_ID: data?.JobList_ID,
-          status: data?.status,
-        }));
-        setPreviewBooking(bookingList);
-      })
-      .catch((error) => {
-        console.error("Error while fetching job information:", error);
-      });
+          const bookingList = jobDataArray?.map((data) => ({
+            jobName: data?.Name_Job,
+            platform: data?.Platform_Job,
+            jobLink: data?.Link,
+            quantity: data?.Quantity,
+            costEstimateFrom: data?.CostEstimate_From_Job,
+            costEstimateTo: data?.CostEstimate_To_Job,
+            formatContent: data?.Format_Id,
+            jobId: data?.Job_ID,
+            JobList_ID: data?.JobList_ID,
+            status: data?.status,
+          }));
+          setPreviewBooking(bookingList);
+        })
+        .catch((error) => {
+          console.error("Error while fetching job information:", error);
+        });
+    }
   }, []);
 
   React.useEffect(() => {

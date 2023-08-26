@@ -80,28 +80,28 @@ const VersionInfluSideBar = ({ influInfo, profileSideBar }) => {
                   className="profile-social-icon"
                   style={{ marginRight: "2px" }}
                 />
-                <p> {roundNumber(influInfo?.influencerFollowFb)}</p>
+                <p> {roundNumber(influInfo?.influencerFollowFb) || 0}</p>
               </div>
               <div className="profile-social">
                 <Instagram
                   className="profile-social-icon"
                   style={{ marginRight: "2px" }}
                 />
-                <p> {roundNumber(influInfo?.influencerFollowInsta)}</p>
+                <p> {roundNumber(influInfo?.influencerFollowInsta) || 0}</p>
               </div>
               <div className="profile-social">
                 <Youtube
                   className="profile-social-icon"
                   style={{ marginRight: "2px" }}
                 />
-                <p> {roundNumber(influInfo?.influencerFollowYoutube)}</p>
+                <p> {roundNumber(influInfo?.influencerFollowYoutube) || 0}</p>
               </div>
               <div className="profile-social">
                 <Tiktok
                   className="profile-social-icon"
                   style={{ marginRight: "2px" }}
                 />
-                <p> {roundNumber(influInfo?.influencerFollowTikTok)}</p>
+                <p> {roundNumber(influInfo?.influencerFollowTikTok) || 0}</p>
               </div>
             </div>
           </div>

@@ -16,11 +16,12 @@ const ReportPost = ({ influInfo, influInfoEmail, roleClient }) => {
   const fetchDataForChart = async (IdInflu) => {
     try {
       const response = await ApiAudienceAndJobInfluencer.getDataForChart(
-        IdInflu, influInfoEmail
+        IdInflu,
+        influInfoEmail
       );
       setLoading(false);
       setData(response);
-      setIdMonogDB(response._idInflue)
+      setIdMonogDB(response._idInflue);
     } catch (error) {
       console.log("Error fetching data:", error);
     }
