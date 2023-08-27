@@ -47,7 +47,7 @@ const InfluUpdateProfileModal = ({
     formData.append("editDate", JSON.stringify(dateUTC));
 
     axios
-      .put("http://localhost:4000/api/influ/update", formData, {
+      .put("http://139.180.155.253/api/influ/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -70,7 +70,7 @@ const InfluUpdateProfileModal = ({
     // console.log(previewInflu.dateEdit);
     if (previewInflu?.dateEdit !== null) {
       axios
-        .get("http://localhost:4000/api/influ/get-jobs-influencer", {
+        .get("http://139.180.155.253/api/influ/get-jobs-influencer", {
           params: {
             email: previewInflu.influencerEmail,
           },

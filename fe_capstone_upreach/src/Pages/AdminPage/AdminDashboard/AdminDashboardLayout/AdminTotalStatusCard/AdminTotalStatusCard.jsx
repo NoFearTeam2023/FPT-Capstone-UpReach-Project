@@ -17,7 +17,7 @@ const AdminTotalStatusCard = ({ listClient, listInflu }) => {
   }, [listInflu, listClient]);
   React.useEffect(() => {
     axios
-      .get("http://localhost:4000/api/admin/get-total-booking", {
+      .get("http://139.180.155.253/api/admin/get-total-booking", {
         params: {
           // email: user.influencerEmail,
         },
@@ -32,7 +32,7 @@ const AdminTotalStatusCard = ({ listClient, listInflu }) => {
   }, [force]);
   React.useEffect(() => {
     axios
-      .get("http://localhost:4000/api/admin/get-total-list", {
+      .get("http://139.180.155.253/api/admin/get-total-list", {
         params: {
           // email: user.influencerEmail,
         },

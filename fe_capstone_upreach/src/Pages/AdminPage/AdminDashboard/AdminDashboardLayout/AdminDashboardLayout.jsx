@@ -45,7 +45,7 @@ const AdminDashboardLayout = () => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/admin/get-top-influencer", {
+      .get("http://139.180.155.253/api/admin/get-top-influencer", {
         params: {
           // email: user.influencerEmail,
         },
@@ -64,7 +64,7 @@ const AdminDashboardLayout = () => {
   }, [force]);
   React.useEffect(() => {
     axios
-      .get("http://localhost:4000/api/admin/get-client-account", {
+      .get("http://139.180.155.253/api/admin/get-client-account", {
         params: {
           // email: user.influencerEmail,
         },

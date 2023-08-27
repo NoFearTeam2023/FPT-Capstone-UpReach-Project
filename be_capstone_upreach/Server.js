@@ -70,8 +70,7 @@ const server = app.listen(PORT, () => console.log(`Server started on port ${PORT
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000",
-        credentials: true,
+        origin: "*"
     }
 });
 

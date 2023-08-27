@@ -13,7 +13,7 @@ const InfluVersionProfile = ({ profileInflu, profileSideBar }) => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .post("http://localhost:4000/api/influ/data-version", {
+      .post("http://139.180.155.253/api/influ/data-version", {
         influencerId: profileInflu?.influencerId,
       })
       .then((response) => {

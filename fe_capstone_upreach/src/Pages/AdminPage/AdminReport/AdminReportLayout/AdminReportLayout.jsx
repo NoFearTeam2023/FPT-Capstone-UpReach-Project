@@ -32,7 +32,7 @@ const AdminReportLayout = () => {
   React.useLayoutEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/admin/get-approve-report", {
+      .get("http://139.180.155.253/api/admin/get-approve-report", {
         params: {
           // email: user.influencerEmail,
         },

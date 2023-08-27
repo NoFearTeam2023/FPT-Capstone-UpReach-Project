@@ -223,7 +223,7 @@ const InfluencerReportLayout = () => {
     setIsLoadVersion(true);
     setIsLoading(true);
     axios
-      .post("http://localhost:4000/api/influ/dataReportInfluencer", {
+      .post("http://139.180.155.253/api/influ/dataReportInfluencer", {
         email: user.email,
       })
       .then((response) => {

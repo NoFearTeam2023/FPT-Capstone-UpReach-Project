@@ -278,7 +278,7 @@ const AdminUserProfileLayout = () => {
       formData.append("clientId", JSON.stringify(clientId));
 
       axios
-        .put("http://localhost:4000/api/admin/edit-client", formData, {
+        .put("http://139.180.155.253/api/admin/edit-client", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -332,7 +332,7 @@ const AdminUserProfileLayout = () => {
     const formData = new FormData();
     formData.append("clientId", JSON.stringify(id));
     axios
-      .put("http://localhost:4000/api/admin/unlock-client", formData, {
+      .put("http://139.180.155.253/api/admin/unlock-client", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -359,7 +359,7 @@ const AdminUserProfileLayout = () => {
     formData.append("clientId", JSON.stringify(id));
 
     axios
-      .put("http://localhost:4000/api/admin/lock-client", formData, {
+      .put("http://139.180.155.253/api/admin/lock-client", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -383,7 +383,7 @@ const AdminUserProfileLayout = () => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/admin/get-client-account", {
+      .get("http://139.180.155.253/api/admin/get-client-account", {
         params: {
           // email: user.influencerEmail,
         },

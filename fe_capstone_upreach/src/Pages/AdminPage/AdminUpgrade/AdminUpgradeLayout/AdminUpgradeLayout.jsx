@@ -312,7 +312,7 @@ const AdminUpgradeLayout = () => {
       formData.append("clientId", JSON.stringify(clientId));
 
       axios
-        .put("http://localhost:4000/api/admin/edit-package", formData, {
+        .put("http://139.180.155.253/api/admin/edit-package", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -363,7 +363,7 @@ const AdminUpgradeLayout = () => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/admin/get-client-account", {
+      .get("http://139.180.155.253/api/admin/get-client-account", {
         params: {
           // email: user.influencerEmail,
         },

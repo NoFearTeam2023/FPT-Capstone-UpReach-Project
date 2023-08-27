@@ -83,7 +83,7 @@ const InfluencerBookingLayout = () => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/influ/get-booking-jobs", {
+      .get("http://139.180.155.253/api/influ/get-booking-jobs", {
         params: {
           email: user.email,
         },

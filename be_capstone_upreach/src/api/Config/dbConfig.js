@@ -1,8 +1,8 @@
 //config for database
 const config = {
     user: 'sa',
-    password: 'a123456',
-    server: '26.208.54.35',
+    password: 'a12345678',
+    server: 'upreachdb',
     database: 'UpReachDB',
     options: {
         encrypt: false,

@@ -25,7 +25,7 @@ const InfluencerBookingCard = ({ bookingList }) => {
     // formData.append("influName", JSON.stringify(user.fullNameInfluencer));
 
     axios
-      .put("http://localhost:4000/api/influ/reject-booking", formData, {
+      .put("http://139.180.155.253/api/influ/reject-booking", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -45,7 +45,7 @@ const InfluencerBookingCard = ({ bookingList }) => {
     // formData.append("influName", JSON.stringify(user.fullNameInfluencer));
 
     axios
-      .put("http://localhost:4000/api/influ/accept-booking", formData, {
+      .put("http://139.180.155.253/api/influ/accept-booking", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

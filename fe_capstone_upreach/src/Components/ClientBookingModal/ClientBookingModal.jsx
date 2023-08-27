@@ -14,7 +14,7 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const ClientBookingModal = ({ data, setIsOpenBooking, idMonogDB }) => {
-  console.log("ffff", idMonogDB)
+  console.log("ffff", idMonogDB);
   const navigate = useNavigate();
   const [user] = useUserStore((state) => [state.user]);
   const [bookingJob, setBookingJob] = React.useState(data);
@@ -59,7 +59,7 @@ const ClientBookingModal = ({ data, setIsOpenBooking, idMonogDB }) => {
     const formData = new FormData();
     formData.append("bookingJob", JSON.stringify(updatedBookingJob));
     axios
-      .put("http://localhost:4000/api/client/bookingJob", formData, {
+      .put("http://139.180.155.253/api/client/bookingJob", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -72,12 +72,16 @@ const ClientBookingModal = ({ data, setIsOpenBooking, idMonogDB }) => {
       .catch((error) => {
         console.error("Lỗi khi cập nhật thông tin:", error);
       });
-    const idClient = await JSON.parse(localStorage.getItem("user-draw-storage")).state._idMonogDB;
-    const responseData = await ApiListClient.addInflueToBookingInClient(idClient, idMonogDB);
-    console.log("responseData", responseData)
+    const idClient = await JSON.parse(localStorage.getItem("user-draw-storage"))
+      .state._idMonogDB;
+    const responseData = await ApiListClient.addInflueToBookingInClient(
+      idClient,
+      idMonogDB
+    );
+    console.log("responseData", responseData);
     if (responseData.status) {
-      console.log("aaa")
-      navigate("/myinfluencer")
+      console.log("aaa");
+      navigate("/myinfluencer");
     }
   };
   return (

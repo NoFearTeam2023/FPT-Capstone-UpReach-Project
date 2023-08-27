@@ -10,7 +10,7 @@ const MyBookingPage = () => {
   const [bookingHistory, setBookingHistory] = React.useState([]);
   React.useEffect(() => {
     axios
-      .get("http://localhost:4000/api/client/get-history-booking", {
+      .get("http://139.180.155.253/api/client/get-history-booking", {
         params: {
           email: user.email,
         },

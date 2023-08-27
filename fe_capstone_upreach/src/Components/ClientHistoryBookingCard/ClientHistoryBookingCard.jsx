@@ -35,7 +35,7 @@ const ClientHistoryBookingCard = ({ bookingList }) => {
     formData.append("booking", JSON.stringify(info));
 
     axios
-      .put("http://localhost:4000/api/client/check-done", formData, {
+      .put("http://139.180.155.253/api/client/check-done", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -104,7 +104,7 @@ const ClientHistoryBookingCard = ({ bookingList }) => {
     formData.append("booking", JSON.stringify(bookingList));
 
     axios
-      .put("http://localhost:4000/api/client/send-feedback", formData, {
+      .put("http://139.180.155.253/api/client/send-feedback", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

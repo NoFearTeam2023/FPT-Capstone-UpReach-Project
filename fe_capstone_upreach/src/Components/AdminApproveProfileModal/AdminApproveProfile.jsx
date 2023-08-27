@@ -11,7 +11,7 @@ const AdminApproveProfile = ({
 }) => {
   const handleApprove = () => {
     axios
-      .post("http://localhost:4000/api/admin/approve-report", {
+      .post("http://139.180.155.253/api/admin/approve-report", {
         userId: approveReport.user.User_ID,
         kolsId: approveReport.user.KOLs_ID,
         profilesId: approveReport.user.Profile_ID,

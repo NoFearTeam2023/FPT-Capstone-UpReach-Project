@@ -313,7 +313,7 @@ const AdminInfluencerLayout = () => {
       formData.append("influId", JSON.stringify(id));
 
       axios
-        .put("http://localhost:4000/api/admin/edit-influ", formData, {
+        .put("http://139.180.155.253/api/admin/edit-influ", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -364,7 +364,7 @@ const AdminInfluencerLayout = () => {
     const formData = new FormData();
     formData.append("profileId", JSON.stringify(id));
     axios
-      .put("http://localhost:4000/api/admin/unlock-influ", formData, {
+      .put("http://139.180.155.253/api/admin/unlock-influ", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -391,7 +391,7 @@ const AdminInfluencerLayout = () => {
     formData.append("profileId", JSON.stringify(id));
 
     axios
-      .put("http://localhost:4000/api/admin/lock-influ", formData, {
+      .put("http://139.180.155.253/api/admin/lock-influ", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -415,7 +415,7 @@ const AdminInfluencerLayout = () => {
   React.useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:4000/api/admin/get-influencer-account", {
+      .get("http://139.180.155.253/api/admin/get-influencer-account", {
         params: {
           // email: user.influencerEmail,
         },
