@@ -21,7 +21,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const cloudconfig = require('./src/api/Config/cloudConfig')
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json())
 app.use(bodyParser.json({ limit: '10mb' })); // Đặt giới hạn kích thước 10MB cho JSON data
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // Đặt giới hạn kích thước 10MB cho urlencoded data
