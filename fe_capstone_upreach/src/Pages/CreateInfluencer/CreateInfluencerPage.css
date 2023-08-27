@@ -48,6 +48,18 @@
     font-size: 95%;
     
 }
+
+.form-information .submit-image-btn {
+    background-color: black;
+    color: white !important;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    font-weight: 600;
+    font-size: 95%;
+}
 /* Overview form css */
 .create-page .cost-select-form{
     display: flex;

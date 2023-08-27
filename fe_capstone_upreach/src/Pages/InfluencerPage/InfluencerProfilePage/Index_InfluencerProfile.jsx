@@ -265,7 +265,11 @@ const Index_InfluencerProfile = () => {
                       onChange={handleChange}
                       beforeUpload={beforeUpload}
                     >
-                      {fileList ? null : uploadButton}
+                      {!fileList
+                        ? "+ Upload"
+                        : fileList?.length < 1
+                        ? "+ Upload"
+                        : null}
                     </Upload>
                     <Modal
                       open={previewOpen}

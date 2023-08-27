@@ -57,7 +57,7 @@ const InfluSideBar = ({ influInfo }) => {
   const navigate = useNavigate();
   const [roleClient, setRoleClient] = useState("Free");
   const [isEnableAddBtn, setIsEnableAddBtn] = useState(true);
-  const [valueRate, setValueRate] = React.useState(3.7);
+  const [valueRate, setValueRate] = React.useState(0);
 
   // coundown popup success
   const countDownSuccess = () => {
@@ -313,7 +313,7 @@ const InfluSideBar = ({ influInfo }) => {
             </Dropdown>
             <div className="profile-feedback">
               <Rate value={valueRate} disabled allowHalf />
-              <p>(1)</p>
+              <p>(0)</p>
             </div>
           </div>
           <div className="influ-side-bar-body">
@@ -407,15 +407,7 @@ const InfluSideBar = ({ influInfo }) => {
               </div>
             </div>
           </div>
-          <div className="feedback-btn">
-            <Link to="/login">
-              <Button type="link">
-                <p style={{ fontWeight: "600", marginTop: "-2px" }}>
-                  Feedback influencer
-                </p>
-              </Button>
-            </Link>
-          </div>
+          <div className="feedback-btn"></div>
         </div>
       </div>
     </>

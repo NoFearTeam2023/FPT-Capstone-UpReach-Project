@@ -19,12 +19,9 @@ const FinishForm = () => {
             }}
           >
             <h5>We have received your information.</h5>
-            <h5>Please wait for us to confirm your account within 72 hours.</h5>
             <h5>After verifying your information is correct.</h5>
-            <h5>
-              We will email you that you have access to the UpReach system.
-            </h5>
-            <Button
+            <h5>Please wait seconds for access to the UpReach system.</h5>
+            {/* <Button
               className="finish-sign-up-btn"
               type="primary"
               shape="round"
@@ -32,7 +29,7 @@ const FinishForm = () => {
               style={{ width: "fit-content" }}
             >
               <Link to="/login">Back to login</Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

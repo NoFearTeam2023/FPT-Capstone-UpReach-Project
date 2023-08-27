@@ -179,7 +179,7 @@ const CreatInfluencerProfilePage = () => {
             />
             <Steps.Step
               disabled={isStepDisabled(2)}
-              title="Image"
+              title="Avatar"
               icon={<CheckCircleOutlined />}
             />
             <Steps.Step
