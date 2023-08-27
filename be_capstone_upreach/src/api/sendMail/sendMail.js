@@ -1,31 +1,13 @@
 const nodemailer = require('nodemailer');
-
+const { authenticator } = require('otplib');
 // Tạo một transporter để gửi email
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-    user: 'thienndde150182@fpt.edu.vn', // Địa chỉ email của bạn
-    pass: 'jxjjsbmdqksfgcuk' // Mật khẩu email của bạn
+    user: 'upreach07@gmail.com', // Địa chỉ email của bạn
+    pass: 'immklawziavhtopu' // Mật khẩu email của bạn
     }
 });
-
-// Hàm tạo mã OTP
-function generateOTP() {
-    const digits = '0123456789';
-    let OTP = '';
-    for (let i = 0; i < 6; i++) {
-        OTP += digits[Math.floor(Math.random() * 10)];
-    }
-    return OTP;
-}
-
-// Tạo một mã OTP
-const otp = generateOTP();
-
-// Định nghĩa thông tin về email
-
-
-
 // Gửi email
 function sendMailToUser(mailOptions) {
     return new Promise((resolve, reject) => {
@@ -41,4 +23,29 @@ function sendMailToUser(mailOptions) {
     });
 }
 
-module.exports = {sendMailToUser,otp}
+function generateOTP() {
+    // Tạo mã OTP
+    const secret = authenticator.generateSecret();
+    const otp = authenticator.generate(secret);
+    var checkExist = true;
+    // In ra mã OTP
+    console.log('Mã OTP:', otp);
+  
+    const startTime = Date.now();
+    // Tạo interval để in ra thời gian còn lại của mã OTP sau mỗi giây
+    const interval = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsedTime = (currentTime - startTime) / 1000;
+        const remainingTime = 600 - elapsedTime;
+        
+        if (remainingTime > 0) {
+        //   console.log(`Còn lại ${Math.floor(remainingTime)} giây để mã OTP hết hạn`);
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+    return {otp,checkExist}
+}
+
+module.exports = {sendMailToUser,generateOTP}
